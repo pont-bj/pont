@@ -1,0 +1,1175 @@
+<!doctype html>
+<html>
+    <head>
+        <!-- META Tags -->
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>API PUSH | PayDunya Developers</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- SEO -->
+        <meta name="author" content="PayDunya">
+        <meta name="description" content="PayDunya Developers">
+        <meta name="keywords" content="PayDunya, Developers, Documentation">
+        <meta name="twitter:card" value="summary">
+                    <link rel="canonical" href="https://developers.paydunya.com/doc/FR/api_deboursement" />
+                                                                <meta property="og:title" content="PayDunya Documentation en ligne" />
+                                                                <meta property="og:type" content="article" />
+                                                                                                                        
+        <!-- CSS -->
+        <link rel="stylesheet" href="https://developers.paydunya.com/vendor/binarytorch/larecipe/assets/css/app.css">
+
+                    <!-- Favicon -->
+            <link rel="apple-touch-icon" href="https://developers.paydunya.com/images/favicon.png">
+            <link rel="shortcut icon" type="image/png" href="https://developers.paydunya.com/images/favicon.png"/>
+        
+        <!-- FontAwesome -->
+        <link rel="stylesheet" href="https://developers.paydunya.com/vendor/binarytorch/larecipe/assets/css/font-awesome.css">
+                    <link rel="stylesheet" href="https://developers.paydunya.com/vendor/binarytorch/larecipe/assets/css/font-awesome-v4-shims.css">
+        
+        <!-- Dynamic Colors -->
+        <style>
+    :root {
+        --primary: #787AF6;
+        --secondary: #1894dd;
+    }
+
+    :not(pre)>code[class*=language-], pre[class*=language-] {
+        border-top: 3px solid #787AF6;
+    }
+    
+    .bg-gradient-primary {
+        background: linear-gradient(87deg, #787AF6 0, #1894dd 100%) !important;
+    }
+
+    [v-cloak] > * { 
+        display: none; 
+    }
+    
+    [v-cloak]::before { 
+        content: " ";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: #F2F6FA;
+    }
+</style>
+        <!-- CSRF Token -->
+        <meta name="csrf-token" content="">
+
+        
+    </head>
+    <body><a href="https://developers.paydunya.com/cdn-cgi/content?id=s9dZ0NE0.Ji7f27ojEK.efTR.ephc3sB8bd8fSQfQds-1793055778.6562777-1.2.1.1-kOerOcYIwAPd0zQoFykfDbD.S6a4EJl50nwav4dT1OwdefgsS2clPhJrJ7yvRgK." aria-hidden="true" rel="nofollow noopener" style="display: none !important; visibility: hidden !important"></a>
+        <div id="app" v-cloak>
+            <div class="fixed pin-t pin-x z-40">
+    <div class="text-white h-1" style="background-color: #fff;"></div>
+
+    <nav class="flex items-center justify-between text-black bg-navbar shadow-xs h-16">
+        <div class="flex items-center flex-no-shrink">
+            <a href="https://paydunya.com" class="flex items-center flex-no-shrink text-black mx-4">
+                <div class="p-1">
+    <img src="https://developers.paydunya.com/logo_doc.png" alt="" width="60px">
+</div>
+            <p class="inline-block font-semibold mx-1 text-grey-dark">
+                    &nbsp;
+                    <!-- PayDunya Developers -->
+                </p>
+            </a>
+
+            <div class="switch">
+                <input type="checkbox" name="1" id="1" v-model="sidebar" class="switch-checkbox"/>
+                <label class="switch-label" style="background-color: #1894dd;" for="1"></label>
+            </div>
+        </div>
+
+        <div class="block mx-4 flex items-center">
+            
+            <larecipe-button tag="a" href="https://github.com/paydunyadev?tab=repositories" target="__blank" type="black" class="mx-2 px-4">
+                <i class="fab fa-github"></i>
+            </larecipe-button>
+
+            
+            <larecipe-dropdown>
+                <larecipe-button type="secondary" class="flex">
+                    EN <i class="mx-1 fa fa-angle-down"></i>
+                </larecipe-button>
+
+                <template slot="list">
+                    <ul class="list-reset">
+                                                    <li class="py-2 hover:bg-grey-lightest">
+                                <a class="px-6 text-grey-darkest" href="https://developers.paydunya.com/doc/FR/api_deboursement">FR</a>
+                            </li>
+                                                    <li class="py-2 hover:bg-grey-lightest">
+                                <a class="px-6 text-grey-darkest" href="https://developers.paydunya.com/doc/EN/api_deboursement">EN</a>
+                            </li>
+                                            </ul>
+                </template>
+            </larecipe-dropdown>
+            
+
+                    </div>
+    </nav>
+</div>
+            
+            <div>
+	<div id="app" class="sidebar" :class="[{'is-hidden': !sidebar}]">
+    <ul>
+<li>
+<h2>DOCUMENTATION</h2>
+<ul>
+<li><a href="/doc/EN/introduction">Introduction</a></li>
+<li><a href="/doc/EN/definitions">Which API to choose?</a></li>
+</ul>
+</li>
+<li>
+<h2>To Recieve Money</h2>
+<ul>
+<li>
+<details style="margin-left:30px;"> <summary> PAR API</summary>
+      <ul class="nav row">
+        <li><a href="/doc/EN/api_par_index" style="color:#1894dd; text-transform:uppercase;">Definition</a></li>
+        <li><a href="/doc/EN/Magento" style="color:#1894dd; text-transform:uppercase">Magento</a></li>
+        <li><a href="/doc/EN/wordpress" style="color:#1894dd; text-transform:uppercase">Wordpress</a></li>
+        <li><a href="/doc/EN/http_json" style="color:#1894dd; text-transform:uppercase">HTTP/JSON</a></li>
+        <li><a href="/doc/EN/php" style="color:#1894dd; text-transform:uppercase">Php</a></li>
+        <li><a href="/doc/EN/NET" style="color:#1894dd; text-transform:uppercase">.NET</a></li>
+        <li><a href="/doc/EN/Java" style="color:#1894dd; text-transform:uppercase">Java</a></li>
+        <li><a href="/doc/EN/Ruby" style="color:#1894dd; text-transform:uppercase">Ruby</a></li>
+        <li><a href="/doc/EN/Python" style="color:#1894dd; text-transform:uppercase">Python</a></li>
+        <li><a href="/doc/EN/NodeJS" style="color:#1894dd; text-transform:uppercase">NodeJS</a></li>
+        <li><a href="/doc/EN/Android" style="color:#1894dd; text-transform:uppercase">Android</a></li>
+        <li><a href="/doc/EN/Prestashop" style="color:#1894dd; text-transform:uppercase">Prestashop</a></li>
+        <li><a href="/doc/EN/whmcs" style="color:#1894dd; text-transform:uppercase">WHMCS</a></li>
+      </ul>
+</details>
+</li>
+<li>
+<details style="margin-left:30px;"> <summary> PSR API </summary>
+    <ul>
+      <li><a href="/doc/EN/api_psr_index" style="color:#1894dd; text-transform:uppercase">Definition</a></li>
+      <li><a href="/doc/EN/psr_plugins/api_psr" style="color:#1894dd; text-transform:uppercase">Web Api</a></li>
+      <li><a href="/doc/EN/psr_plugins/ios" style="color:#1894dd; text-transform:uppercase">IOS</a></li>
+      <li><a href="/doc/EN/psr_plugins/magento_psr" style="color:#1894dd; text-transform:uppercase">Magento</a></li>
+      <li><a href="/doc/EN/psr_plugins/wordpress_psr" style="color:#1894dd; text-transform:uppercase">Wordpress</a></li>
+      <li><a href="/doc/EN/psr_plugins/prestashop_psr" style="color:#1894dd; text-transform:uppercase">Prestashop</a></li>
+    </ul>
+</details>
+</li>
+<li>
+<details style="margin-left:30px;"> <summary> SoftPay </summary>
+     <ul>
+          <li><a href="/doc/EN/api_softpay_index" style="color:#1894dd; text-transform:uppercase">Definition</a></li>
+          <li><a href="/doc/EN/sandbox_softpay" style="color:#1894dd; text-transform:uppercase">Sandbox</a></li>
+          <li><a href="/doc/EN/softpay" style="color:#1894dd; text-transform:uppercase">API SoftPay</a></li>
+     </ul>
+</details>
+</li>
+</ul>
+</li>
+<li>
+<h2>Send Money</h2>
+<ul>
+<li><a href="/doc/EN/api_deboursement">PUSH API</a></li>
+</ul>
+</li>
+<li>
+<h2>Check Transaction Status</h2>
+<ul>
+<li><a href="/doc/EN/http_json#section-4">PAYMENT</a></li>
+<li><a href="/doc/EN/api_deboursement#section-2">DISBURSEMENT</a></li>
+</ul>
+</li>
+<li>
+<h2>Payments Request</h2>
+<ul>
+<li><a href="/doc/EN/dmp">Payment Request API</a></li>
+</ul>
+</li>
+<li>
+<h2>Technical Support</h2>
+<ul>
+<li><a href="/doc/EN/introduction#section-7">Contact</a></li>
+</ul>
+</li>
+<li>
+<h2>Get balance</h2>
+<ul>
+<li><a href="/doc/EN/get_balance">Balance</a></li>
+</ul>
+</li>
+<li>
+<h2>Payment Buttons</h2>
+<ul>
+<li><a href="/doc/EN/nos_boutons_payer">Our Pay Buttons</a></li>
+</ul>
+</li>
+</ul>
+</div>	
+	<div class="documentation is-dark" :class="{'expanded': ! sidebar}">
+		<h1>API PUSH</h1>
+<larecipe-card style="outline: none;box-shadow: none;border-bottom: 0px; border-right: 0px; border-left: 0px; border-top: 0px;">
+<larecipe-card type="secondary" style="outline: none;box-shadow: none;border-bottom: 0px; border-right: 0px; border-left: 0px; border-top: 0px; margin:none">
+    <h4 style="color:#0040B2; text-transform:uppercase"><i class="fa fa-lightbulb-o"></i>  MANDATORY </h4> <br>
+    <p style="text-align: justify; font-family: Garamond; font-size:1.2em  ">
+        After having followed the steps found in the section <a href="/doc/Fr/introduction" style="color:#000; text-decoration:underline">introduction</a>, you can then integrate this <code style="color:#666; text-transform:uppercase">API Client</code>.
+    </p>
+</larecipe-card>
+
+<br>
+
+<h3 style="color:#0040B2; text-transform:uppercase">INTRODUCTION</h3>
+<br>
+<p style="text-align: justify">
+    To make a withdrawal you needed your API keys in your PayDunya account. So log into your PayDunya account already
+    created and access your <code style="color:#0070B2; text-transform:uppercase">API keys</code> by the link <code style="color:#0070B2;">details</code> just to the right of the app you created.
+</p>
+<br>
+
+<p style="text-align: justify">
+    So you can make disbursements to your customers in several ways, namely through <code style="color:#0070B2; text-transform:uppercase"> ORANGE MONEY PURSE</code>, the <code style=" color:#0070B2">PayDunya</code> account and many others. For this you will need four <code style="color:#0070B2; text-transform: uppercase">04 keys</code> in the format <code style="color:#0070B2; text-transform:uppercase"> JSON </code>.
+</p>
+<br>
+
+<p style="text-align: justify">
+    The four <code style="color:#0070B2; text-transform: uppercase">04 JSON keys</code> to have are as follows :
+</p>
+<ul>
+    <li>
+        <p style="text-align: justify"><code style="color:#0070B2; text-transform:lowercase">"account_alias"</code> : </p>
+        <p style="text-align: justify">Beneficiary's phone number without the country code, or Paydunya account ID in the case of account-to-account transfers.</p>
+    </li>
+    <li>
+        <p style="text-align: justify"><code style="color:#0070B2; text-transform:lowercase">"amount"</code></p>
+        <p style="text-align: justify">Is the amount to be spent in<code style="color:#0070B2; text-transform:uppercase">XOF</code></p>
+    </li>
+    <li>
+        <p style="text-align: justify"><code style="color:#0070B2; text-transform:lowercase">"withdraw_mode"</code></p>
+        <p style="text-align: justify">Defines the withdrawal endpoint: <code style="color:#0070B2; text-transform:lowercase">"orange-money-senegal"</code> for <code style="color:#0070B2; text-transform:uppercase">"Orange Money wallet"</code>.
+        </p>
+    </li>
+    <li>
+        <p style="text-align: justify">
+            <code style="color:#0070B2; text-transform:lowercase">"debit_account_number"</code>
+            is an optional parameter used only when the withdrawal endpoint 
+            (<code style="color:#0070B2; text-transform:lowercase">withdraw_mode</code>) is 
+            <code style="color:#0070B2; text-transform:lowercase">paydunya</code>.
+            This parameter represents the merchant’s account number 
+            (<code style="color:#0070B2; text-transform:lowercase">account_number</code>) to be debited.
+            If not provided, the system will automatically use the merchant’s default account 
+            that matches the recipient's country.
+        </p>
+    </li>
+    <li>
+        <p style="text-align: justify"><code style="color:#0070B2; text-transform:lowercase">"callback_url"</code></p>
+        <p style="text-align: justify">This is the URL where the transaction details will be returned once the transaction is successful. <span style="text-transform:lowercase; font-weight: bold">
+        <code style="color:#0070B2; text-transform:lowercase">"The URL must be a Valid URL otherwise the transaction will not be authorized"</code></span>
+        </p>
+    </li>
+</ul>
+
+<larecipe-card type="secondary">
+    <h4 style="color:#0040B2; text-transform:uppercase"><i class="fa fa-lightbulb-o"></i>IMPORTANT </h4><br>
+    <br>
+    <p style="text-align: justify; font-family: Garamond; font-size:1.2em">
+        Make sure that the PER API or disbursement is <code style="color:#666; text-transform:uppercase">activated</code> in your dashboard at API WebPay and MobPay level. <a href="https://paydunya.com/integration-setups" style="color:#000;">your dashboard</a>
+    </p>
+</larecipe-card>
+
+<a name="section-1"></a>
+
+<h3 style="color:#0040B2; text-transform:uppercase">The different possible statuses</h3>
+<br>
+<p style="text-align: justify">
+    Intermediate statuses :
+</p>
+<ul>
+    <li>
+        <p style="text-align: justify"><span style="font-weight:bold">Created</span> : This status is returned to mean that the disbursement request has been created by PayDunya but not yet sent to the operator for execution.</p>
+    </li>
+    <li>
+        <p style="text-align: justify"><span style="font-weight:bold">Pending</span> : 
+        This status means that the token has been submitted to the operator for execution, but the transaction is still being processed. To check the final status of the transaction, please use the <a href="/doc/EN/api_deboursement#section-2" style="color:#0000ff;">Check Statut</a>.</p>
+    </li>
+</ul>
+<p style="text-align: justify">
+    Statuts finaux :
+</p>
+<ul>
+    <li>
+        <p style="text-align: justify"><span style="font-weight:bold">Success</span> : This status indicates that the transaction was successful.</p>
+    </li>
+    <li>
+        <p style="text-align: justify"><span style="font-weight:bold">Failed</span> : This status indicates that the transaction was not successful.</p>
+    </li>
+</ul>
+<br>
+
+<h3 style="color:#0040B2; text-transform:uppercase">1 - Initiate Disbursement</h3>
+
+<larecipe-card type="secondary">
+    <h4 style="color:#0040B2; text-transform:uppercase"><i class="fa fa-lightbulb-o"></i> Note </h4>
+    <br>
+    <ul>
+        <li>
+             <p style="text-align: justify; font-family: Garamond; font-size:1.2em; line-height: 10px">
+                <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">account_alias</code></span> : Beneficiary's phone number without the country code, or Paydunya account ID in the case of account-to-account transfers.
+            </p>
+        </li>
+        <li>
+             <p style="text-align: justify; font-family: Garamond; font-size:1.2em; line-height: 10px">
+              <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">amount</code></span> : is the amount to disburse in XOF.
+            </p>
+        </li>
+        <li>
+             <p style="text-align: justify; font-family: Garamond; font-size:1.2em; line-height: 30px">
+                <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">withdraw_mode</code></span> : with have different types of withdraw mode mentioned below :
+                </p><ul>
+                    <li>
+                        <p style="text-align: justify; font-family: Garamond; font-size:1.2em; line-height: 10px">
+                        <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">paydunya</code></span> :   for account to account
+                        </p>
+                    </li>
+                    <li>
+                        <p style="text-align: justify; font-family: Garamond; font-size:1.2em; line-height: 10px">
+                        <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">orange-money-senegal</code></span> : for orange money Sénégal wallet
+                        </p>
+                    </li>
+                    <li>
+                        <p style="text-align: justify; font-family: Garamond; font-size:1.2em; line-height: 10px">
+                        <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">free-money-senegal</code></span> : for free money Sénégal wallet.
+                        </p>
+                    </li>
+                    <li>
+                        <p style="text-align: justify; font-family: Garamond; font-size:1.2em; line-height: 10px">
+                        <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">expresso-senegal</code></span> : for e-money Sénégal wallet.
+                        </p>
+                    </li>
+                    <li>
+                        <p style="text-align: justify; font-family: Garamond; font-size:1.2em; line-height: 10px">
+                        <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">wave-senegal</code></span> : for wave Sénégal wallet.
+                        </p>
+                    </li>
+                    <li>
+                        <p style="text-align: justify; font-family: Garamond; font-size:1.2em; line-height: 10px">
+                        <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">mtn-benin</code></span> : for mtn Bénin wallet.
+                        </p>
+                    </li>
+                    <li>
+                         <p style="text-align: justify; font-family: Garamond; font-size:1.2em; line-height: 10px">
+                          <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">moov-benin</code></span> : for Moov Bénin wallet.
+                        </p>
+                    </li>
+                    <li>
+                         <p style="text-align: justify; font-family: Garamond; font-size:1.2em; line-height: 10px">
+                          <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">celtiis-cash</code></span> : for Celtiis Cash wallet.
+                        </p>
+                    </li>
+                    <li>
+                        <p style="text-align: justify; font-family: Garamond; font-size:1.2em; line-height: 10px">
+                        <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">mtn-ci</code></span> : for mtn Ivory Coast wallet.
+                        </p>
+                    </li>
+                    <li>
+                        <p style="text-align: justify; font-family: Garamond; font-size:1.2em; line-height: 10px">
+                           <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">orange-money-ci</code></span> : for Orange Money Ivory Coast wallet.
+                        </p>
+                    </li>
+                    <li>
+                        <p style="text-align: justify; font-family: Garamond; font-size:1.2em; line-height: 10px">
+                          <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">moov-ci</code></span> : for moov Ivory Coast wallet.
+                        </p>
+                    </li>
+                    <li>
+                        <p style="text-align: justify; font-family: Garamond; font-size:1.2em; line-height: 10px">
+                          <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">wave-ci</code></span> : for wave Ivory Coast wallet.
+                        </p>
+                    </li>
+                    <li>
+                        <p style="text-align: justify; font-family: Garamond; font-size:1.2em; line-height: 10px">
+                        <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">t-money-togo</code></span> : for T-Money Togo wallet.
+                        </p>
+                    </li>
+                    <li>
+                        <p style="text-align: justify; font-family: Garamond; font-size:1.2em; line-height: 10px">
+                        <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">moov-togo</code></span> : for Moov Togo wallet.
+                        </p>
+                    </li>
+                    <li>
+                         <p style="text-align: justify; font-family: Garamond; font-size:1.2em; line-height: 10px">
+                          <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">orange-money-mali</code></span> : for Orange Money Mali wallet.
+                        </p>
+                    </li>
+                    <li>
+                         <p style="text-align: justify; font-family: Garamond; font-size:1.2em; line-height: 10px">
+                          <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">orange-money-burkina</code></span> : for Orange Money Burkina wallet.
+                        </p>
+                    </li>
+                    <li>
+                         <p style="text-align: justify; font-family: Garamond; font-size:1.2em; line-height: 10px">
+                          <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">moov-burkina-faso</code></span> : for Moov Burkina wallet.
+                        </p>
+                    </li>
+                    <li>
+                         <p style="text-align: justify; font-family: Garamond; font-size:1.2em; line-height: 10px">
+                          <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">mtn-cameroun</code></span> : for MTN Cameroun wallet.
+                        </p>
+                    </li>
+                    <li>
+                         <p style="text-align: justify; font-family: Garamond; font-size:1.2em; line-height: 10px">
+                          <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">djamo-ci</code></span> : for Djamo Ivory Coast  wallet.
+                        </p>
+                    </li>
+                    <li>
+                         <p style="text-align: justify; font-family: Garamond; font-size:1.2em; line-height: 10px">
+                          <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">djamo-sn</code></span> : for Djamo Senegal wallet.
+                        </p>
+                    </li>
+                </ul>
+            
+        </li>
+        <li>
+            <p style="text-align: justify; font-family: Garamond; font-size:1.2em; line-height: 10px">
+                <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">callback_url</code></span> : This is the URL where the transaction details will be returned once the transaction is successful. <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">The URL must be a Valid URL otherwise the transaction will not be authorized</code></span>
+            </p> 
+        </li>
+        <li>
+            <p style="text-align: justify; font-family: Garamond; font-size:1.2em; line-height: 30px">
+                <span style="text-transform:lowercase; font-weight: bold">
+                    <code style="color:#000000; font-size: 15px">debit_account_number</code> : 
+                    <code style="color:#0070B2; text-transform:uppercase">(BBJXXXXXXXXXX)</code>
+                </span> 
+                is an optional parameter used only when the withdrawal endpoint 
+                <code style="color:#0070B2; text-transform:lowercase">withdraw_mode</code> is 
+                <code style="color:#0070B2; text-transform:lowercase">paydunya</code>. 
+                If this parameter is provided, the corresponding merchant country balance will be debited. 
+                Otherwise, the system will default to using the merchant balance located in the same country as the recipient.
+            </p>
+        </li>
+    </ul>
+</larecipe-card>
+
+<br>
+
+<h4 style="color:#0040B2; text-transform:uppercase">Example of information received on the callback :</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">{
+    'hash':'8c6666a27fe5daeb76dae6abc7308a557dca5be1bda85dfe5d81fa330cdc0bc3c4b37765fe5d2cc36aa2ba0f9284226a80f5488d14740fa70769d6079a179406',
+    "status":"success",
+    "token":"xZsV7x488d2yGCrJd2R ",
+    "withdraw_mode":"orange-money-senegal",
+    "amount":"203.00",
+    "updated_at":"11/01/2024 14:30:32",
+    "disburse_id": "78112205445565",
+    "transaction_id":"TFA-TX-N458MPjhA1npWbI6M",
+    "disburse_tx_id":"CI000111.1430.A11197"
+}
+</code></pre>
+
+</div>
+</div>
+
+<larecipe-card type="secondary">
+    <h4 style="color:#0040B2; text-transform:uppercase"><i class="fa fa-lightbulb-o"></i> Note </h4><br>
+    <br>
+    <p style="text-align: justify; font-family: Garamond; font-size:1.2em">
+        The <code style="color:#666; text-transform:lowercase">disburse_id</code> will only appear if the merchant provides it when submitting invoice.
+        The hash returned by PayDunya is the hash of your MasterKey. This hash will allow you to make sure that the data you have received comes from our servers. The algorithm used to obtain the hash is <code style="color:#666; f">SHA-512</code>.
+    </p>
+</larecipe-card>
+
+
+<h4 style="color:#0040B2; text-transform:uppercase">Endpoints API</h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v2/disburse/get-invoice</strong></code></pre>
+<br>
+
+<h4 style="color:#0040B2; text-transform:uppercase">Request POST HTTP</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+curl -H "Content-Type: application/json" \ 
+-H "PAYDUNYA-MASTER-KEY: wQzk9ZwR-Qq9m-0hD0-zpud-je5coGC3FHKW" \ 
+-H "PAYDUNYA-PRIVATE-KEY: test_private_rMIdJM3PLLhLjyArx9tF3VURAF5" \ 
+-H "PAYDUNYA-TOKEN: IivOiOxGJuWhc5znlIiK" \ 
+-X POST -d ' { "account_alias" : "771111111", "amount" : 4500, "withdraw_mode" : 
+"orange-money-senegal", "callback_url": "your_callback_url" }' \ 
+"https://app.paydunya.com/api/v2/disburse/get-invoice" 
+</code></pre>
+</div>
+</div>
+
+<larecipe-card type="secondary">
+    <h4 style="color:#0040B2; text-transform:uppercase"><i class="fa fa-lightbulb-o"></i> Note </h4><br>
+    <br>
+    <p style="text-align: justify; font-family: Garamond; font-size:1.2em">
+        <code style="color:#666; text-transform:lowercase">“account_alias”</code>, <code style="color:#666; text-transform:lowercase">“amount”</code> and <code style="color:#666; text-transform:lowercase">“callback_url”</code> are mandatory. For Free money and E money Wallet  just change with the corresponding <code style="color:#666; text-transform:lowercase">“withdraw_mode”</code> value.
+        <code style="color:#666; text-transform:lowercase">“amount”</code> must not be a decimal value and the supported currency is XOF, <code style="color:#666; text-transform:lowercase ">“account_alias”</code> must be to beneficiary's phone number without the country code, or Paydunya account ID in the case of account-to-account transfers
+    </p>
+</larecipe-card>
+
+<br>
+
+<larecipe-card type="secondary">
+    <h4 style="color:#0040B2; text-transform:uppercase"><i class="fa fa-lightbulb-o"></i> Note </h4>
+    <br>
+    <p style="text-align: justify; font-family: Garamond; font-size:1.2em">
+        When a token is generated (at the initiation of the disbursement), the <code style="color:#000000; font-size: 15px">status</code> of the transaction is <code style="color:#000000; font-size: 15px">« created »</code>. This status is specifically returned to mean that you have created a disbursement request but it has not yet been submitted. The status only changes if you push via the Submit Invoice API, after which the three possible statuses are:<code style="color:#000000; font-size: 15px">pending, success, failed</code>.
+    </p>
+</larecipe-card>
+
+<br>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected response</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{ 
+    "response_code": "00",
+    "disburse_token": "hwTHAS0WvTmTaYT2zDoO"
+} 
+</code></pre>
+</div>
+</div>
+
+<h3 style="color:#0040B2; text-transform:uppercase">1-2 - PAYDUNYA CASE </h3>
+
+<br>
+
+<h4 style="color:#0040B2; text-transform:uppercase">Endpoints API</h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v2/disburse/get-invoice</strong></code></pre>
+<br>
+
+<h4 style="color:#0040B2; text-transform:uppercase">Request POST HTTP</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+curl -H "Content-Type: application/json" \
+-H "PAYDUNYA-MASTER-KEY: wQzk9ZwR-Qq9m-0hD0-zpud-je5coGC3FHKW" \
+-H "PAYDUNYA-PRIVATE-KEY: test_private_KEY: test_private_rMIdJM3PLLhLjyArx9tF3VURAF5" \
+-H "PAYDUNYA-TOKEN: IivOiOxGJuWhc5znlIiK" \
+-X POST -d '{"account_alias" : "BBJ1000084711", "amount" : 4500, "withdraw_mode" : 
+"paydunya", "debit_account_number": "BSN1146784711", "callback_url": "your_callback_url"}' \
+"https://app.paydunya.com/api/v2/disburse/get-invoice"
+</code></pre>
+</div>
+</div>
+
+<br>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected response</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{ 
+    "response_code": "00",
+    "disburse_token": "hwTHAS0WvTmTaYT2zDoO"
+} 
+</code></pre>
+</div>
+</div>
+
+<h3 style="color:#0040B2; text-transform:uppercase">2 - SUBMIT DISBURSEMENT</h3>
+
+<larecipe-card type="secondary">
+    <h4 style="color:#0040B2; text-transform:uppercase"><i class="fa fa-lightbulb-o"></i> Note </h4>
+    <br>
+    <p style="text-align: justify; font-family: Garamond; font-size:1.2em">
+     <code style="color:#666; text-transform:lowercase">disburse_id</code> is your own transaction reference number, it is optional. If you don’t have this just post the request with only  <code style="color:#666; text-transform:lowercase">disburse_invoice <span style="color:red">(required)</span></code> as input parameter.
+    </p>
+</larecipe-card>
+
+<br>
+<larecipe-card type="secondary">
+    <h4 style="color:#0040B2; text-transform:uppercase"><i class="fa fa-lightbulb-o"></i> Détails </h4>
+    <br>
+    <ul>
+        <li>
+            <p style="text-align: justify; font-family: Garamond; font-size:1.2em; line-height: 10px">
+                The different status :
+                </p><ul>
+                    <li>
+                        <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">success</code></span>
+                    </li>
+                    <li>
+                        <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">pending</code></span>
+                    </li>
+                    <li>
+                        <span style="text-transform:lowercase; font-weight: bold"><code style="color:#000000; font-size: 15px">failed</code></span>
+                    </li>
+                </ul>
+            
+        </li>
+    </ul>
+</larecipe-card>
+
+<br>
+
+<h4 style="color:#0040B2; text-transform:uppercase">Endpoints API</h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v2/disburse/submit-invoice</strong></code></pre>
+<br>
+
+<h4 style="color:#0040B2; text-transform:uppercase">Request POST HTTP</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+curl -H "Content-Type: application/json" \ 
+-H "PAYDUNYA-MASTER-KEY: wQzk9ZwR-Qq9m-0hD0-zpud-je5coGC3FHKW" \ 
+-H "PAYDUNYA-PRIVATE-KEY: test_private_rMIdJM3PLLhLjyArx9tF3VURAF5" \ 
+-H "PAYDUNYA-TOKEN: IivOiOxGJuWhc5znlIiK" \ 
+-X POST -d ' {"disburse_invoice": "hwTHAS0WvTmTaYT2zDoO ", " disburse_id ": "456678900309" }' \ 
+"https://app.paydunya.com/api/v2/disburse/submit-invoice"
+</code></pre>
+</div>
+</div>
+
+<br>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected response For PayDunya</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre>
+<code class="language-javascript">
+{ 
+    "response_code": "00",
+    "response_text": "Transaction completed successfully",
+    "description": " Success! Amount of 200.00 FCFA has been transfered to to Christopher Jean Account 707006948",
+    "transaction_id": "TFA-TX-37XqPpVCjU7ReiycUg97"
+} 
+</code>
+</pre>
+</div>
+</div>
+
+<br>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected response For Orange Money</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre>
+<code class="language-javascript">
+{ 
+    "response_code": "00",
+    "response_text": "Transaction completed successfully",
+    "description": "Success! Amount of 4500 FCFA has been transfered to Orange Money Account 771111111",
+    "transaction_id": "TFA-TX-37XqPpVCjU7ReiycUg97", 
+    "provider_ref": "565486545315"
+} 
+</code>
+</pre>
+</div>
+</div>
+
+<br>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected response For Free Money</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{ 
+    "response_code": "00",
+    "response_text": "Transaction completed successfully",
+    "description": "Success! Amount of 4500 FCFA has been transfered to Free-Money Account 761111111",
+    "transaction_id": "TFA-TX-37XqPpVCjU7ReiycUg97", 
+    "provider_ref": "565486545315"
+}
+OR
+{ 
+    "response_code": "00",
+    "status": "pending",
+    "response_text": "Transaction pending",
+    "description": "Transaction pending, please check the final status later through our status API",
+    "transaction_id": "TFA-TX-37XqPpVCjU7ReiycUg97"
+}  
+</code></pre>
+</div>
+</div>
+
+<br>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected response For E MONEY SENEGAL</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre>
+<code class="language-javascript">
+{ 
+    "response_code": "00", 
+    "response_text": "Transaction completed successfully"", 
+    "description": "Success! Amount of 4500 FCFA has been transfered to E Money Account 0588118811", 
+    "transaction_id": "TFA-TX-37XqPpVCjU7ReiycUg97", 
+    "provider_ref": "565486545315" 
+} 
+</code>
+</pre>
+</div>
+</div>
+
+<br>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected response For WAVE SENEGAL</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre>
+<code class="language-javascript">
+{
+    "response_code": "00",
+    "response_text": "Transaction completed successfully",
+    "description": "Success! Amount of 4500 FCFA has been transfered to Wave Account 777777777",
+    "transaction_id": "TFA-TX-0sks0bagCMQkZ0SG91nc",
+    "provider_ref": "pt-67Ggh7zgm013syghghjkhgjh"
+}
+</code>
+</pre>
+</div>
+</div>
+
+<br>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected response For MTN MOMO BENIN</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre>
+<code class="language-javascript">
+{ 
+    "response_code": "00", 
+    "response_text": "Transaction completed successfully"", 
+    "description": "Success! Amount of 4500 FCFA has been transfered to Mtn Money Account 0588118811", 
+    "transaction_id": "TFA-TX-37XqPpVCjU7ReiycUg97", 
+    "provider_ref": "565486545315" 
+} 
+</code>
+</pre>
+</div>
+</div>
+
+<br>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected response For Moov Bénin</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+    "response_code": "00",
+    "response_text": "Transaction completed successfully",
+    "description": "Success! Amount of 200.00 FCFA has been transfered to MOOV BJ Account 95920904",
+    "transaction_id": "TFA-TX-E36T8kfja2cpR00CKuVq",
+    "provider_ref": "920230224297772"
+}
+</code></pre>
+</div>
+</div>
+
+<br>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected response For Celtiis Cash Bénin</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+    "response_code": "00",
+    "status": "success",
+    "response_text": "Transaction completed successfully",
+    "description": "Success! Amount of 200.00 FCFA has been transfered to CELTIIS-CASH Account 0148457043",
+    "transaction_id": "TFA-TX-7W51huXntM7pI9tc7Lvx",
+    "provider_ref": "DFC42RMEJK"
+}
+</code></pre>
+</div>
+</div>
+
+<br>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected response For MTN MOMO IVORY COAST</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre>
+<code class="language-javascript">
+{ 
+    "response_code": "00", 
+    "response_text": "Transaction completed successfully"", 
+    "description": "Success! Amount of 4500 FCFA has been transfered to Mtn Money Account 0588118811", 
+    "transaction_id": "TFA-TX-37XqPpVCjU7ReiycUg97", 
+    "provider_ref": "565486545315" 
+} 
+</code>
+</pre>
+</div>
+</div>
+
+<br>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected response For Orange Money IVORY COAST</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre>
+<code class="language-javascript">
+{ 
+    "response_code": "00",
+    "response_text": "Transaction completed successfully",
+    "description": "Success! Amount of 4500 FCFA has been transfered to Orange Money CI Account 771111111",
+    "transaction_id": "TFA-TX-37XqPpVCjU7ReiycUg97", 
+    "provider_ref": "565486545315"
+} 
+</code>
+</pre>
+</div>
+</div>
+
+<br>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected response For Moov IVORY COAST</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre>
+<code class="language-javascript">
+{ 
+    "response_code": "00",
+    "response_text": "Transaction completed successfully",
+    "description": "Success! Amount of 4500 FCFA has been transfered to Moov CI Account 771111111",
+    "transaction_id": "TFA-TX-37XqPpVCjU7ReiycUg97", 
+    "provider_ref": "565486545315"
+} 
+</code>
+</pre>
+</div>
+</div>
+
+<br>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected response For WAVE IVORY COAST</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre>
+<code class="language-javascript">
+{
+    "response_code": "00",
+    "response_text": "Transaction completed successfully",
+    "description": "Success! Amount of 4500 FCFA has been transfered to Wave Account 777777777",
+    "transaction_id": "TFA-TX-0sks0bagCMQkZ0SG91nc",
+    "provider_ref": "pt-67Ggh7zgm013syghghjkhgjh"
+}
+</code>
+</pre>
+</div>
+</div>
+
+<br>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected response For T-Money Togo</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre>
+<code class="language-javascript">
+{ 
+    "response_code": "00",
+    "response_text": "Transaction completed successfully",
+    "description": "Success! Amount of 4500 FCFA has been transfered to T-money Account 771111111",
+    "transaction_id": "TFA-TX-37XqPpVCjU7ReiycUg97", 
+    "provider_ref": "565486545315"
+} 
+</code>
+</pre>
+</div>
+</div>
+
+<br>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected response For Moov Togo</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre>
+<code class="language-javascript">
+{ 
+    "response_code": "00",
+    "response_text": "Transaction completed successfully",
+    "description": "Success! Amount of 4500 FCFA has been transfered to MOOV-TOGO Account 98010101",
+    "transaction_id": "TFA-TX-37XqPpVCjU7ReiycUg97", 
+    "provider_ref": "24020605401685281675"
+} 
+</code>
+</pre>
+</div>
+</div>
+
+<br>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected response For Orange Money Mali</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+    "response_code": "00",
+    "status": "pending",
+    "response_text": "Transaction pending",
+    "description": "Transaction pending, please check the final status later through our status API",
+    "transaction_id": "TFA-TX-37XqPpVCjU7ReiycUg97"
+}
+</code></pre>
+</div>
+</div>
+
+<br>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected SUCCESS RESPONSE For Orange Money Burkina</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+    "response_code": "00",
+    "response_text": "Transaction completed successfully",
+    "description": "Success! Amount of 200 FCFA has been transfered to   Orange Money Burkina 66123421",
+    "transaction_id": "TFA-TX-37XqPpjCjU7ReiycUg97", 
+    "provider_ref": "565486545315"
+}
+</code></pre>
+</div>
+</div>
+
+<br>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected PENDING RESPONSE For Orange Money Burkina</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+    "response_code": "00",
+    "status": "pending",
+    "response_text": "Transaction pending",
+    "description": "Transaction pending, please check the final status later through our status API",
+    "transaction_id": "TFA-TX-37XqPpVCjU7ReiycUg97"
+}
+</code></pre>
+
+</div>
+</div>
+
+<br>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected RESPONSE For Moov Burkina</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+    "response_code": "00",
+    "status": "success",
+    "response_text": "Transaction completed successfully",
+    "description": "Success! Amount of 200.00 FCFA has been transfered to MOOV-BURKINA-FASO Account 03111111",
+    "transaction_id": "TFA-TX-J9ARQ1auOEjWxbeERi5J",
+    "provider_ref": "WCASH240902.0916.B00316"
+}
+</code></pre>
+</div>
+</div>
+
+<br>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected RESPONSE For MTN Cameroun</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+    "response_code": "00",
+    "status": "success",
+    "response_text": "Transaction completed successfully",
+    "description": "Success! Amount of 200.00 FCFA has been transfered to MTN-CAMEROUN Account 670000000",
+    "transaction_id": "TFA-TX-u3WdBlHdD2q0zdiyXl1r",
+    "provider_ref": "fFQGF7iHl7rMhcJI5qQq"
+}
+</code></pre>
+</div>
+</div>
+
+<h4 style="color:#0040B2; text-transform:uppercase">Expected RESPONSE For DJAMO IVORY COAST</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+    "response_code": "00",
+    "status": "success",
+    "response_text": "Transaction completed successfully",
+    "description": "Success! Amount of 200.00 FCFA has been transfered to DJAMO-CI Account 670000000",
+    "transaction_id": "TFA-TX-37XqPpVCjU7ReiycUg97",
+    "provider_ref": "WCASH240902.0916.B00316"
+}
+</code></pre>
+</div>
+</div>
+
+<h4 style="color:#0040B2; text-transform:uppercase">Expected RESPONSE For DJAMO SENEGAL</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+    "response_code": "00",
+    "status": "success",
+    "response_text": "Transaction completed successfully",
+    "description": "Success! Amount of 200.00 FCFA has been transfered to DJAMO-SN Account 670000000",
+    "transaction_id": "TFA-TX-37XqPpVCjU7ReiycUg97",
+    "provider_ref": "WCASH240902.0916.B00316"
+}
+</code></pre>
+</div>
+</div>
+
+<a name="section-2"></a>
+
+<h3 style="color:#0040B2; text-transform:uppercase">3 - CHECK DISBURSE STATUS</h3>
+<br>
+
+<h4 style="color:#0040B2; text-transform:uppercase">Endpoints API</h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v2/disburse/check-status</strong></code></pre>
+<br>
+
+<h4 style="color:#0040B2; text-transform:uppercase">Request POST HTTP</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+curl -H "Content-Type: application/json" \ 
+-H "PAYDUNYA-MASTER-KEY: wQzk9ZwR-Qq9m-0hD0-zpud-je5coGC3FHKW" \ 
+-H "PAYDUNYA-PRIVATE-KEY: test_private_rMIdJM3PLLhLjyArx9tF3VURAF5" \ 
+-H "PAYDUNYA-TOKEN: IivOiOxGJuWhc5znlIiK" \ 
+-X POST -d ' {"disburse_invoice": "hwTHAS0WvTmTaYT2zDoO"}' \ 
+"https://app.paydunya.com/api/v2/disburse/check-status"
+</code></pre>
+</div>
+</div>
+
+<br>
+<h4 style="color:#0040B2; text-transform:uppercase">EXPECTED RESPONSE</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+    "response_code": "00",
+    "status": "success",
+    "token": "E4KbUiAF3sIxKIlq1PvI",
+    "withdraw_mode": "celtiis-cash",
+    "amount": "550.00",
+    "fees": "8",
+    "total_amount": "558.00",
+    "hash": "11fed2a7150750960f618ac7149e74b7acf97750f8ace82d55468c730ccded97fd476498b8a678f88",
+    "updated_at": "26/05/2026 16:17:18",
+    "disburse_id": "14OM_#ID_NIka782565236",
+    "transaction_id": "TFA-TX-E4KbUiAF3sIxKIlq1PvI",
+    "disburse_tx_id": "DEQ62RGNJY"
+}
+</code></pre>
+</div>
+</div>
+
+
+<larecipe-card type="secondary">
+    <h4 style="color:#0040B2; text-transform:uppercase"><i class="fa fa-lightbulb-o"></i> Note </h4><br>
+    <br>
+    <p style="text-align: justify; font-family: Garamond; font-size:1.2em">
+        The <code style="color:#666; text-transform:lowercase">disburse_id</code> will only appear if the merchant provides it when submitting invoice.
+    </p>
+</larecipe-card>
+
+
+<larecipe-card type="secondary">
+    <h4 style="color:#0040B2; text-transform:uppercase"><i class="fa fa-lightbulb-o"></i> Détails </h4>
+    <br>
+    <ul>
+        <li>
+            <p style="text-align: justify; font-family: Garamond; font-size:1.2em; line-height: 10px">
+                The different possible <code style="color:#666; text-transform:lowercase">statuses</code> after checking the status of a disbursement are:<a href="/doc/EN/api_deboursement#section-1"><span style="text-transform:lowercase; font-weight: bold; text-decoration:underline"><code style="color:#000000; font-size: 13px">created,success,pending,failed</code></span></a>
+            </p>
+        </li>
+    </ul>
+</larecipe-card>
+
+<br>
+
+<h3 style="color:#0040B2; text-transform:uppercase">4 - ERROR CODES </h3>
+<br>
+
+<ul>
+<li>
+<h5 style="color:#0040B2; text-transform:uppercase">HTTP Status 400</h5>
+<p style="text-justify:center">response in case of data validation errors sent via an API</p>
+
+<br>
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+    "response_code": ['1001', '5000'], 
+    "response_text": text  
+}
+</code>
+</pre>
+</div>
+</li>
+
+<li>
+<h5 style="color:#0040B2; text-transform:uppercase">1001</h5>
+<p style="text-justify:center">withdraw_mode non pris en charge.</p>
+
+</li><li>
+<h5 style="color:#0040B2; text-transform:uppercase">5000</h5>
+<p style="text-justify:center">Service en maintenance, veuillez réessayer plus tard.</p>
+
+<br>
+</li><li>
+<h5 style="color:#0040B2; text-transform:uppercase">HTTP Status 200</h5>
+<br>
+<h5 style="color:#0040B2; text-transform:uppercase">-GET INVOICE</h5>
+
+<br>
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+    "response_code": ['401', '4002', '5000'], 
+    "response_text": text  
+}
+</code>
+</pre>
+</div>
+</li>
+
+<li>
+<h6 style="color:#0040B2; text-transform:uppercase">401</h6>
+<p style="text-justify:center">-Initiation not authorize</p>
+
+</li><li>
+<h6 style="color:#0040B2; text-transform:uppercase">4002</h6>
+    <p style="text-justify:center">-You don't have enough funds. Consider crediting your account</p>
+    <p style="text-justify:center">-the callback is not accessible</p>
+</li><li>
+<h6 style="color:#0040B2; text-transform:uppercase">5000</h6>
+    <p style="text-justify:center">-An error occured from our side. Please retry later.</p>
+    <p style="text-justify:center">-disburse_id already used.</p>
+
+<br>
+
+<larecipe-card type="secondary">
+    <h4 style="color:#0040B2; text-transform:uppercase"><i class="fa fa-lightbulb-o"></i> IMPORTANT </h4>
+    <br>
+    <p style="text-align: justify; font-family: Garamond; font-size:1.2em">
+        When submitting a disbursement request, you may receive a response code other than <code style="color:#666; text-transform:lowercase">00</code> or an <code style="color:#666; text-transform:lowercase">error code</code>. If this happens, you will need to check the status of the transaction with the <a href="/doc/EN/api_deboursement#section-2" style="color:#0000ff;">Check Statut API</a> using the token from the same transaction. If the transaction status is:
+        </p><ul>
+            <li>
+                <p style="text-align: justify"><span style="font-weight:bold">CREATED</span> : you must start Submit again with the same token of the transaction.</p>
+            </li>
+            <li>
+                <p style="text-align: justify"><span style="font-weight:bold">PENDING</span> : you must wait until the final status.</p>
+            </li>
+            <li>
+                <p style="text-align: justify"><span style="font-weight:bold">SUCCESS</span> : you can close the transaction.</p>
+            </li>
+            <li>
+                <p style="text-align: justify"><span style="font-weight:bold">FAILED</span> : you can close the transaction and inform your customer or start a new transaction since the creation of the token.</p>
+            </li>
+        </ul>
+    
+</larecipe-card></li></ul></larecipe-card>
+			</div>
+</div>
+
+            <larecipe-back-to-top></larecipe-back-to-top>
+        </div>
+
+
+        <script>
+            window.config = [];
+        </script>
+
+        <script type="text/javascript">
+            if(localStorage.getItem('larecipeSidebar') == null) {
+                localStorage.setItem('larecipeSidebar', !! 1);
+            }
+        </script>
+
+        <script src="https://developers.paydunya.com/vendor/binarytorch/larecipe/assets/js/app.js"></script>
+
+        <script>
+            window.LaRecipe = new CreateLarecipe(config)
+        </script>
+
+        <!-- Google Analytics -->
+                <!-- /Google Analytics -->
+
+        
+        <script>
+            LaRecipe.run()
+        </script>
+    <script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a50d17789ce50db4',t:'MTc5MzA1NTc3OA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

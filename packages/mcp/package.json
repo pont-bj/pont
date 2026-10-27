@@ -1,0 +1,52 @@
+{
+  "name": "@pont/mcp",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "pont-mcp": "./src/bin.ts"
+  },
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p .",
+    "test": "vitest run",
+    "build": "tsup src/index.ts src/bin.ts --format esm --dts --clean --target node20"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "@pont/adapter-cinetpay": "workspace:*",
+    "@pont/adapter-fedapay": "workspace:*",
+    "@pont/adapter-kkiapay": "workspace:*",
+    "@pont/adapter-pawapay": "workspace:*",
+    "@pont/adapter-paydunya": "workspace:*",
+    "@pont/cli": "workspace:*",
+    "@pont/core": "workspace:*",
+    "@pont/node": "workspace:*",
+    "@pont/sandbox": "workspace:*",
+    "zod": "3.25.76",
+    "@pont/engine": "workspace:*"
+  },
+  "license": "UNLICENSED",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    },
+    "access": "restricted",
+    "bin": {
+      "pont-mcp": "./dist/bin.js"
+    }
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

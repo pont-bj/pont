@@ -1,0 +1,3475 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Customer API",
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://sandbox-api.fedapay.com/v1"
+    },
+    {
+      "url": "https://api.fedapay.com/v1"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "paths": {
+    "/customers": {
+      "post": {
+        "summary": "Create a customer",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Customer's email address."
+                  },
+                  "phone_number": {
+                    "type": "object",
+                    "description": "Customer's phone number.",
+                    "properties": {
+                      "number": {
+                        "type": "integer",
+                        "description": "Phone number without national prefix."
+                      },
+                      "country": {
+                        "type": "string",
+                        "description": "Country code."
+                      }
+                    }
+                  },
+                  "firstname": {
+                    "type": "string",
+                    "description": "Customer's first name."
+                  },
+                  "lastname": {
+                    "type": "string",
+                    "description": "Customer's last name."
+                  }
+                },
+                "anyOf": [
+                  {
+                    "required": ["email"]
+                  },
+                  {
+                    "required": ["phone_number"]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Customer created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "Customer ID."
+                    },
+                    "firstname": {
+                      "type": "string",
+                      "description": "Customer's first name."
+                    },
+                    "lastname": {
+                      "type": "string",
+                      "description": "Customer's last name."
+                    },
+                    "full_name": {
+                      "type": "string",
+                      "description": "Customer's full name."
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email",
+                      "description": "Customer's email address."
+                    },
+                    "account_id": {
+                      "type": "integer",
+                      "description": "ID of the customer's account."
+                    },
+                    "phone_number_id": {
+                      "type": "integer",
+                      "description": "ID of the customer's phone number."
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of customer creation."
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of last customer update."
+                    },
+                    "deleted_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of customer deletion (if applicable)."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body."
+          },
+          "422": {
+            "description": "Validation error."
+          },
+          "401": {
+            "description": "Unauthorized. Provide a valid secret key."
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "label": "NodeJs",
+            "source": "const { FedaPay, Customer } = require('fedapay');\n/* Replace YOUR_SECRETE_API_KEY with your real API key */\nFedaPay.setApiKey(\"YOUR_SECRETE_API_KEY\");\n/* Specify whether you want to run your query in test or live mode */\nFedaPay.setEnvironment('sandbox'); //or setEnvironment('live');\n/* Create customer */\nconst customer = await Customer.create({\n  firstname: 'John',\n  lastname: 'Doe',\n  email: 'john@doe.com',\n  phone_number: {\n    number: '90090909',\n    country: 'BJ'\n  }\n});"
+          },
+          {
+            "lang": "PHP",
+            "source": "/* Replace YOUR_SECRETE_API_KEY with your secret API key */\n\\FedaPay\\FedaPay::setApiKey(\"YOUR_SECRETE_API_KEY\");\n/* Specify whether you want to run your query in test or live mode */\n\\FedaPay\\FedaPay::setEnvironment('sandbox'); //or setEnvironment('live');\n/* Create customer */\n\\FedaPay\\Customer::create(array(\n  \"firstname\" => \"John\",\n  \"lastname\" => \"Doe\",\n  \"email\" => \"John.doe@gmail.com\",\n  \"phone_number\" => [\n    \"number\" => \"+22966666600\",\n    \"country\" => 'bj' // 'bj' Benin code\n  ]\n));"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'fedapay';\n# configure FedaPay library\nFedaPay.api_key = '' # Your secret api key\nFedaPay.environment = '' # sandbox or live\nphone = {\n  country: 'bj',\n  number: '66000001'\n};\ncustomer = FedaPay::Customer.create(\n  firstname: 'firstname',\n  lastname: 'lastname',\n  email: 'email@test.com',\n  phone_number: phone\n);"
+          }
+        ]
+      }
+    },
+    "/customers/search": {
+      "get": {
+        "summary": "Search your customers",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of customers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Customer ID."
+                      },
+                      "firstname": {
+                        "type": "string",
+                        "description": "Customer's first name."
+                      },
+                      "lastname": {
+                        "type": "string",
+                        "description": "Customer's last name."
+                      },
+                      "full_name": {
+                        "type": "string",
+                        "description": "Customer's full name."
+                      },
+                      "email": {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Customer's email address."
+                      },
+                      "account_id": {
+                        "type": "integer",
+                        "description": "ID of the customer's account."
+                      },
+                      "phone_number_id": {
+                        "type": "integer",
+                        "description": "ID of the customer's phone number."
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of customer creation."
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of last customer update."
+                      },
+                      "deleted_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of customer deletion (if applicable)."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Provide a valid secret key."
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "label": "NodeJs",
+            "source": "const { FedaPay, Customer } = require('fedapay');\n/* Replace YOUR_SECRETE_API_KEY with your real API key */\nFedaPay.setApiKey(\"YOUR_SECRETE_API_KEY\");\n/* Specify whether you want to run your query in test or live mode */\nFedaPay.setEnvironment('sandbox'); //or setEnvironment('live');\n/* Show customers */\nconst customer = await Customer.all( params = {}, headers = {} );"
+          },
+          {
+            "lang": "PHP",
+            "source": "\\FedaPay\\Fedapay::setApiKey(MY_API_KEY);\n/**\n* @var \\FedaPay\\FedaPayObject\n*/\n$response = \\FedaPay\\Customer::all();\n$customers = $response->customers;\n$meta = $response->meta;"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'fedapay';\n# configure FedaPay library\nFedaPay.api_key = '' # Your secret api key\nFedaPay.environment = '' # sandbox or live\ncustomers = FedaPay::Customer.list;"
+          }
+        ]
+      }
+    },
+    "/customers/{id}": {
+      "get": {
+        "summary": "Get a customers",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Customer ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "Customer ID."
+                    },
+                    "firstname": {
+                      "type": "string",
+                      "description": "Customer's first name."
+                    },
+                    "lastname": {
+                      "type": "string",
+                      "description": "Customer's last name."
+                    },
+                    "full_name": {
+                      "type": "string",
+                      "description": "Customer's full name."
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email",
+                      "description": "Customer's email address."
+                    },
+                    "account_id": {
+                      "type": "integer",
+                      "description": "ID of the customer's account."
+                    },
+                    "phone_number_id": {
+                      "type": "integer",
+                      "description": "ID of the customer's phone number."
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of customer creation."
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of last customer update."
+                    },
+                    "deleted_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of customer deletion (if applicable)."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Customer not found."
+          },
+          "401": {
+            "description": "Unauthorized. Provide a valid secret key."
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "label": "NodeJs",
+            "source": "const { FedaPay, Customer } = require('fedapay');\n/* Replace YOUR_SECRETE_API_KEY with your real API key */\nFedaPay.setApiKey(\"YOUR_SECRETE_API_KEY\");\n/* Specify whether you want to run your query in test or live mode */\nFedaPay.setEnvironment('sandbox'); //or setEnvironment('live');\n/* Afficher le client */\nconst customer = await Customer.retrieve( ID, params = {}, headers = {} );"
+          },
+          {
+            "lang": "PHP",
+            "source": "\\FedaPay\\Fedapay::setApiKey(MY_API_KEY);\n/**\n* @var \\FedaPay\\FedaPayObject\n*/\n$response = \\FedaPay\\Customer::retrieve(ID);\n$customers = $response->customers;\n$meta = $response->meta;"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'fedapay';\n# configure FedaPay library\nFedaPay.api_key = '' # Your secret api key\nFedaPay.environment = '' # sandbox or live\ncustomers = FedaPay::Customer.retrieve(ID);"
+          }
+        ]
+      },
+      "put": {
+        "summary": "Update a customer",
+        "description": "Update the details of an existing customer using their ID.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Customer ID."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Customer's email address."
+                  },
+                  "phone_number": {
+                    "type": "object",
+                    "description": "Customer's phone number.",
+                    "properties": {
+                      "number": {
+                        "type": "integer",
+                        "description": "Phone number without national prefix."
+                      },
+                      "country": {
+                        "type": "string",
+                        "description": "Country code."
+                      }
+                    }
+                  },
+                  "firstname": {
+                    "type": "string",
+                    "description": "Customer's first name."
+                  },
+                  "lastname": {
+                    "type": "string",
+                    "description": "Customer's last name."
+                  }
+                },
+                "required": ["firstname", "lastname"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Customer updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "Customer ID."
+                    },
+                    "firstname": {
+                      "type": "string",
+                      "description": "Customer's first name."
+                    },
+                    "lastname": {
+                      "type": "string",
+                      "description": "Customer's last name."
+                    },
+                    "full_name": {
+                      "type": "string",
+                      "description": "Customer's full name."
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email",
+                      "description": "Customer's email address."
+                    },
+                    "account_id": {
+                      "type": "integer",
+                      "description": "ID of the customer's account."
+                    },
+                    "phone_number_id": {
+                      "type": "integer",
+                      "description": "ID of the customer's phone number."
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of customer creation."
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of last customer update."
+                    },
+                    "deleted_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of customer deletion (if applicable)."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body."
+          },
+          "404": {
+            "description": "Customer not found."
+          },
+          "401": {
+            "description": "Unauthorized. Provide a valid secret key."
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "label": "NodeJs",
+            "source": "const { FedaPay, Customer } = require('fedapay');\nFedaPay.setApiKey('YOUR_SECRETE_API_KEY');\nFedaPay.setEnvironment('sandbox');\nconst customer = await Customer.update(ID, {\n  firstname: 'Jane',\n  lastname: 'Doe',\n  email: 'jane@doe.com',\n  phone_number: {\n    number: '91010101',\n    country: 'BJ'\n  }\n});"
+          },
+          {
+            "lang": "PHP",
+            "source": "\\FedaPay\\FedaPay::setApiKey('YOUR_SECRETE_API_KEY');\n\\FedaPay\\FedaPay::setEnvironment('sandbox');\n$response = \\FedaPay\\Customer::update(ID, [\n  'firstname' => 'Jane',\n  'lastname' => 'Doe',\n  'email' => 'jane@doe.com',\n  'phone_number' => [\n    'number' => '91010101',\n    'country' => 'BJ'\n  ]\n]);"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'fedapay';\nFedaPay.api_key = 'YOUR_SECRETE_API_KEY';\nFedaPay.environment = 'sandbox';\ncustomer = FedaPay::Customer.update(ID, {\n  firstname: 'Jane',\n  lastname: 'Doe',\n  email: 'jane@doe.com',\n  phone_number: {\n    country: 'BJ',\n    number: '91010101'\n  }\n});"
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete a customer",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Customer ID."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Customer deleted successfully."
+          },
+          "404": {
+            "description": "Customer not found."
+          },
+          "401": {
+            "description": "Unauthorized. Provide a valid secret key."
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "label": "NodeJs",
+            "source": "const { FedaPay, Customer } = require('fedapay');\n/* Replace YOUR_SECRETE_API_KEY with your real API key */\nFedaPay.setApiKey(\"YOUR_SECRETE_API_KEY\");\n/* Specify whether you want to run your query in test or live mode */\nFedaPay.setEnvironment('sandbox'); //or setEnvironment('live');\n/* Delete customer */\nconst customer = await Customer.delete(ID, params = {}, headers = {});"
+          },
+          {
+            "lang": "PHP",
+            "source": "\\FedaPay\\Fedapay::setApiKey(MY_API_KEY);\n\\FedaPay\\Customer::delete(ID);"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'fedapay';\n# configure FedaPay library\nFedaPay.api_key = '' # Your secret api key\nFedaPay.environment = '' # sandbox or live\ncustomer.delete;"
+          }
+        ]
+      }
+    },
+    "/payouts": {
+      "post": {
+        "summary": "Create a payout",
+        "description": "This endpoint creates a new payout.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "integer",
+                    "description": "Amount of the payout."
+                  },
+                  "currency": {
+                    "type": "object",
+                    "description": "Currency information.",
+                    "properties": {
+                      "iso": {
+                        "type": "string",
+                        "description": "The ISO code of the currency (e.g., XOF)."
+                      }
+                    },
+                    "required": ["iso"]
+                  },
+                  "customer": {
+                    "type": "object",
+                    "description": "Customer information.",
+                    "properties": {
+                      "firstname": {
+                        "type": "string",
+                        "description": "Customer's first name."
+                      },
+                      "lastname": {
+                        "type": "string",
+                        "description": "Customer's last name."
+                      },
+                      "email": {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Customer's email address."
+                      },
+                      "phone_number": {
+                        "type": "object",
+                        "description": "Customer's phone number.",
+                        "properties": {
+                          "number": {
+                            "type": "string",
+                            "description": "Phone number without national prefix."
+                          },
+                          "country": {
+                            "type": "string",
+                            "description": "Country code."
+                          }
+                        },
+                        "required": ["number", "country"]
+                      }
+                    },
+                    "required": ["firstname", "lastname"]
+                  },
+                  "mode": {
+                    "type": "string",
+                    "description": "Payout mode (e.g., 'bank_transfer', 'mobile_money')."
+                  }
+                },
+                "required": ["amount", "currency", "customer", "mode"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Payout created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "Payout ID."
+                    },
+                    "reference": {
+                      "type": "string",
+                      "description": "Payout reference."
+                    },
+                    "amount": {
+                      "type": "integer",
+                      "description": "Payout amount."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Payout status (e.g., 'pending', 'scheduled', 'sent', 'failed')."
+                    },
+                    "customer_id": {
+                      "type": "integer",
+                      "description": "Customer ID associated with the payout."
+                    },
+                    "currency_id": {
+                      "type": "integer",
+                      "description": "Currency ID associated with the payout."
+                    },
+                    "mode": {
+                      "type": "string",
+                      "description": "Payout mode."
+                    },
+                    "last_error_code": {
+                      "type": "string",
+                      "description": "Last error code encountered during the payout."
+                    },
+                    "commission": {
+                      "type": "integer",
+                      "description": "Payout commission."
+                    },
+                    "fees": {
+                      "type": "integer",
+                      "description": "Payout fees."
+                    },
+                    "fixed_commission": {
+                      "type": "integer",
+                      "description": "Fixed commission applied to the payout."
+                    },
+                    "amount_transferred": {
+                      "type": "integer",
+                      "description": "Amount transferred to the beneficiary."
+                    },
+                    "amount_debited": {
+                      "type": "integer",
+                      "description": "Amount debited from the payer."
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of payout creation."
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of last payout update."
+                    },
+                    "scheduled_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time the payout is scheduled."
+                    },
+                    "sent_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time the payout was sent."
+                    },
+                    "failed_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time the payout failed."
+                    },
+                    "deleted_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of payout deletion."
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "description": "Additional metadata."
+                    },
+                    "custom_metadata": {
+                      "type": "object",
+                      "description": "Custom metadata."
+                    },
+                    "payment_method_id": {
+                      "type": "integer",
+                      "description": "Payment method ID."
+                    },
+                    "transaction_key": {
+                      "type": "string",
+                      "description": "Unique transaction key."
+                    },
+                    "merchant_reference": {
+                      "type": "string",
+                      "description": "Merchant reference."
+                    },
+                    "account_id": {
+                      "type": "integer",
+                      "description": "Account ID."
+                    },
+                    "balance_id": {
+                      "type": "integer",
+                      "description": "Balance ID."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body."
+          },
+          "422": {
+            "description": "Validation error."
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "label": "NodeJs",
+            "source": "const { FedaPay, Payout } = require('fedapay');\nFedaPay.setApiKey('YOUR_API_KEY');\nFedaPay.setEnvironment('sandbox');\nconst payout = await Payout.create(params = {}, headers = {});"
+          },
+          {
+            "lang": "PHP",
+            "source": "\\FedaPay\\Fedapay::setApiKey(MY_API_KEY);\n\\FedaPay\\Payout::create([\"amount\" => 2000, \"currency\" => {\"iso\": \"XOF\"}]);"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'fedapay';\nFedaPay.api_key = '';\nFedaPay.environment = 'sandbox';\ncurrency = { iso: 'XOF' };\npayout = FedaPay::Payout.create(amount: 1000, currency: currency);"
+          }
+        ]
+      }
+    },
+    "/payouts/search": {
+      "get": {
+        "summary": "Search your payouts",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of payouts.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Payout ID."
+                      },
+                      "reference": {
+                        "type": "string",
+                        "description": "Payout reference."
+                      },
+                      "amount": {
+                        "type": "integer",
+                        "description": "Payout amount."
+                      },
+                      "status": {
+                        "type": "string",
+                        "description": "Payout status (e.g., 'pending', 'scheduled', 'sent', 'failed')."
+                      },
+                      "customer_id": {
+                        "type": "integer",
+                        "description": "Customer ID associated with the payout."
+                      },
+                      "currency_id": {
+                        "type": "integer",
+                        "description": "Currency ID associated with the payout."
+                      },
+                      "mode": {
+                        "type": "string",
+                        "description": "Payout mode."
+                      },
+                      "last_error_code": {
+                        "type": "string",
+                        "description": "Last error code encountered during the payout."
+                      },
+                      "commission": {
+                        "type": "integer",
+                        "description": "Payout commission."
+                      },
+                      "fees": {
+                        "type": "integer",
+                        "description": "Payout fees."
+                      },
+                      "fixed_commission": {
+                        "type": "integer",
+                        "description": "Fixed commission applied to the payout."
+                      },
+                      "amount_transferred": {
+                        "type": "integer",
+                        "description": "Amount transferred to the beneficiary."
+                      },
+                      "amount_debited": {
+                        "type": "integer",
+                        "description": "Amount debited from the payer."
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of payout creation."
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of last payout update."
+                      },
+                      "scheduled_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time the payout is scheduled to be sent."
+                      },
+                      "sent_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time the payout was sent."
+                      },
+                      "failed_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time the payout failed."
+                      },
+                      "deleted_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of payout deletion."
+                      },
+                      "metadata": {
+                        "type": "object",
+                        "description": "Additional metadata related to the payout."
+                      },
+                      "custom_metadata": {
+                        "type": "object",
+                        "description": "Custom metadata associated with the payout."
+                      },
+                      "payment_method_id": {
+                        "type": "integer",
+                        "description": "Payment method ID used for the payout."
+                      },
+                      "transaction_key": {
+                        "type": "string",
+                        "description": "Unique key associated with the payout."
+                      },
+                      "merchant_reference": {
+                        "type": "string",
+                        "description": "Merchant reference provided for the payout."
+                      },
+                      "account_id": {
+                        "type": "integer",
+                        "description": "Account ID associated with the payout."
+                      },
+                      "balance_id": {
+                        "type": "integer",
+                        "description": "Balance ID associated with the payout."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "label": "NodeJs",
+            "source": "const { FedaPay, Payout } = require('fedapay');\n/* Replace YOUR_SECRETE_API_KEY with your real API key */\nFedaPay.setApiKey(\"YOUR_SECRETE_API_KEY\");\n/* Specify whether you want to run your query in test or live mode */\nFedaPay.setEnvironment('sandbox'); //or setEnvironment('live');\n/* Show payouts */\nconst payout = await Payout.all(params = {}, headers = {});"
+          },
+          {
+            "lang": "PHP",
+            "source": "\\FedaPay\\Fedapay::setApiKey(MY_API_KEY);\n$payout = \\FedaPay\\Payout::all(params = {}, header = {});"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'fedapay';\n# configure FedaPay library\nFedaPay.api_key = '' # Your secret api key\nFedaPay.environment = '' # sandbox or live\npayouts = FedaPay::Payout.list;"
+          }
+        ]
+      }
+    },
+    "/payouts/start": {
+      "put": {
+        "summary": "Start payout",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "Payout ID",
+                      "example": 1
+                    },
+                    "scheduled_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time the payout is scheduled to be sent.",
+                      "example": "2024-10-23T14:30:00Z"
+                    },
+                    "phone_number": {
+                      "type": "object",
+                      "description": "Phone number details",
+                      "properties": {
+                        "number": {
+                          "type": "string",
+                          "description": "Phone number",
+                          "example": "+22997808080"
+                        },
+                        "country": {
+                          "type": "string",
+                          "description": "Country code",
+                          "example": "BJ"
+                        }
+                      }
+                    }
+                  },
+                  "required": ["id"]
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Payouts started successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Payout ID.",
+                        "example": 1
+                      },
+                      "reference": {
+                        "type": "string",
+                        "description": "Payout reference.",
+                        "example": "PAYOUT-123456"
+                      },
+                      "amount": {
+                        "type": "integer",
+                        "description": "Payout amount.",
+                        "example": 1000
+                      },
+                      "status": {
+                        "type": "string",
+                        "description": "Payout status (e.g., 'pending', 'scheduled', 'sent', 'failed').",
+                        "example": "sent"
+                      },
+                      "customer_id": {
+                        "type": "integer",
+                        "description": "Customer ID associated with the payout.",
+                        "example": 42
+                      },
+                      "currency_id": {
+                        "type": "integer",
+                        "description": "Currency ID associated with the payout.",
+                        "example": 840
+                      },
+                      "mode": {
+                        "type": "string",
+                        "description": "Payout mode.",
+                        "example": "automatic"
+                      },
+                      "last_error_code": {
+                        "type": "string",
+                        "description": "Last error code encountered during the payout.",
+                        "example": "NO_ERROR"
+                      },
+                      "commission": {
+                        "type": "integer",
+                        "description": "Payout commission.",
+                        "example": 50
+                      },
+                      "fees": {
+                        "type": "integer",
+                        "description": "Payout fees.",
+                        "example": 5
+                      },
+                      "fixed_commission": {
+                        "type": "integer",
+                        "description": "Fixed commission applied to the payout.",
+                        "example": 10
+                      },
+                      "amount_transferred": {
+                        "type": "integer",
+                        "description": "Amount transferred to the beneficiary.",
+                        "example": 935
+                      },
+                      "amount_debited": {
+                        "type": "integer",
+                        "description": "Amount debited from the payer.",
+                        "example": 1000
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of payout creation.",
+                        "example": "2024-10-23T14:00:00Z"
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of last payout update.",
+                        "example": "2024-10-23T14:00:00Z"
+                      },
+                      "scheduled_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time the payout is scheduled to be sent.",
+                        "example": "2024-10-23T14:30:00Z"
+                      },
+                      "sent_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time the payout was sent.",
+                        "example": "2024-10-23T14:31:00Z"
+                      },
+                      "failed_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time the payout failed.",
+                        "example": "2024-10-23T14:32:00Z"
+                      },
+                      "deleted_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of payout deletion.",
+                        "example": "2024-10-23T14:33:00Z"
+                      },
+                      "metadata": {
+                        "type": "object",
+                        "description": "Additional metadata related to the payout."
+                      },
+                      "custom_metadata": {
+                        "type": "object",
+                        "description": "Custom metadata associated with the payout."
+                      },
+                      "payment_method_id": {
+                        "type": "integer",
+                        "description": "Payment method ID used for the payout.",
+                        "example": 1
+                      },
+                      "transaction_key": {
+                        "type": "string",
+                        "description": "Unique key associated with the payout.",
+                        "example": "TRANSACTION-XYZ"
+                      },
+                      "merchant_reference": {
+                        "type": "string",
+                        "description": "Merchant reference provided for the payout.",
+                        "example": "MERCHANT-456"
+                      },
+                      "account_id": {
+                        "type": "integer",
+                        "description": "Account ID associated with the payout.",
+                        "example": 5
+                      },
+                      "balance_id": {
+                        "type": "integer",
+                        "description": "Balance ID associated with the payout.",
+                        "example": 10
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body."
+          },
+          "422": {
+            "description": "Validation error."
+          },
+          "404": {
+            "description": "Payout not found."
+          }
+        }
+      }
+    },
+    "/payouts/{id}": {
+      "get": {
+        "summary": "Get a payout",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Payout ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payout retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "Payout ID."
+                    },
+                    "reference": {
+                      "type": "string",
+                      "description": "Payout reference."
+                    },
+                    "amount": {
+                      "type": "integer",
+                      "description": "Payout amount."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Payout status (e.g., 'pending', 'scheduled', 'sent', 'failed')."
+                    },
+                    "customer_id": {
+                      "type": "integer",
+                      "description": "Customer ID associated with the payout."
+                    },
+                    "currency_id": {
+                      "type": "integer",
+                      "description": "Currency ID associated with the payout."
+                    },
+                    "mode": {
+                      "type": "string",
+                      "description": "Payout mode."
+                    },
+                    "last_error_code": {
+                      "type": "string",
+                      "description": "Last error code encountered during the payout."
+                    },
+                    "commission": {
+                      "type": "integer",
+                      "description": "Payout commission."
+                    },
+                    "fees": {
+                      "type": "integer",
+                      "description": "Payout fees."
+                    },
+                    "fixed_commission": {
+                      "type": "integer",
+                      "description": "Fixed commission applied to the payout."
+                    },
+                    "amount_transferred": {
+                      "type": "integer",
+                      "description": "Amount transferred to the beneficiary."
+                    },
+                    "amount_debited": {
+                      "type": "integer",
+                      "description": "Amount debited from the payer."
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of payout creation."
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of last payout update."
+                    },
+                    "scheduled_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time the payout is scheduled to be sent."
+                    },
+                    "sent_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time the payout was sent."
+                    },
+                    "failed_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time the payout failed."
+                    },
+                    "deleted_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of payout deletion."
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "description": "Additional metadata related to the payout."
+                    },
+                    "custom_metadata": {
+                      "type": "object",
+                      "description": "Custom metadata associated with the payout."
+                    },
+                    "payment_method_id": {
+                      "type": "integer",
+                      "description": "Payment method ID used for the payout."
+                    },
+                    "transaction_key": {
+                      "type": "string",
+                      "description": "Unique key associated with the payout."
+                    },
+                    "merchant_reference": {
+                      "type": "string",
+                      "description": "Merchant reference provided for the payout."
+                    },
+                    "account_id": {
+                      "type": "integer",
+                      "description": "Account ID associated with the payout."
+                    },
+                    "balance_id": {
+                      "type": "integer",
+                      "description": "Balance ID associated with the payout."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Payout not found."
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "label": "NodeJs",
+            "source": "const { FedaPay, Payout } = require('fedapay');\n/* Replace YOUR_SECRETE_API_KEY with your real API key */\nFedaPay.setApiKey(\"YOUR_SECRETE_API_KEY\");\n/* Specify whether you want to run your query in test or live mode */\nFedaPay.setEnvironment('sandbox'); //or setEnvironment('live');\n/* Show a payout */\nconst payout = await Payout.retrieve(params = {}, headers = {});"
+          },
+          {
+            "lang": "PHP",
+            "source": "\\FedaPay\\Fedapay::setApiKey(MY_API_KEY);\n$customer = \\FedaPay\\Payout::retrieve(ID, params = {}, header = {});"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'fedapay';\n# configure FedaPay library\nFedaPay.api_key = '' # Your secret api key\nFedaPay.environment = '' # sandbox or live\npayouts = FedaPay::Payout.retrieve(ID);"
+          }
+        ]
+      },
+      "put": {
+        "summary": "Update a payout",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Payout ID."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "integer",
+                    "description": "Amount of the payout."
+                  },
+                  "currency": {
+                    "type": "object",
+                    "description": "Currency information.",
+                    "properties": {
+                      "iso": {
+                        "type": "string",
+                        "description": "The ISO code of the currency (e.g., XOF)."
+                      }
+                    },
+                    "required": ["iso"]
+                  },
+                  "customer": {
+                    "type": "object",
+                    "description": "Customer information.",
+                    "properties": {
+                      "firstname": {
+                        "type": "string",
+                        "description": "Customer's first name."
+                      },
+                      "lastname": {
+                        "type": "string",
+                        "description": "Customer's last name."
+                      },
+                      "email": {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Customer's email address."
+                      },
+                      "phone_number": {
+                        "type": "object",
+                        "description": "Customer's phone number.",
+                        "properties": {
+                          "number": {
+                            "type": "string",
+                            "description": "Phone number without national prefix."
+                          },
+                          "country": {
+                            "type": "string",
+                            "description": "Country code."
+                          }
+                        },
+                        "required": ["number", "country"]
+                      }
+                    },
+                    "required": ["firstname", "lastname"]
+                  },
+                  "mode": {
+                    "type": "string",
+                    "description": "Payout mode (e.g., 'bank_transfer', 'mobile_money')."
+                  }
+                },
+                "required": ["amount", "currency", "customer", "mode"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Payout updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "Payout ID."
+                    },
+                    "reference": {
+                      "type": "string",
+                      "description": "Payout reference."
+                    },
+                    "amount": {
+                      "type": "integer",
+                      "description": "Payout amount."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Payout status (e.g., 'pending', 'scheduled', 'sent', 'failed')."
+                    },
+                    "customer_id": {
+                      "type": "integer",
+                      "description": "Customer ID associated with the payout."
+                    },
+                    "currency_id": {
+                      "type": "integer",
+                      "description": "Currency ID associated with the payout."
+                    },
+                    "mode": {
+                      "type": "string",
+                      "description": "Payout mode."
+                    },
+                    "last_error_code": {
+                      "type": "string",
+                      "description": "Last error code encountered during the payout."
+                    },
+                    "commission": {
+                      "type": "integer",
+                      "description": "Payout commission."
+                    },
+                    "fees": {
+                      "type": "integer",
+                      "description": "Payout fees."
+                    },
+                    "fixed_commission": {
+                      "type": "integer",
+                      "description": "Fixed commission applied to the payout."
+                    },
+                    "amount_transferred": {
+                      "type": "integer",
+                      "description": "Amount transferred to the beneficiary."
+                    },
+                    "amount_debited": {
+                      "type": "integer",
+                      "description": "Amount debited from the payer."
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of payout creation."
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of last payout update."
+                    },
+                    "scheduled_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time the payout is scheduled to be sent."
+                    },
+                    "sent_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time the payout was sent."
+                    },
+                    "failed_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time the payout failed."
+                    },
+                    "deleted_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of payout deletion."
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "description": "Additional metadata related to the payout."
+                    },
+                    "custom_metadata": {
+                      "type": "object",
+                      "description": "Custom metadata associated with the payout."
+                    },
+                    "payment_method_id": {
+                      "type": "integer",
+                      "description": "Payment method ID used for the payout."
+                    },
+                    "transaction_key": {
+                      "type": "string",
+                      "description": "Unique key associated with the payout."
+                    },
+                    "merchant_reference": {
+                      "type": "string",
+                      "description": "Merchant reference provided for the payout."
+                    },
+                    "account_id": {
+                      "type": "integer",
+                      "description": "Account ID associated with the payout."
+                    },
+                    "balance_id": {
+                      "type": "integer",
+                      "description": "Balance ID associated with the payout."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body."
+          },
+          "404": {
+            "description": "Payout not found."
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "label": "NodeJs",
+            "source": "const { FedaPay, Payout } = require('fedapay');\n/* Replace YOUR_SECRETE_API_KEY with your real API key */\nFedaPay.setApiKey(\"YOUR_SECRETE_API_KEY\");\n/* Specify whether you want to run your query in test or live mode */\nFedaPay.setEnvironment('sandbox'); //or setEnvironment('live');\n/* Update a payout */\nconst payout = await Payout.update(params = {}, headers = {});"
+          },
+          {
+            "lang": "PHP",
+            "source": "\\FedaPay\\Fedapay::setApiKey(MY_API_KEY);\n\\FedaPay\\Payout::update(ID, params = {}, headers = {});"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'fedapay';\n# configure FedaPay library\nFedaPay.api_key = '' # Your secret api key\nFedaPay.environment = '' # sandbox or live\n# Update a payout instance\npayout.amount = 5000\npayout.save\n# Or\npayout.save amount: 5000\n# Update a payout by id\nFedaPay.update ID, amount: 5000;"
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete a payout",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Payout ID."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Payout deleted successfully."
+          },
+          "404": {
+            "description": "Payout not found."
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "label": "NodeJs",
+            "source": "const { FedaPay, Payout } = require('fedapay');\n/* Replace YOUR_SECRETE_API_KEY with your real API key */\nFedaPay.setApiKey(\"YOUR_SECRETE_API_KEY\");\n/* Specify whether you want to run your query in test or live mode */\nFedaPay.setEnvironment('sandbox'); //or setEnvironment('live');\n/* delete a payout */\nconst payout = await Payout.delete(params = {}, headers = {});"
+          },
+          {
+            "lang": "PHP",
+            "source": "\\FedaPay\\Fedapay::setApiKey(MY_API_KEY);\n\\FedaPay\\Payout::delete(ID);"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'fedapay';\n# configure FedaPay library\nFedaPay.api_key = '' # Your secret api key\nFedaPay.environment = '' # sandbox or live\npayout.delete"
+          }
+        ]
+      }
+    },
+    "/events": {
+      "get": {
+        "summary": "Get all events",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of events",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Event ID."
+                      },
+                      "type": {
+                        "type": "string",
+                        "description": "Event type"
+                      },
+                      "entity": {
+                        "type": "object",
+                        "description": "Event entity"
+                      },
+                      "object_id": {
+                        "type": "integer",
+                        "description": "Object ID associated with the event"
+                      },
+                      "account_id": {
+                        "type": "integer",
+                        "description": "Account ID associated with the event"
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of event creation."
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of last event update."
+                      },
+                      "deleted_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of customer deletion (if applicable)."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Provide a valid secret key"
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "label": "NodeJs",
+            "source": "const { FedaPay, Event } = require('fedapay');\n/* Replace YOUR_SECRETE_API_KEY with your real API key */\nFedaPay.setApiKey(\"YOUR_SECRETE_API_KEY\");\n/* Specify whether you want to run your query in test or live mode */\nFedaPay.setEnvironment('sandbox'); //or setEnvironment('live');\n/* Show events */\nconst event = await Event.all( params = {}, headers = {} );"
+          },
+          {
+            "lang": "PHP",
+            "source": "\\FedaPay\\Fedapay::setApiKey(MY_API_KEY);\n/**\n* @var \\FedaPay\\FedaPayObject\n*/\n$response = \\FedaPay\\Event::all();\n$events = $response->events;\n$meta = $response->meta;"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'fedapay';\n# configure FedaPay library\nFedaPay.api_key = '' # Your secret api key\nFedaPay.environment = '' # sandbox or live\nevents = FedaPay::Event.list;"
+          }
+        ]
+      }
+    },
+    "/events/{id}": {
+      "get": {
+        "summary": "Get a event",
+        "description": "Retrieves a single event by ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Event ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of events",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Event ID."
+                      },
+                      "type": {
+                        "type": "string",
+                        "description": "Event type"
+                      },
+                      "entity": {
+                        "type": "object",
+                        "description": "Event entity"
+                      },
+                      "object_id": {
+                        "type": "integer",
+                        "description": "Object ID associated with the event"
+                      },
+                      "account_id": {
+                        "type": "integer",
+                        "description": "Account ID associated with the event"
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of event creation."
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of last event update."
+                      },
+                      "deleted_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of customer deletion (if applicable)."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "event not found."
+          },
+          "401": {
+            "description": "Unauthorized. Provide a valid secret key."
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "label": "NodeJs",
+            "source": "const { FedaPay, Event } = require('fedapay');\n/* Replace YOUR_SECRETE_API_KEY with your real API key */\nFedaPay.setApiKey(\"YOUR_SECRETE_API_KEY\");\n/* Specify whether you want to run your query in test or live mode */\nFedaPay.setEnvironment('sandbox'); //or setEnvironment('live');\n/* Show event */\nconst event = await Event.retrieve( ID, params = {}, headers = {} );"
+          },
+          {
+            "lang": "PHP",
+            "source": "\\FedaPay\\Fedapay::setApiKey(MY_API_KEY);\n/**\n* @var \\FedaPay\\FedaPayObject\n*/\n$response = \\FedaPay\\Event::retrieve(ID);\n$events = $response->events;\n$meta = $response->meta;"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'fedapay';\n# configure FedaPay library\nFedaPay.api_key = '' # Your secret api key\nFedaPay.environment = '' # sandbox or live\nevents = FedaPay::Event.retrieve(ID);"
+          }
+        ]
+      }
+    },
+    "/balances/{id}": {
+      "get": {
+        "summary": "Get a balance",
+        "description": "Retrieves a single balance by ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Balance ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of balance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Balance ID."
+                      },
+                      "amount": {
+                        "type": "integer",
+                        "description": "Balance amount."
+                      },
+                      "mode": {
+                        "type": "string",
+                        "description": "Balance mode"
+                      },
+                      "account_id": {
+                        "type": "integer",
+                        "description": "Account ID associated with the balance"
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of balance creation."
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of last balance update."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "balance not found."
+          },
+          "401": {
+            "description": "Unauthorized. Provide a valid secret key."
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "label": "NodeJs",
+            "source": "const { FedaPay, Balance } = require('fedapay');\n/* Replace YOUR_SECRETE_API_KEY with your real API key */\nFedaPay.setApiKey(\"YOUR_SECRETE_API_KEY\");\n/* Specify whether you want to run your query in test or live mode */\nFedaPay.setEnvironment('sandbox'); //or setEnvironment('live');\n/* Show balance */\nconst balance = await Balance.retrieve( ID, params = {}, headers = {} );"
+          },
+          {
+            "lang": "PHP",
+            "source": "\\FedaPay\\Fedapay::setApiKey(MY_API_KEY);\n/**\n* @var \\FedaPay\\FedaPayObject\n*/\n$response = \\FedaPay\\Balance::retrieve(ID);\n$balances = $response->balances;\n$meta = $response->meta;"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'fedapay';\n# configure FedaPay library\nFedaPay.api_key = '' # Your secret api key\nFedaPay.environment = '' # sandbox or live\nbalances = FedaPay::Balance.retrieve(ID);"
+          }
+        ]
+      }
+    },
+    "/balances": {
+      "get": {
+        "summary": "Get all balances",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of balance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Balance ID."
+                      },
+                      "amount": {
+                        "type": "integer",
+                        "description": "Balance amount."
+                      },
+                      "mode": {
+                        "type": "string",
+                        "description": "Balance mode"
+                      },
+                      "account_id": {
+                        "type": "integer",
+                        "description": "Account ID associated with the balance"
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of balance creation."
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of last balance update."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Balance not found"
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "label": "NodeJs",
+            "source": "const { FedaPay, Balance } = require('fedapay');\n/* Replace YOUR_SECRETE_API_KEY with your real API key */\nFedaPay.setApiKey(\"YOUR_SECRETE_API_KEY\");\n/* Specify whether you want to run your query in test or live mode */\nFedaPay.setEnvironment('sandbox'); //or setEnvironment('live');\n/* Show balances */\nconst balance = await Balance.all( params = {}, headers = {} );"
+          },
+          {
+            "lang": "PHP",
+            "source": "\\FedaPay\\Fedapay::setApiKey(MY_API_KEY);\n/**\n* @var \\FedaPay\\FedaPayObject\n*/\n$response = \\FedaPay\\Balance::all();\n$balances = $response->balances;\n$meta = $response->meta;"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'fedapay';\n# configure FedaPay library\nFedaPay.api_key = '' # Your secret api key\nFedaPay.environment = '' # sandbox or live\nbalances = FedaPay::Balance.list;"
+          }
+        ]
+      }
+    },
+    "/currencies": {
+      "get": {
+        "summary": "Get all currencies",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of currencies",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Balance ID."
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Currency name."
+                      },
+                      "modes": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "Available modes for the currency"
+                      },
+                      "prefix": {
+                        "type": "string",
+                        "description": "Currency prefix."
+                      },
+                      "suffix": {
+                        "type": "string",
+                        "description": "Currency suffix."
+                      },
+                      "account_id": {
+                        "type": "integer",
+                        "description": "Account ID associated with the balance"
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of balance creation."
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of last balance update."
+                      },
+                      "default": {
+                        "type": "boolean",
+                        "description": "Is this currency the default one?"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Provide a valid secret key."
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "label": "NodeJs",
+            "source": "const { FedaPay, Currency } = require('fedapay');\n/* Replace YOUR_SECRETE_API_KEY with your real API key */\nFedaPay.setApiKey(\"YOUR_SECRETE_API_KEY\");\n/* Specify whether you want to run your query in test or live mode */\nFedaPay.setEnvironment('sandbox'); //or setEnvironment('live');\n/* Show currencies */\nconst currency = await Currency.all( params = {}, headers = {} );"
+          },
+          {
+            "lang": "PHP",
+            "source": "\\FedaPay\\Fedapay::setApiKey(MY_API_KEY);\n/**\n* @var \\FedaPay\\FedaPayObject\n*/\n$response = \\FedaPay\\Currency::all();\n$currencies = $response->currencies;\n$meta = $response->meta;"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'fedapay';\n# configure FedaPay library\nFedaPay.api_key = '' # Your secret api key\nFedaPay.environment = '' # sandbox or live\ncurrencies = FedaPay::Currency.list;"
+          }
+        ]
+      }
+    },
+    "/currencies/{id}": {
+      "get": {
+        "summary": "Get a currency",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "currency ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of currencies",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Balance ID."
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Currency name."
+                      },
+                      "modes": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "Available modes for the currency"
+                      },
+                      "prefix": {
+                        "type": "string",
+                        "description": "Currency prefix."
+                      },
+                      "suffix": {
+                        "type": "string",
+                        "description": "Currency suffix."
+                      },
+                      "account_id": {
+                        "type": "integer",
+                        "description": "Account ID associated with the balance"
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of balance creation."
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of last balance update."
+                      },
+                      "default": {
+                        "type": "boolean",
+                        "description": "Is this currency the default one?"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Currency not found."
+          },
+          "401": {
+            "description": "Unauthorized. Provide a valid secret key."
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "label": "NodeJs",
+            "source": "const { FedaPay, Currency } = require('fedapay');\n/* Replace YOUR_SECRETE_API_KEY with your real API key */\nFedaPay.setApiKey(\"YOUR_SECRETE_API_KEY\");\n/* Specify whether you want to run your query in test or live mode */\nFedaPay.setEnvironment('sandbox'); //or setEnvironment('live');\n/* show a currency */\nconst currency = await Currency.retrieve( ID, params = {}, headers = {} );"
+          },
+          {
+            "lang": "PHP",
+            "source": "\\FedaPay\\Fedapay::setApiKey(MY_API_KEY);\n/**\n* @var \\FedaPay\\FedaPayObject\n*/\n$response = \\FedaPay\\Currency::retrieve(ID);\n$currencies = $response->currencies;\n$meta = $response->meta;"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'fedapay';\n# configure FedaPay library\nFedaPay.api_key = '' # Your secret api key\nFedaPay.environment = '' # sandbox or live\ncurrencies = FedaPay::Currency.retrieve(ID);"
+          }
+        ]
+      }
+    },
+    "/logs": {
+      "get": {
+        "summary": "Get all logs",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of logs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Log ID."
+                      },
+                      "method": {
+                        "type": "string",
+                        "description": "HTTP method used for the request."
+                      },
+                      "url": {
+                        "type": "string",
+                        "description": "URL of the request."
+                      },
+                      "status": {
+                        "type": "integer",
+                        "description": "HTTP status code returned by the request."
+                      },
+                      "ip_address": {
+                        "type": "string",
+                        "description": "IP address of the request."
+                      },
+                      "version": {
+                        "type": "string",
+                        "description": "Version of the API used for the request."
+                      },
+                      "source": {
+                        "type": "string",
+                        "description": "Source of the request."
+                      },
+                      "query": {
+                        "type": "string",
+                        "description": "Query parameters of the request."
+                      },
+                      "body": {
+                        "type": "string",
+                        "description": "Body of the request."
+                      },
+                      "response": {
+                        "type": "string",
+                        "description": "Response body of the request."
+                      },
+                      "account_id": {
+                        "type": "integer",
+                        "description": "ID of the log's account."
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of log creation."
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of last log update."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Provide a valid secret key."
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "label": "NodeJs",
+            "source": "const { FedaPay, Logs } = require('fedapay');\n/* Replace YOUR_SECRETE_API_KEY with your real API key */\nFedaPay.setApiKey(\"YOUR_SECRETE_API_KEY\");\n/* Specify whether you want to run your query in test or live mode */\nFedaPay.setEnvironment('sandbox'); //or setEnvironment('live');\n/* Show logs */\nconst log = await Log.all( params = {}, headers = {} );"
+          },
+          {
+            "lang": "PHP",
+            "source": "\\FedaPay\\Fedapay::setApiKey(MY_API_KEY);\n/**\n* @var \\FedaPay\\FedaPayObject\n*/\n$response = \\FedaPay\\Log::all();\n$logs = $response->logs;\n$meta = $response->meta;"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'fedapay';\n# configure FedaPay library\nFedaPay.api_key = '' # Your secret api key\nFedaPay.environment = '' # sandbox or live\nlogs = FedaPay::Log.list;"
+          }
+        ]
+      }
+    },
+    "/logs/{id}": {
+      "get": {
+        "summary": "Get a logs",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Log ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of logs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Log ID."
+                      },
+                      "method": {
+                        "type": "string",
+                        "description": "HTTP method used for the request."
+                      },
+                      "url": {
+                        "type": "string",
+                        "description": "URL of the request."
+                      },
+                      "status": {
+                        "type": "integer",
+                        "description": "HTTP status code returned by the request."
+                      },
+                      "ip_address": {
+                        "type": "string",
+                        "description": "IP address of the request."
+                      },
+                      "version": {
+                        "type": "string",
+                        "description": "Version of the API used for the request."
+                      },
+                      "source": {
+                        "type": "string",
+                        "description": "Source of the request."
+                      },
+                      "query": {
+                        "type": "string",
+                        "description": "Query parameters of the request."
+                      },
+                      "body": {
+                        "type": "string",
+                        "description": "Body of the request."
+                      },
+                      "response": {
+                        "type": "string",
+                        "description": "Response body of the request."
+                      },
+                      "account_id": {
+                        "type": "integer",
+                        "description": "ID of the log's account."
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of log creation."
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of last log update."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Log not found."
+          },
+          "401": {
+            "description": "Unauthorized. Provide a valid secret key."
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "label": "NodeJs",
+            "source": "const { FedaPay, Log } = require('fedapay');\n/* Replace YOUR_SECRETE_API_KEY with your real API key */\nFedaPay.setApiKey(\"YOUR_SECRETE_API_KEY\");\n/* Specify whether you want to run your query in test or live mode */\nFedaPay.setEnvironment('sandbox'); //or setEnvironment('live');\n/* show a log */\nconst log = await Log.retrieve( ID, params = {}, headers = {} );"
+          },
+          {
+            "lang": "PHP",
+            "source": "\\FedaPay\\Fedapay::setApiKey(MY_API_KEY);\n/**\n* @var \\FedaPay\\FedaPayObject\n*/\n$response = \\FedaPay\\Log::retrieve(ID);\n$logs = $response->logs;\n$meta = $response->meta;"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'fedapay';\n# configure FedaPay library\nFedaPay.api_key = '' # Your secret api key\nFedaPay.environment = '' # sandbox or live\nlogs = FedaPay::Log.retrieve(ID);"
+          }
+        ]
+      }
+    },
+    "/webhooks": {
+      "get": {
+        "summary": "Get all webhooks",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of webhook",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Webhook ID."
+                      },
+                      "url": {
+                        "type": "string",
+                        "description": "URL of the request."
+                      },
+                      "enabled": {
+                        "type": "boolean",
+                        "description": "Indicates whether the webhook is active."
+                      },
+                      "ssl_verify": {
+                        "type": "boolean",
+                        "description": "Indicates whether SSL verification is enabled for the webhook."
+                      },
+                      "disable_on_error": {
+                        "type": "boolean",
+                        "description": "the webhook will be disabled after encountering an error."
+                      },
+                      "account_id": {
+                        "type": "integer",
+                        "description": "ID of the webhook account"
+                      },
+                      "http_headers": {
+                        "type": "boolean",
+                        "description": "Indicates whether custom HTTP headers are used"
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of webhook creation"
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of last webhook update"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Provide a valid secret key."
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "label": "NodeJs",
+            "source": "const { FedaPay, Webhook } = require('fedapay');\n/* Replace YOUR_SECRETE_API_KEY with your real API key */\nFedaPay.setApiKey(\"YOUR_SECRETE_API_KEY\");\n/* Specify whether you want to run your query in test or live mode */\nFedaPay.setEnvironment('sandbox'); //or setEnvironment('live');\n/* Show webhooks */\nconst webhook = await Webhook.all( params = {}, headers = {} );"
+          },
+          {
+            "lang": "PHP",
+            "source": "\\FedaPay\\Fedapay::setApiKey(MY_API_KEY);\n/**\n* @var \\FedaPay\\FedaPayObject\n*/\n$response = \\FedaPay\\Webhook::all();\n$webhooks = $response->webhooks;\n$meta = $response->meta;"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'fedapay';\n# configure FedaPay library\nFedaPay.api_key = '' # Your secret api key\nFedaPay.environment = '' # sandbox or live\nwebhooks = FedaPay::Webhook.list;"
+          }
+        ]
+      }
+    },
+    "/webhooks/{id}": {
+      "get": {
+        "summary": "Get a webhook",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Webhook ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of webhook",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Webhook ID."
+                      },
+                      "url": {
+                        "type": "string",
+                        "description": "URL of the request."
+                      },
+                      "enabled": {
+                        "type": "boolean",
+                        "description": "Indicates whether the webhook is active."
+                      },
+                      "ssl_verify": {
+                        "type": "boolean",
+                        "description": "Indicates whether SSL verification is enabled for the webhook."
+                      },
+                      "disable_on_error": {
+                        "type": "boolean",
+                        "description": "the webhook will be disabled after encountering an error."
+                      },
+                      "account_id": {
+                        "type": "integer",
+                        "description": "ID of the webhook account"
+                      },
+                      "http_headers": {
+                        "type": "boolean",
+                        "description": "Indicates whether custom HTTP headers are used"
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of webhook creation"
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of last webhook update"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Webhook not found."
+          },
+          "401": {
+            "description": "Unauthorized. Provide a valid secret key."
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "label": "NodeJs",
+            "source": "const { FedaPay, Webhook } = require('fedapay');\n/* Replace YOUR_SECRETE_API_KEY with your real API key */\nFedaPay.setApiKey(\"YOUR_SECRETE_API_KEY\");\n/* Specify whether you want to run your query in test or live mode */\nFedaPay.setEnvironment('sandbox'); //or setEnvironment('live');\n/* Show webhook */\nconst webhook = await Webhook.retrieve( ID, params = {}, headers = {} );"
+          },
+          {
+            "lang": "PHP",
+            "source": "\\FedaPay\\Fedapay::setApiKey(MY_API_KEY);\n/**\n* @var \\FedaPay\\FedaPayObject\n*/\n$response = \\FedaPay\\Webhook::retrieve(ID);\n$webhooks = $response->webhooks;\n$meta = $response->meta;"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'fedapay';\n# configure FedaPay library\nFedaPay.api_key = '' # Your secret api key\nFedaPay.environment = '' # sandbox or live\nwebhooks = FedaPay::Webhook.retrieve(ID);"
+          }
+        ]
+      }
+    },
+    "/transactions": {
+      "post": {
+        "summary": "Create a transaction",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "description": {
+                    "type": "string",
+                    "description": "Description of the transaction."
+                  },
+                  "amount": {
+                    "type": "integer",
+                    "description": "Amount of the transaction."
+                  },
+                  "currency": {
+                    "type": "object",
+                    "description": "Currency information.",
+                    "properties": {
+                      "iso": {
+                        "type": "string",
+                        "description": "The ISO code of the currency (e.g., XOF)."
+                      }
+                    }
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL to receive transaction updates."
+                  },
+                  "custom_metadata": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "description": "Additional metadata related to the transaction."
+                  },
+                  "customer": {
+                    "type": "object",
+                    "description": "Customer associated with the transaction.",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Customer ID if already exists"
+                      },
+                      "email": {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Customer's email address."
+                      },
+                      "firstname": {
+                        "type": "string",
+                        "description": "Customer's last name."
+                      },
+                      "lastname": {
+                        "type": "string",
+                        "description": "Customer's last name."
+                      },
+                      "phone_number": {
+                        "type": "object",
+                        "description": "Customer's phone number.",
+                        "properties": {
+                          "number": {
+                            "type": "integer",
+                            "description": "Phone number without national prefix."
+                          },
+                          "country": {
+                            "type": "string",
+                            "description": "Country code."
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "required": ["description", "amount", "currency"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Transaction created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "Transaction ID."
+                    },
+                    "reference": {
+                      "type": "string",
+                      "description": "Transaction reference."
+                    },
+                    "amount": {
+                      "type": "integer",
+                      "description": "Transaction amount."
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Transaction description."
+                    },
+                    "callback_url": {
+                      "type": "string",
+                      "description": "Transaction callback URL."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Transaction status (e.g., 'pending', 'approved', 'canceled')."
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of transaction creation."
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of last transaction update."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body."
+          },
+          "422": {
+            "description": "Validation error."
+          },
+          "401": {
+            "description": "Unauthorized. Provide a valid secret key."
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "label": "NodeJs",
+            "source": "const { FedaPay, Transaction } = require('fedapay');\nFedaPay.setApiKey('YOUR_SECRET_API_KEY');\nFedaPay.setEnvironment('sandbox');\nconst transaction = await Transaction.create({\n  description: 'Payment for order #1234',\n  amount: 1000,\n  currency: { iso: 'XOF' },\n  callback_url: 'https://example.com/callback',\n  mode: 'mtn_open',\n  customer: { id: 1 }\n});"
+          },
+          {
+            "lang": "PHP",
+            "source": "\\FedaPay\\Fedapay::setApiKey('YOUR_API_KEY');\n\\FedaPay\\Fedapay::setEnvironment('sandbox');\n$transaction = \\FedaPay\\Transaction::create([\n  'description' => 'Payment for order #1234',\n  'amount' => 1000,\n  'currency' => ['iso' => 'XOF'],\n  'callback_url' => 'https://example.com/callback',\n  'mode' => 'mtn_open',\n  'customer' => ['id' => 1]\n]);"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'fedapay'\n\nFedaPay.api_key = 'YOUR_SECRET_API_KEY'\nFedaPay.environment = 'sandbox'\n\ntransaction = FedaPay::Transaction.create(\n  amount: 1000,\n  currency: { iso: 'XOF' },\n  customer: { id: 1 },\n  description: 'Payment for order #1234',\n  callback_url: 'https://example.com/callback',\n  mode: 'mtn_open'\n)\n\nputs \"Transaction successfully created : #{transaction.inspect}\""
+          }
+        ]
+      }
+    },
+    "/transactions/search": {
+      "get": {
+        "summary": "Search your transactions",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of transactions.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Transaction ID."
+                      },
+                      "reference": {
+                        "type": "string",
+                        "description": "Transaction reference."
+                      },
+                      "amount": {
+                        "type": "integer",
+                        "description": "Transaction amount."
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "Transaction description."
+                      },
+                      "callback_url": {
+                        "type": "string",
+                        "description": "Transaction callback URL."
+                      },
+                      "status": {
+                        "type": "string",
+                        "description": "Transaction status (e.g., 'pending', 'approved', 'canceled')."
+                      },
+                      "customer_id": {
+                        "type": "integer",
+                        "description": "Customer ID associated with the transaction."
+                      },
+                      "currency_id": {
+                        "type": "integer",
+                        "description": "Currency ID associated with the transaction."
+                      },
+                      "mode": {
+                        "type": "string",
+                        "description": "Transaction mode."
+                      },
+                      "metadata": {
+                        "type": "object",
+                        "description": "Additional metadata related to the transaction."
+                      },
+                      "commission": {
+                        "type": "integer",
+                        "description": "Transaction commission."
+                      },
+                      "fees": {
+                        "type": "integer",
+                        "description": "Transaction fees."
+                      },
+                      "fixed_commission": {
+                        "type": "integer",
+                        "description": "Fixed commission applied to the transaction."
+                      },
+                      "amount_transferred": {
+                        "type": "integer",
+                        "description": "Amount transferred to the beneficiary."
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of transaction creation."
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of last transaction update."
+                      },
+                      "approved_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of transaction approval."
+                      },
+                      "canceled_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of transaction cancellation."
+                      },
+                      "declined_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of transaction decline."
+                      },
+                      "refunded_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of transaction refund."
+                      },
+                      "transferred_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of transaction transfer."
+                      },
+                      "deleted_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of transaction deletion."
+                      },
+                      "last_error_code": {
+                        "type": "string",
+                        "description": "Last error code encountered during the transaction."
+                      },
+                      "custom_metadata": {
+                        "type": "object",
+                        "description": "Custom metadata associated with the transaction."
+                      },
+                      "amount_debited": {
+                        "type": "integer",
+                        "description": "Amount debited from the payer."
+                      },
+                      "receipt_url": {
+                        "type": "string",
+                        "format": "url",
+                        "description": "URL to the transaction receipt."
+                      },
+                      "payment_method_id": {
+                        "type": "integer",
+                        "description": "Payment method ID used for the transaction."
+                      },
+                      "sub_accounts_commissions": {
+                        "type": "array",
+                        "description": "Commissions applied to sub-accounts."
+                      },
+                      "transaction_key": {
+                        "type": "string",
+                        "description": "Unique key associated with the transaction."
+                      },
+                      "merchant_reference": {
+                        "type": "string",
+                        "description": "Merchant reference provided for the transaction."
+                      },
+                      "account_id": {
+                        "type": "integer",
+                        "description": "Account ID associated with the transaction."
+                      },
+                      "balance_id": {
+                        "type": "integer",
+                        "description": "Balance ID associated with the transaction."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "label": "NodeJs",
+            "source": "const { FedaPay, Transaction } = require('fedapay');\n/* Replace YOUR_SECRETE_API_KEY with your real API key */\nFedaPay.setApiKey(\"YOUR_SECRETE_API_KEY\");\n/* Specify whether you want to run your query in test mode or live mode */\nFedaPay.setEnvironment('sandbox'); //or setEnvironment('live');\n/* Show customers */\nconst transaction = await Transaction.all(params = {}, headers = {});"
+          },
+          {
+            "lang": "PHP",
+            "source": "\\FedaPay\\Fedapay::setApiKey(MY_API_KEY);\n$customer = \\FedaPay\\Transaction::all(params = {}, header = {});"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'fedapay';\n# configure FedaPay library\nFedaPay.api_key = '' # Your secret api key\nFedaPay.environment = '' # sandbox or live\ntransactions = FedaPay::Transaction.list"
+          }
+        ]
+      }
+    },
+    "/transactions/{id}/token": {
+      "post": {
+        "summary": "Get the payment link for a transaction",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Transaction ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment link generated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "description": "The generated payment token."
+                    },
+                    "url": {
+                      "type": "string",
+                      "description": "The payment link URL."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Transaction not found."
+          }
+        }
+      }
+    },
+    "/transactions/{mode}": {
+      "post": {
+        "summary": "Send payment to user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "mode",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Transaction mode."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "integer",
+                    "description": "Transaction token",
+                    "example": 1
+                  },
+                  "phone_number": {
+                    "type": "object",
+                    "description": "Phone number details",
+                    "properties": {
+                      "number": {
+                        "type": "string",
+                        "description": "Phone number",
+                        "example": "+22997808080"
+                      },
+                      "country": {
+                        "type": "string",
+                        "description": "Country code",
+                        "example": "BJ"
+                      }
+                    }
+                  }
+                },
+                "required": ["token", "mode"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Transaction sent successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "reference": {
+                        "type": "string",
+                        "description": "Payment intent reference.",
+                        "example": "pi_xdc_123456"
+                      },
+                      "amount": {
+                        "type": "integer",
+                        "description": "Payout amount.",
+                        "example": 1000
+                      },
+                      "status": {
+                        "type": "string",
+                        "description": "Intent status (e.g., 'pending', 'scheduled', 'sent', 'failed').",
+                        "example": "pending"
+                      },
+                      "currency_id": {
+                        "type": "integer",
+                        "description": "Currency ID associated with the payout.",
+                        "example": 840
+                      },
+                      "mode": {
+                        "type": "string",
+                        "description": "Payout mode.",
+                        "example": "automatic"
+                      },
+                      "last_error_code": {
+                        "type": "string",
+                        "description": "Last error code encountered during the payout.",
+                        "example": "NO_ERROR"
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of payout creation.",
+                        "example": "2024-10-23T14:00:00Z"
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of last payout update.",
+                        "example": "2024-10-23T14:00:00Z"
+                      },
+                      "approved_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time the payout was sent.",
+                        "example": "2024-10-23T14:31:00Z"
+                      },
+                      "canceled_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time the payout failed.",
+                        "example": "2024-10-23T14:32:00Z"
+                      },
+                      "deleted_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time of payout deletion.",
+                        "example": "2024-10-23T14:33:00Z"
+                      },
+                      "payment_method_id": {
+                        "type": "integer",
+                        "description": "Payment method ID used for the payout.",
+                        "example": 1
+                      },
+                      "transaction_key": {
+                        "type": "string",
+                        "description": "Unique key associated with the payout.",
+                        "example": "TRANSACTION-XYZ"
+                      },
+                      "account_id": {
+                        "type": "integer",
+                        "description": "Account ID associated with the payout.",
+                        "example": 5
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body."
+          },
+          "422": {
+            "description": "Validation error."
+          },
+          "404": {
+            "description": "Payout not found."
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "label": "NodeJs",
+            "source": "const transaction = await Transaction.create(...);\nconst token = transaction.generateToken().token;\nconst mode = 'METHODE_PAIEMENT'; // Exemple : 'mtn', 'moov', 'mtn_ci', 'moov_tg'\nconst phoneNumber = { // Ce paramètre n'est pas obligatoire\n  number: '64000001',\n  country: 'bj'\n};\nawait transaction.sendNowWithToken(mode, token, phoneNumber);"
+          },
+          {
+            "lang": "PHP",
+            "source": "$transaction = \\FedaPay\\Transaction::create(...);\n$token = $transaction->generateToken()->token;\n$mode = 'METHODE_PAIEMENT'; // Exemple : 'mtn', 'moov', 'mtn_ci', 'moov_tg'\n$phoneNumber = [ // Ce paramètre n'est pas obligatoire\n    'number' => '64000001',\n    'country' => 'bj'\n];\n$transaction->sendNowWithToken($mode, $token, $phoneNumber);"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'fedapay'\n\nFedaPay.api_key = 'YOUR_SECRET_API_KEY'\nFedaPay.environment = 'sandbox'\n\ntransaction = FedaPay::Transaction.create(\n  amount: 1000,\n  currency: { iso: 'XOF' },\n  customer: { id: 1 },\n  description: 'Payment for order #1234',\n  callback_url: 'https://example.com/callback',\n  mode: 'mtn_open'\n)\n\nputs \"Transaction successfully created: #{transaction.inspect}\""
+          }
+        ]
+      }
+    },
+    "/transactions/{id}": {
+      "get": {
+        "summary": "Get a transaction",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Transaction ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "Transaction ID."
+                    },
+                    "reference": {
+                      "type": "string",
+                      "description": "Transaction reference."
+                    },
+                    "amount": {
+                      "type": "integer",
+                      "description": "Transaction amount."
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Transaction description."
+                    },
+                    "callback_url": {
+                      "type": "string",
+                      "description": "Transaction callback URL."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Transaction status (e.g., 'pending', 'approved', 'canceled')."
+                    },
+                    "customer_id": {
+                      "type": "integer",
+                      "description": "Customer ID associated with the transaction."
+                    },
+                    "currency_id": {
+                      "type": "integer",
+                      "description": "Currency ID associated with the transaction."
+                    },
+                    "mode": {
+                      "type": "string",
+                      "description": "Transaction mode."
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "description": "Additional metadata related to the transaction."
+                    },
+                    "commission": {
+                      "type": "integer",
+                      "description": "Transaction commission."
+                    },
+                    "fees": {
+                      "type": "integer",
+                      "description": "Transaction fees."
+                    },
+                    "fixed_commission": {
+                      "type": "integer",
+                      "description": "Fixed commission applied to the transaction."
+                    },
+                    "amount_transferred": {
+                      "type": "integer",
+                      "description": "Amount transferred to the beneficiary."
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of transaction creation."
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of last transaction update."
+                    },
+                    "approved_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of transaction approval."
+                    },
+                    "canceled_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of transaction cancellation."
+                    },
+                    "declined_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of transaction decline."
+                    },
+                    "refunded_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of transaction refund."
+                    },
+                    "transferred_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of transaction transfer."
+                    },
+                    "deleted_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of transaction deletion."
+                    },
+                    "last_error_code": {
+                      "type": "string",
+                      "description": "Last error code encountered during the transaction."
+                    },
+                    "custom_metadata": {
+                      "type": "object",
+                      "description": "Custom metadata associated with the transaction."
+                    },
+                    "amount_debited": {
+                      "type": "integer",
+                      "description": "Amount debited from the payer."
+                    },
+                    "receipt_url": {
+                      "type": "string",
+                      "format": "url",
+                      "description": "URL to the transaction receipt."
+                    },
+                    "payment_method_id": {
+                      "type": "integer",
+                      "description": "Payment method ID used for the transaction."
+                    },
+                    "sub_accounts_commissions": {
+                      "type": "array",
+                      "description": "Commissions applied to sub-accounts."
+                    },
+                    "transaction_key": {
+                      "type": "string",
+                      "description": "Unique key associated with the transaction."
+                    },
+                    "merchant_reference": {
+                      "type": "string",
+                      "description": "Merchant reference provided for the transaction."
+                    },
+                    "account_id": {
+                      "type": "integer",
+                      "description": "Account ID associated with the transaction."
+                    },
+                    "balance_id": {
+                      "type": "integer",
+                      "description": "Balance ID associated with the transaction."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Transaction not found."
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "label": "NodeJs",
+            "source": "const { FedaPay, Transaction } = require('fedapay');\n/* Replace YOUR_SECRETE_API_KEY with your real API key */\nFedaPay.setApiKey(\"YOUR_SECRETE_API_KEY\");\n/* Specify whether you want to run your query in test mode or live mode */\nFedaPay.setEnvironment('sandbox'); //or setEnvironment('live');\n/* Show transactions */\nconst transaction = await Transaction.retrieve(ID, params = {}, headers = {});"
+          },
+          {
+            "lang": "PHP",
+            "source": "\\FedaPay\\Fedapay::setApiKey(MY_API_KEY);\n$transaction = \\FedaPay\\Transaction::retrieve(ID, params = {}, header = {});"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'fedapay';\n# configure FedaPay library\nFedaPay.api_key = '' # Your secret api key\nFedaPay.environment = '' # sandbox or live\ntransactions = FedaPay::Transaction.retrieve(ID);"
+          }
+        ]
+      },
+      "put": {
+        "summary": "Update a transaction",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Transaction ID."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "description": {
+                    "type": "string",
+                    "description": "Description of the transaction."
+                  },
+                  "amount": {
+                    "type": "integer",
+                    "description": "Amount of the transaction."
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "description": "URL to receive transaction updates.",
+                    "format": "url"
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "Transaction status (e.g., 'pending', 'approved', 'canceled')."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Transaction updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "Transaction ID."
+                    },
+                    "reference": {
+                      "type": "string",
+                      "description": "Transaction reference."
+                    },
+                    "amount": {
+                      "type": "integer",
+                      "description": "Transaction amount."
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Transaction description."
+                    },
+                    "callback_url": {
+                      "type": "string",
+                      "description": "Transaction callback URL."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Transaction status (e.g., 'pending', 'approved', 'canceled')."
+                    },
+                    "customer_id": {
+                      "type": "integer",
+                      "description": "Customer ID associated with the transaction."
+                    },
+                    "currency_id": {
+                      "type": "integer",
+                      "description": "Currency ID associated with the transaction."
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "description": "Additional metadata related to the transaction."
+                    },
+                    "commission": {
+                      "type": "integer",
+                      "description": "Transaction commission."
+                    },
+                    "fees": {
+                      "type": "integer",
+                      "description": "Transaction fees."
+                    },
+                    "fixed_commission": {
+                      "type": "integer",
+                      "description": "Fixed commission applied to the transaction."
+                    },
+                    "amount_transferred": {
+                      "type": "integer",
+                      "description": "Amount transferred to the beneficiary."
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of transaction creation."
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of last transaction update."
+                    },
+                    "approved_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of transaction approval."
+                    },
+                    "canceled_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of transaction cancellation."
+                    },
+                    "declined_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of transaction decline."
+                    },
+                    "refunded_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of transaction refund."
+                    },
+                    "transferred_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of transaction transfer."
+                    },
+                    "deleted_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time of transaction deletion."
+                    },
+                    "last_error_code": {
+                      "type": "string",
+                      "description": "Last error code encountered during the transaction."
+                    },
+                    "custom_metadata": {
+                      "type": "object",
+                      "description": "Custom metadata associated with the transaction."
+                    },
+                    "amount_debited": {
+                      "type": "integer",
+                      "description": "Amount debited from the payer."
+                    },
+                    "receipt_url": {
+                      "type": "string",
+                      "format": "url",
+                      "description": "URL to the transaction receipt."
+                    },
+                    "payment_method_id": {
+                      "type": "integer",
+                      "description": "Payment method ID used for the transaction."
+                    },
+                    "sub_accounts_commissions": {
+                      "type": "array",
+                      "description": "Commissions applied to sub-accounts."
+                    },
+                    "transaction_key": {
+                      "type": "string",
+                      "description": "Unique key associated with the transaction."
+                    },
+                    "merchant_reference": {
+                      "type": "string",
+                      "description": "Merchant reference provided for the transaction."
+                    },
+                    "account_id": {
+                      "type": "integer",
+                      "description": "Account ID associated with the transaction."
+                    },
+                    "balance_id": {
+                      "type": "integer",
+                      "description": "Balance ID associated with the transaction."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body."
+          },
+          "404": {
+            "description": "Transaction not found."
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "label": "NodeJs",
+            "source": "const { FedaPay, Transaction } = require('fedapay');\n/* Replace YOUR_SECRETE_API_KEY with your real API key */\nFedaPay.setApiKey(\"YOUR_SECRETE_API_KEY\");\n/* Specify whether you want to run your query in test mode or live mode */\nFedaPay.setEnvironment('sandbox'); //or setEnvironment('live');\n/* Update a transaction */\nconst transaction = await Transaction.update(ID, params = {}, headers = {});"
+          },
+          {
+            "lang": "PHP",
+            "source": "\\FedaPay\\Fedapay::setApiKey(MY_API_KEY);\n\\FedaPay\\Transaction::update(ID, params = {}, headers = {});"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'fedapay';\n# configure FedaPay library\nFedaPay.api_key = '' # Your secret api key\nFedaPay.environment = '' # sandbox or live\n# Update a transaction instance\ntransaction.amount = 5000;\ntransaction.save;\n# Update a transaction by id\nFedaPay::Transaction.update(ID, amount: 5000);"
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete a transaction",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Transaction ID."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Transaction deleted successfully."
+          },
+          "404": {
+            "description": "Transaction not found."
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "label": "NodeJs",
+            "source": "const { FedaPay, Transaction } = require('fedapay');\n/* Replace YOUR_SECRETE_API_KEY with your real API key */\nFedaPay.setApiKey(\"YOUR_SECRETE_API_KEY\");\n/* Specify whether you want to run your query in test mode or live mode */\nFedaPay.setEnvironment('sandbox'); //or setEnvironment('live');\n/* Delete transaction */\nconst transaction = await Transaction.delete(ID, params = {}, headers = {});"
+          },
+          {
+            "lang": "PHP",
+            "source": "\\FedaPay\\Fedapay::setApiKey(MY_API_KEY);\n\\FedaPay\\Transaction::delete(ID);"
+          },
+          {
+            "lang": "Ruby",
+            "source": "require 'fedapay';\n# configure FedaPay library\nFedaPay.api_key = '' # Your secret api key\nFedaPay.environment = '' # sandbox or live\ntransaction.delete;"
+          }
+        ]
+      }
+    }
+  }
+}

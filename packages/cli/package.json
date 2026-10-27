@@ -1,0 +1,45 @@
+{
+  "name": "@pont/cli",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "pont": "./src/bin.ts"
+  },
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p .",
+    "test": "vitest run",
+    "build": "tsup src/index.ts src/bin.ts --format esm --dts --clean --target node20"
+  },
+  "dependencies": {
+    "@pont/core": "workspace:*",
+    "@pont/node": "workspace:*",
+    "@pont/engine": "workspace:*",
+    "@pont/sandbox": "workspace:*",
+    "@pont/store-convex": "workspace:*"
+  },
+  "license": "UNLICENSED",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    },
+    "access": "restricted",
+    "bin": {
+      "pont": "./dist/bin.js"
+    }
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

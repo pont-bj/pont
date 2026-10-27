@@ -1,0 +1,96 @@
+# kkiapay
+
+## EN 1.0.0
+
+- [Introduction](https://docs.kkiapay.me/v1/en-1.0.0/master.md): Welcome on KKiaPay ! Get familiar with KKiaPay's products and explore their features.
+- [KKiaPay](https://docs.kkiapay.me/v1/en-1.0.0/accueil/kkiapay.md): Designed for you, this guide provides you the informations you need to get started with KKiaPay.
+- [Create an account](https://docs.kkiapay.me/v1/en-1.0.0/compte/creation-dun-compte.md): Create your account to collect your first payment today !
+- [Account activation](https://docs.kkiapay.me/v1/en-1.0.0/compte/activation-de-compte.md): Request in a few clicks the activation of your KKiaPay account to start receiving payments from anywhere in the world.
+- [KKiaPay Sandbox : Test Guide](https://docs.kkiapay.me/v1/en-1.0.0/compte/kkiapay-sandbox-guide-de-test.md): Test the features of KKiaPay using the test information available
+- [Using KKiaPay](https://docs.kkiapay.me/v1/en-1.0.0/compte/untitled.md): Get your API keys and integrate KKiaPay !
+- [Supported Currencies](https://docs.kkiapay.me/v1/en-1.0.0/paiements/devises-supportees.md): Check the currencies supported by your payment aggregator.
+- [Payment Methods](https://docs.kkiapay.me/v1/en-1.0.0/paiements/methodes-de-paiement.md): Find out about the payment methods related to KKiaPay !
+- [Fees](https://docs.kkiapay.me/v1/en-1.0.0/paiements/frais.md): Transactions on KKiaPay may be subject to charges levied. Be informed of the amount of these.
+- [Payouts](https://docs.kkiapay.me/v1/en-1.0.0/paiements/remboursements.md): With KKiaPay, you can recover your assets at any time.
+- [Transactions](https://docs.kkiapay.me/v1/en-1.0.0/paiements/transactions.md)
+- [Prestashop](https://docs.kkiapay.me/v1/en-1.0.0/plugin-et-sdk/prestashop.md): The prestashop KKiaPay plugin is designed to allow the integration of KkiaPay on your pr
+- [WooCommerce](https://docs.kkiapay.me/v1/en-1.0.0/plugin-et-sdk/woo-commerce.md): The WooCommerce plugin is designed to allow the integration of KKiaPay on your WordPress site.
+- [Wordpress Give](https://docs.kkiapay.me/v1/en-1.0.0/plugin-et-sdk/kkiapay-give.md): The kkiapay-give plugin is designed to allow the integration of KKiaPay with the Give extension on your wordpress site
+- [Wordpress Jobster](https://docs.kkiapay.me/v1/en-1.0.0/plugin-et-sdk/wordpress-jobster.md)
+- [Javascript SDK](https://docs.kkiapay.me/v1/en-1.0.0/plugin-et-sdk/sdk-javascript.md): The Javascript SDK is designed to allow the integration of KKiaPay into your web application.
+- [Frameworks](https://docs.kkiapay.me/v1/en-1.0.0/plugin-et-sdk/frameworks.md)
+- [Using KKiaPay with Vue.js](https://docs.kkiapay.me/v1/en-1.0.0/plugin-et-sdk/frameworks/using-kkiapay-with-vue.js.md)
+- [Using KKiaPay with Nuxt.js](https://docs.kkiapay.me/v1/en-1.0.0/plugin-et-sdk/frameworks/using-kkiapay-with-nuxt.js.md)
+- [Using KKiaPay with React.js](https://docs.kkiapay.me/v1/en-1.0.0/plugin-et-sdk/frameworks/using-kkiapay-with-react.js.md)
+- [Using KKiaPay with Next.js](https://docs.kkiapay.me/v1/en-1.0.0/plugin-et-sdk/frameworks/using-kkiapay-with-next.js.md)
+- [Using KKiaPay with Angular](https://docs.kkiapay.me/v1/en-1.0.0/plugin-et-sdk/frameworks/using-kkiapay-with-angular.md)
+- [Using KKiaPay with Svelte](https://docs.kkiapay.me/v1/en-1.0.0/plugin-et-sdk/frameworks/using-kkiapay-with-svelte.md)
+- [Android SDK](https://docs.kkiapay.me/v1/en-1.0.0/plugin-et-sdk/sdk-android.md): The Android SDK is designed to allow the integration of KKiaPay into your mobile application.
+- [SDK Flutter](https://docs.kkiapay.me/v1/en-1.0.0/plugin-et-sdk/sdk-flutter.md)
+- [SDK React-Native](https://docs.kkiapay.me/v1/en-1.0.0/plugin-et-sdk/sdk-react-native.md)
+- [SDK Swift for iOS](https://docs.kkiapay.me/v1/en-1.0.0/plugin-et-sdk/sdk-swift-for-ios.md)
+- [Admin SDKs (Server-side)](https://docs.kkiapay.me/v1/en-1.0.0/plugin-et-sdk/admin-sdks-server-side.md)
+- [PHP Admin SDK](https://docs.kkiapay.me/v1/en-1.0.0/plugin-et-sdk/admin-sdks-server-side/php-admin-sdk.md)
+- [Python Admin SDK](https://docs.kkiapay.me/v1/en-1.0.0/plugin-et-sdk/admin-sdks-server-side/python-admin-sdk.md)
+- [Node.js Admin SDK](https://docs.kkiapay.me/v1/en-1.0.0/plugin-et-sdk/admin-sdks-server-side/node.js-admin-sdk.md)
+- [KKiaPay Direct](https://docs.kkiapay.me/v1/en-1.0.0/kkiapay-services/kkiapay-direct.md): With KKiaPay Direct, get paid by WhatsApp, Facebook, Instagram and so many more !
+- [KKiaPay POS](https://docs.kkiapay.me/v1/en-1.0.0/kkiapay-services/kkiapay-pos.md): With KKiaPay POS, cash your payments without a website or mobile application !
+- [KKiaPay Chap Chap](https://docs.kkiapay.me/v1/en-1.0.0/kkiapay-services/kkiapay-chap-chap.md)
+- [General Presentation](https://docs.kkiapay.me/v1/en-1.0.0/tableau-de-bord/presentation-generale.md)
+- [Menu](https://docs.kkiapay.me/v1/en-1.0.0/tableau-de-bord/untitled.md): Votre tableau de bord KKiaPay est composé d'un menu riche en fonctionnalités. Prenez connaissance des diverses fonctionnalités dont vous disposez.
+- [Transactions](https://docs.kkiapay.me/v1/en-1.0.0/tableau-de-bord/untitled/menu-transactions.md)
+- [Customers](https://docs.kkiapay.me/v1/en-1.0.0/tableau-de-bord/untitled/menu-clients.md)
+- [Payouts](https://docs.kkiapay.me/v1/en-1.0.0/tableau-de-bord/untitled/menu-remboursements.md)
+- [Developers](https://docs.kkiapay.me/v1/en-1.0.0/tableau-de-bord/untitled/menu-developpeurs.md)
+- [Settings](https://docs.kkiapay.me/v1/en-1.0.0/tableau-de-bord/untitled/menu-parametres.md)
+- [Webhook](https://docs.kkiapay.me/v1/en-1.0.0/tableau-de-bord/webhook.md)
+- [Security provisions](https://docs.kkiapay.me/v1/en-1.0.0/securite/untitled.md)
+- [Suspicious email and website](https://docs.kkiapay.me/v1/en-1.0.0/securite/suspicious-email-and-website.md)
+- [Untitled](https://docs.kkiapay.me/v1/en-1.0.0/securite/untitled-1.md)
+
+## FR 1.0.0
+
+- [Introduction](https://docs.kkiapay.me/v1/master.md): La présente documentation présente la procédure d’intégration de notre plateforme d’agrégation de solutions digitales de paiement à votre plateforme de e-commerce ou à votre application de services.
+- [kkiapay](https://docs.kkiapay.me/v1/accueil/kkiapay.md): Conçu pour vous, ce guide met à votre disposition les informations nécessaires à la prise en main et l'utilisation de kkiapay.
+- [Création d'un compte](https://docs.kkiapay.me/v1/compte/creation-dun-compte.md): Créez votre compte pour encaisser votre premier paiement dès aujourd’hui !
+- [Activation de compte](https://docs.kkiapay.me/v1/compte/activation-de-compte.md): Demandez en quelques clics l'activation de votre compte kkiapay pour commencer à recevoir des paiements de partout dans le monde.
+- [kkiapay Sandbox : Guide de Test](https://docs.kkiapay.me/v1/compte/kkiapay-sandbox-guide-de-test.md): Avec kkiapay Sandbox, testez les fonctionnalités de kkiapay en usant des informations de test mises à votre disposition.
+- [Utilisation de kkiapay](https://docs.kkiapay.me/v1/compte/use.md): Récupérez vos clés API et intégrez kkiapay en un tour de main !
+- [Devises supportées](https://docs.kkiapay.me/v1/paiements/devises-supportees.md): Prenez connaissance des devises supportées par votre agrégateur de paiement.
+- [Méthodes de paiement](https://docs.kkiapay.me/v1/paiements/methodes-de-paiement.md): Prenez connaissance des moyens de paiement liés à kkiapay !
+- [Frais](https://docs.kkiapay.me/v1/paiements/frais.md): Les transactions sur kkiapay pouvant faire l'objet de frais prélevés, soyez informés du montant de ces derniers.
+- [Reversements](https://docs.kkiapay.me/v1/paiements/remboursements.md): Avec kkiapay, récupérez vos avoirs en tout temps et à tout instant.
+- [Transactions](https://docs.kkiapay.me/v1/paiements/transactions.md)
+- [Prestashop](https://docs.kkiapay.me/v1/plugin-et-sdk/prestashop.md): Le plugin kkiapay de prestashop est conçu afin de permettre l'intégration de kkiapay sur votre site prestashop.
+- [WooCommerce](https://docs.kkiapay.me/v1/plugin-et-sdk/woo-commerce.md): Le plugin WooCommerce est conçu afin de permettre l'intégration de kkiapay sur votre site WordPress.
+- [Wordpress Give](https://docs.kkiapay.me/v1/plugin-et-sdk/kkiapay-give.md): Le plugin kkiapay-give est conçu afin de permettre l'intégration de kkiapay avec l'extension de don Give sur votre site wordpress.
+- [Wordpress Jobster](https://docs.kkiapay.me/v1/plugin-et-sdk/wordpress-jobster.md)
+- [SDK Javascript](https://docs.kkiapay.me/v1/plugin-et-sdk/sdk-javascript.md): Le SDK Javascript est conçu afin de permettre l'intégration de kkiapay au sein de votre application web.
+- [Frameworks](https://docs.kkiapay.me/v1/plugin-et-sdk/frameworks.md)
+- [Intégration de kkiapay dans une application vue.js](https://docs.kkiapay.me/v1/plugin-et-sdk/frameworks/integration-de-kkiapay-dans-une-application-vue.js.md)
+- [Intégration de kkiapay dans une application rendue côté serveur (nuxt.js)](https://docs.kkiapay.me/v1/plugin-et-sdk/frameworks/integration-de-kkiapay-dans-une-application-rendue-cote-serveur-nuxt.js.md)
+- [Intégration de kkiapay dans une application React.js](https://docs.kkiapay.me/v1/plugin-et-sdk/frameworks/integration-de-kkiapay-dans-une-application-react.js.md)
+- [Intégration de kkiapay dans une application next.js](https://docs.kkiapay.me/v1/plugin-et-sdk/frameworks/integration-de-kkiapay-dans-une-application-next.js.md)
+- [Intégration de kkiapay dans une application Angular](https://docs.kkiapay.me/v1/plugin-et-sdk/frameworks/integration-de-kkiapay-dans-une-application-angular.md)
+- [Intégration de kkiapay dans une application Svelte](https://docs.kkiapay.me/v1/plugin-et-sdk/frameworks/integration-de-kkiapay-dans-une-application-svelte.md)
+- [SDK Android](https://docs.kkiapay.me/v1/plugin-et-sdk/sdk-android.md): Le SDK Android est conçu afin de permettre l'intégration de kkiapay au sein de votre application mobile.
+- [SDK Flutter](https://docs.kkiapay.me/v1/plugin-et-sdk/sdk-flutter.md)
+- [SDK React-Native](https://docs.kkiapay.me/v1/plugin-et-sdk/sdk-react-native.md)
+- [SDK Swift pour iOS](https://docs.kkiapay.me/v1/plugin-et-sdk/sdk-swift-pour-ios.md)
+- [Admin SDKs (Server-side)](https://docs.kkiapay.me/v1/plugin-et-sdk/admin-sdks-server-side.md)
+- [PHP Admin SDK](https://docs.kkiapay.me/v1/plugin-et-sdk/admin-sdks-server-side/php-admin-sdk.md)
+- [Python Admin SDK](https://docs.kkiapay.me/v1/plugin-et-sdk/admin-sdks-server-side/python-admin-sdk.md)
+- [Node.js Admin SDK](https://docs.kkiapay.me/v1/plugin-et-sdk/admin-sdks-server-side/node.js-admin-sdk.md)
+- [kkiapay Direct](https://docs.kkiapay.me/v1/kkiapay-services/kkiapay-direct.md): Avec kkiapay Direct, faites-vous payer via WhatsApp, Facebook, Instagram et plus encore !
+- [kkiapay POS](https://docs.kkiapay.me/v1/kkiapay-services/kkiapay-pos.md): Avec kkiapay POS, encaisser vos paiements sans site web ni application mobile !
+- [kkiapay Chap Chap](https://docs.kkiapay.me/v1/kkiapay-services/kkiapay-chap-chap.md)
+- [Présentation génerale](https://docs.kkiapay.me/v1/tableau-de-bord/presentation-generale.md)
+- [Menu](https://docs.kkiapay.me/v1/tableau-de-bord/untitled.md): Votre tableau de bord KKiaPay est composé d'un menu riche en fonctionnalités. Prenez connaissance des diverses fonctionnalités dont vous disposez.
+- [Transactions](https://docs.kkiapay.me/v1/tableau-de-bord/untitled/menu-transactions.md)
+- [Clients](https://docs.kkiapay.me/v1/tableau-de-bord/untitled/menu-clients.md)
+- [Reversements](https://docs.kkiapay.me/v1/tableau-de-bord/untitled/menu-remboursements.md)
+- [Développeurs](https://docs.kkiapay.me/v1/tableau-de-bord/untitled/menu-developpeurs.md)
+- [Paramètres](https://docs.kkiapay.me/v1/tableau-de-bord/untitled/menu-parametres.md)
+- [Webhook](https://docs.kkiapay.me/v1/tableau-de-bord/webhook.md)
+- [Dispositions de sécurité](https://docs.kkiapay.me/v1/securite/untitled.md): La sécurité étant l'une des considérations les plus importantes de notre système, diverses mesures ont été prises afin d'assurer sa mise en place et sa pérennité.
+- [Email ou site web suspect](https://docs.kkiapay.me/v1/securite/untitled-1.md)

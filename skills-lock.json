@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "skills": {
+    "laravel-specialist": {
+      "source": "jeffallan/claude-skills",
+      "sourceType": "github",
+      "skillPath": "skills/laravel-specialist/SKILL.md",
+      "computedHash": "3403773759d65079d1a31052b4a87c526a164eee343bf360dba00ee46dd4a6e4"
+    },
+    "mcp-builder": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/mcp-builder/SKILL.md",
+      "computedHash": "826e46adf81e1372282e205c34e1a2ee876e72148007726e4a2512599d2fef7b"
+    },
+    "php-pro": {
+      "source": "jeffallan/claude-skills",
+      "sourceType": "github",
+      "skillPath": "skills/php-pro/SKILL.md",
+      "computedHash": "3fb08b157480ecb653de286dd749fb9edbcd2c45d99dc51ea0666eeb6652f051"
+    },
+    "security-and-hardening": {
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/security-and-hardening/SKILL.md",
+      "computedHash": "32a1243d6eb45fd342c1f4e9f9ee5f1651a1e9fdccb86dcbbbee5d6f455ed362"
+    },
+    "security-review": {
+      "source": "getsentry/skills",
+      "sourceType": "github",
+      "skillPath": "skills/security-review/SKILL.md",
+      "computedHash": "194b70d3a2a4e0b23a436866c95496457962d1a818c382c56e4912bcd0cc3424"
+    },
+    "stripe-best-practices": {
+      "source": "stripe/ai",
+      "sourceType": "github",
+      "skillPath": "skills/stripe-best-practices/SKILL.md",
+      "computedHash": "0ff3b79104b0f080927b0cc5b4e84e1c41b7fd70658ee6af615315197b005acf"
+    },
+    "woocommerce-backend-dev": {
+      "source": "woocommerce/woocommerce",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/woocommerce-backend-dev/SKILL.md",
+      "computedHash": "8c5306f154cd52f21f94de54cde77bb29c94e1cafe16933fdca2f70383de3753"
+    },
+    "wordpress-pro": {
+      "source": "jeffallan/claude-skills",
+      "sourceType": "github",
+      "skillPath": "skills/wordpress-pro/SKILL.md",
+      "computedHash": "38a72ca045f1114620ecf06187e1952e610a25e31126b577456221f2796a6f90"
+    }
+  }
+}

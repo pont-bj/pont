@@ -1,0 +1,134 @@
+# FedaPay: English
+
+> FedaPay documentation
+
+## English
+
+### FedaPay documentation
+
+#### Introduction to FedaPay
+
+- [What is FedaPay](https://docs.fedapay.com/en/introduction/fedapay.md)
+- [Key Concepts](https://docs.fedapay.com/en/introduction/keyconcepts.md)
+- [Create an account](https://docs.fedapay.com/en/introduction/createaccount.md)
+- [Accept Payments with Checkout.Js](https://docs.fedapay.com/en/introduction/checkoutjs.md)
+- [FedaPay Account Types](https://docs.fedapay.com/en/introduction/compte.md)
+- [Reasons for Rejection of Your FedaPay Account and How to Avoid Them](https://docs.fedapay.com/en/introduction/account-rejection.md)
+
+#### Payment Methods
+
+- [Payment Methods with FedaPay](https://docs.fedapay.com/en/payment-methods.md)
+
+#### API integration
+
+- [FedaPay Libraries: Installation and Configuration](https://docs.fedapay.com/en/integration-api/librairies.md)
+- [Authentication](https://docs.fedapay.com/en/integration-api/authentication.md)
+- [Managing FedaPay API Keys](https://docs.fedapay.com/en/integration-api/api-manage.md)
+- [Customer management](https://docs.fedapay.com/en/integration-api/customer-management.md)
+- [Collects management](https://docs.fedapay.com/en/integration-api/collects-management.md)
+- [Payouts management](https://docs.fedapay.com/en/integration-api/payouts-management.md)
+- [Sending requests](https://docs.fedapay.com/en/integration-api/sending-requests.md)
+- [Webhooks and Events](https://docs.fedapay.com/en/integration-api/webhooks.md)
+- [sub-accounts-api](https://docs.fedapay.com/en/integration-api/sub-accounts-api.md)
+
+#### Plugins FedaPay
+
+- [WooCommerce](https://docs.fedapay.com/en/libraries/woocommerce.md)
+- [PrestaShop](https://docs.fedapay.com/en/libraries/prestashop.md)
+- [OpenCart](https://docs.fedapay.com/en/libraries/opencart.md)
+- [Feda Give for WordPress](https://docs.fedapay.com/en/libraries/give.md)
+- [FedaPay Plugin Configuration for WHMCS](https://docs.fedapay.com/en/libraries/whmcs.md)
+- [Bubble](https://docs.fedapay.com/en/libraries/bubble.md)
+- [Odoo](https://docs.fedapay.com/en/libraries/odoo.md)
+
+#### FedaPay Dashboard
+
+- [Overview of Your Collect](https://docs.fedapay.com/en/dashboard/home.md)
+- [Customer: Management and History](https://docs.fedapay.com/en/dashboard/customer.md)
+- [Collects: Viewing and Management](https://docs.fedapay.com/en/dashboard/collects.md)
+- [Refunds: Tracking and Filtering](https://docs.fedapay.com/en/dashboard/refunds.md)
+- [Chargebacks and Exports](https://docs.fedapay.com/en/dashboard/retenue.md)
+- [Payment Page](https://docs.fedapay.com/en/dashboard/payment-page.md)
+- [Payouts: Schedule Withdrawals](https://docs.fedapay.com/en/dashboard/payout.md)
+- [API, Events, Logs, and Webhooks](https://docs.fedapay.com/en/dashboard/api.md)
+- [Profile Management and Security](https://docs.fedapay.com/en/dashboard/profile.md)
+- [Business Settings](https://docs.fedapay.com/en/dashboard/business.md)
+- [User Management](https://docs.fedapay.com/en/dashboard/user.md)
+- [Retrieving and managing your FedaPay funds](https://docs.fedapay.com/en/dashboard/funds.md)
+
+#### TAP & GO
+
+- [Frequently Asked Questions (FAQ) – TAP & GO](https://docs.fedapay.com/en/tap-go/faq.md)
+- [User Documentation – TAP & GO](https://docs.fedapay.com/en/tap-go/docs.md)
+
+#### Security
+
+- [Best Practices](https://docs.fedapay.com/en/security/best-practices.md)
+- [Fraud and Security](https://docs.fedapay.com/en/security/fraud-security.md)
+
+### SDKs
+
+- [FedaPay SDK Overview](https://docs.fedapay.com/en/sdks/overview.md)
+- [PHP SDK](https://docs.fedapay.com/en/sdks/php.md)
+- [Node.js SDK](https://docs.fedapay.com/en/sdks/nodejs.md)
+- [Ruby SDK](https://docs.fedapay.com/en/sdks/ruby.md)
+- [React.js SDK](https://docs.fedapay.com/en/sdks/reactjs.md)
+- [Angular SDK](https://docs.fedapay.com/en/sdks/angular.md)
+
+### API Reference
+
+#### Introduction
+
+- [Introduction to the FedaPay API](https://docs.fedapay.com/en/api-reference/introduction.md)
+
+#### Collects
+
+- [Get a transaction](https://docs.fedapay.com/api-reference/transactions/get-by-id.md)
+- [Create a transaction](https://docs.fedapay.com/api-reference/transactions/create.md)
+- [Update a transaction](https://docs.fedapay.com/api-reference/transactions/update.md)
+- [Delete a transaction](https://docs.fedapay.com/api-reference/transactions/delete.md)
+- [Search your transactions](https://docs.fedapay.com/api-reference/transactions/get-all.md)
+- [Get the payment link for a transaction](https://docs.fedapay.com/api-reference/transactions/create-token.md)
+- [Send payment to user](https://docs.fedapay.com/api-reference/transactions/send-payment.md)
+
+#### Payouts
+
+- [Get a payout](https://docs.fedapay.com/api-reference/payouts/get-by-id.md)
+- [Create a payout](https://docs.fedapay.com/api-reference/payouts/create.md): This endpoint creates a new payout.
+- [Update a payout](https://docs.fedapay.com/api-reference/payouts/update.md)
+- [Delete a payout](https://docs.fedapay.com/api-reference/payouts/delete.md)
+- [Search your payouts](https://docs.fedapay.com/api-reference/payouts/get-all.md)
+- [Start payout](https://docs.fedapay.com/api-reference/payouts/update-start.md)
+
+#### Events
+
+- [Get a event](https://docs.fedapay.com/api-reference/events/get-by-id.md): Retrieves a single event by ID
+- [Get all events](https://docs.fedapay.com/api-reference/events/get-all.md)
+
+#### Balances
+
+- [Get a balance](https://docs.fedapay.com/api-reference/balances/get-by-id.md): Retrieves a single balance by ID
+- [Get all balances](https://docs.fedapay.com/api-reference/balances/get-all.md)
+
+#### Currencies
+
+- [Get a currency](https://docs.fedapay.com/api-reference/currencies/get-by-id.md)
+- [Get all currencies](https://docs.fedapay.com/api-reference/currencies/get-all.md)
+
+#### Logs
+
+- [Get a logs](https://docs.fedapay.com/api-reference/logs/get-by-id.md)
+- [Get all logs](https://docs.fedapay.com/api-reference/logs/get-all.md)
+
+#### Webhooks
+
+- [Get a webhook](https://docs.fedapay.com/api-reference/webhooks/get-by-id.md)
+- [Get all webhooks](https://docs.fedapay.com/api-reference/webhooks/get-all.md)
+
+### Changelog
+
+- [Changelog](https://docs.fedapay.com/en/changelog.md): Stay informed about the latest service updates from FedaPay SA. Discover new features, platform enhancements, bug fixes, and tool changes.
+
+## OpenAPI Specs
+
+- [openapi](/api-reference/openapi.json)

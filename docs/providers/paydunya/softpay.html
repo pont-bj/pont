@@ -1,0 +1,1449 @@
+<!doctype html>
+<html>
+    <head>
+        <!-- META Tags -->
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>SOFTPAY | PayDunya Developers</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- SEO -->
+        <meta name="author" content="PayDunya">
+        <meta name="description" content="PayDunya Developers">
+        <meta name="keywords" content="PayDunya, Developers, Documentation">
+        <meta name="twitter:card" value="summary">
+                    <link rel="canonical" href="https://developers.paydunya.com/doc/FR/softpay" />
+                                                                <meta property="og:title" content="PayDunya Documentation en ligne" />
+                                                                <meta property="og:type" content="article" />
+                                                                                                                        
+        <!-- CSS -->
+        <link rel="stylesheet" href="https://developers.paydunya.com/vendor/binarytorch/larecipe/assets/css/app.css">
+
+                    <!-- Favicon -->
+            <link rel="apple-touch-icon" href="https://developers.paydunya.com/images/favicon.png">
+            <link rel="shortcut icon" type="image/png" href="https://developers.paydunya.com/images/favicon.png"/>
+        
+        <!-- FontAwesome -->
+        <link rel="stylesheet" href="https://developers.paydunya.com/vendor/binarytorch/larecipe/assets/css/font-awesome.css">
+                    <link rel="stylesheet" href="https://developers.paydunya.com/vendor/binarytorch/larecipe/assets/css/font-awesome-v4-shims.css">
+        
+        <!-- Dynamic Colors -->
+        <style>
+    :root {
+        --primary: #787AF6;
+        --secondary: #1894dd;
+    }
+
+    :not(pre)>code[class*=language-], pre[class*=language-] {
+        border-top: 3px solid #787AF6;
+    }
+    
+    .bg-gradient-primary {
+        background: linear-gradient(87deg, #787AF6 0, #1894dd 100%) !important;
+    }
+
+    [v-cloak] > * { 
+        display: none; 
+    }
+    
+    [v-cloak]::before { 
+        content: " ";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: #F2F6FA;
+    }
+</style>
+        <!-- CSRF Token -->
+        <meta name="csrf-token" content="">
+
+        
+    </head>
+    <body><a href="https://developers.paydunya.com/cdn-cgi/content?id=JwJt84nAYF_6ijW.4V2OPN3bh4BzbFhzv7_YARgKKqI-1793055778.0849116-1.2.1.1-FirEwtwAYI12otOnBNBkCgluM8AQAMRUpvmlqXTJXsUpdLzaO8ubWCzCbeAqW9Ok" aria-hidden="true" rel="nofollow noopener" style="display: none !important; visibility: hidden !important"></a>
+        <div id="app" v-cloak>
+            <div class="fixed pin-t pin-x z-40">
+    <div class="text-white h-1" style="background-color: #fff;"></div>
+
+    <nav class="flex items-center justify-between text-black bg-navbar shadow-xs h-16">
+        <div class="flex items-center flex-no-shrink">
+            <a href="https://paydunya.com" class="flex items-center flex-no-shrink text-black mx-4">
+                <div class="p-1">
+    <img src="https://developers.paydunya.com/logo_doc.png" alt="" width="60px">
+</div>
+            <p class="inline-block font-semibold mx-1 text-grey-dark">
+                    &nbsp;
+                    <!-- PayDunya Developers -->
+                </p>
+            </a>
+
+            <div class="switch">
+                <input type="checkbox" name="1" id="1" v-model="sidebar" class="switch-checkbox"/>
+                <label class="switch-label" style="background-color: #1894dd;" for="1"></label>
+            </div>
+        </div>
+
+        <div class="block mx-4 flex items-center">
+            
+            <larecipe-button tag="a" href="https://github.com/paydunyadev?tab=repositories" target="__blank" type="black" class="mx-2 px-4">
+                <i class="fab fa-github"></i>
+            </larecipe-button>
+
+            
+            <larecipe-dropdown>
+                <larecipe-button type="secondary" class="flex">
+                    EN <i class="mx-1 fa fa-angle-down"></i>
+                </larecipe-button>
+
+                <template slot="list">
+                    <ul class="list-reset">
+                                                    <li class="py-2 hover:bg-grey-lightest">
+                                <a class="px-6 text-grey-darkest" href="https://developers.paydunya.com/doc/FR/softpay">FR</a>
+                            </li>
+                                                    <li class="py-2 hover:bg-grey-lightest">
+                                <a class="px-6 text-grey-darkest" href="https://developers.paydunya.com/doc/EN/softpay">EN</a>
+                            </li>
+                                            </ul>
+                </template>
+            </larecipe-dropdown>
+            
+
+                    </div>
+    </nav>
+</div>
+            
+            <div>
+	<div id="app" class="sidebar" :class="[{'is-hidden': !sidebar}]">
+    <ul>
+<li>
+<h2>DOCUMENTATION</h2>
+<ul>
+<li><a href="/doc/EN/introduction">Introduction</a></li>
+<li><a href="/doc/EN/definitions">Which API to choose?</a></li>
+</ul>
+</li>
+<li>
+<h2>To Recieve Money</h2>
+<ul>
+<li>
+<details style="margin-left:30px;"> <summary> PAR API</summary>
+      <ul class="nav row">
+        <li><a href="/doc/EN/api_par_index" style="color:#1894dd; text-transform:uppercase;">Definition</a></li>
+        <li><a href="/doc/EN/Magento" style="color:#1894dd; text-transform:uppercase">Magento</a></li>
+        <li><a href="/doc/EN/wordpress" style="color:#1894dd; text-transform:uppercase">Wordpress</a></li>
+        <li><a href="/doc/EN/http_json" style="color:#1894dd; text-transform:uppercase">HTTP/JSON</a></li>
+        <li><a href="/doc/EN/php" style="color:#1894dd; text-transform:uppercase">Php</a></li>
+        <li><a href="/doc/EN/NET" style="color:#1894dd; text-transform:uppercase">.NET</a></li>
+        <li><a href="/doc/EN/Java" style="color:#1894dd; text-transform:uppercase">Java</a></li>
+        <li><a href="/doc/EN/Ruby" style="color:#1894dd; text-transform:uppercase">Ruby</a></li>
+        <li><a href="/doc/EN/Python" style="color:#1894dd; text-transform:uppercase">Python</a></li>
+        <li><a href="/doc/EN/NodeJS" style="color:#1894dd; text-transform:uppercase">NodeJS</a></li>
+        <li><a href="/doc/EN/Android" style="color:#1894dd; text-transform:uppercase">Android</a></li>
+        <li><a href="/doc/EN/Prestashop" style="color:#1894dd; text-transform:uppercase">Prestashop</a></li>
+        <li><a href="/doc/EN/whmcs" style="color:#1894dd; text-transform:uppercase">WHMCS</a></li>
+      </ul>
+</details>
+</li>
+<li>
+<details style="margin-left:30px;"> <summary> PSR API </summary>
+    <ul>
+      <li><a href="/doc/EN/api_psr_index" style="color:#1894dd; text-transform:uppercase">Definition</a></li>
+      <li><a href="/doc/EN/psr_plugins/api_psr" style="color:#1894dd; text-transform:uppercase">Web Api</a></li>
+      <li><a href="/doc/EN/psr_plugins/ios" style="color:#1894dd; text-transform:uppercase">IOS</a></li>
+      <li><a href="/doc/EN/psr_plugins/magento_psr" style="color:#1894dd; text-transform:uppercase">Magento</a></li>
+      <li><a href="/doc/EN/psr_plugins/wordpress_psr" style="color:#1894dd; text-transform:uppercase">Wordpress</a></li>
+      <li><a href="/doc/EN/psr_plugins/prestashop_psr" style="color:#1894dd; text-transform:uppercase">Prestashop</a></li>
+    </ul>
+</details>
+</li>
+<li>
+<details style="margin-left:30px;"> <summary> SoftPay </summary>
+     <ul>
+          <li><a href="/doc/EN/api_softpay_index" style="color:#1894dd; text-transform:uppercase">Definition</a></li>
+          <li><a href="/doc/EN/sandbox_softpay" style="color:#1894dd; text-transform:uppercase">Sandbox</a></li>
+          <li><a href="/doc/EN/softpay" style="color:#1894dd; text-transform:uppercase">API SoftPay</a></li>
+     </ul>
+</details>
+</li>
+</ul>
+</li>
+<li>
+<h2>Send Money</h2>
+<ul>
+<li><a href="/doc/EN/api_deboursement">PUSH API</a></li>
+</ul>
+</li>
+<li>
+<h2>Check Transaction Status</h2>
+<ul>
+<li><a href="/doc/EN/http_json#section-4">PAYMENT</a></li>
+<li><a href="/doc/EN/api_deboursement#section-2">DISBURSEMENT</a></li>
+</ul>
+</li>
+<li>
+<h2>Payments Request</h2>
+<ul>
+<li><a href="/doc/EN/dmp">Payment Request API</a></li>
+</ul>
+</li>
+<li>
+<h2>Technical Support</h2>
+<ul>
+<li><a href="/doc/EN/introduction#section-7">Contact</a></li>
+</ul>
+</li>
+<li>
+<h2>Get balance</h2>
+<ul>
+<li><a href="/doc/EN/get_balance">Balance</a></li>
+</ul>
+</li>
+<li>
+<h2>Payment Buttons</h2>
+<ul>
+<li><a href="/doc/EN/nos_boutons_payer">Our Pay Buttons</a></li>
+</ul>
+</li>
+</ul>
+</div>	
+	<div class="documentation is-dark" :class="{'expanded': ! sidebar}">
+		<h1>SOFTPAY</h1>
+<hr />
+<ul>
+<li><a href="/doc/EN/softpay#section-1">GENERATION OF API KEYS</a></li>
+<li><a href="/doc/EN/softpay#section-2">API integration</a></li>
+<li><a href="/doc/EN/softpay#section-19">Payment by BANK CARD</a></li>
+<li><a href="/doc/EN/softpay#section-3">Payment by ORANGE MONEY SENEGAL</a></li>
+<li><a href="/doc/EN/softpay#section-4">Payment by FREE MONEY SENEGAL</a></li>
+<li><a href="/doc/EN/softpay#section-5">Payment by EXPRESSO SENEGAL</a></li>
+<li><a href="/doc/EN/softpay#section-6">Payment by WAVE SENEGAL</a></li>
+<li><a href="/doc/EN/softpay#section-17">Payment by WIZALL SENEGAL</a></li>
+<li><a href="/doc/EN/softpay#section-7">Payment by ORANGE MONEY CÔTE D'IVOIRE</a></li>
+<li><a href="/doc/EN/softpay#section-8">Payment by MTN CÔTE D'IVOIRE</a></li>
+<li><a href="/doc/EN/softpay#section-15">Payment by MOOV CÔTE D'IVOIRE</a></li>
+<li><a href="/doc/EN/softpay#section-20">Payment by WAVE CÔTE D'IVOIRE</a></li>
+<li><a href="/doc/EN/softpay#section-9">Payment by ORANGE MONEY BURKINA FASO</a></li>
+<li><a href="/doc/EN/softpay#section-10">Payment by MOOV BURKINA FASO</a></li>
+<li><a href="/doc/EN/softpay#section-11">Payment by MOOV BENIN</a></li>
+<li><a href="/doc/EN/softpay#section-12">Payment by MTN BENIN</a></li>
+<li><a href="/doc/EN/softpay#section-14">Payment by T-MONEY TOGO</a></li>
+<li><a href="/doc/EN/softpay#section-21">Payment by MOOV TOGO</a></li>
+<li><a href="/doc/EN/softpay#section-16">Payment by ORANGE MONEY MALI</a></li>
+<li><a href="/doc/EN/softpay#section-18">Payment by MOOV MALI</a></li>
+<li><a href="/doc/EN/softpay#section-22">Payment by MTN CAMEROUN</a></li>
+<li><a href="/doc/EN/softpay#section-23">Payment by DJAMO SENEGAL</a></li>
+<li><a href="/doc/EN/softpay#section-24">Payment by DJAMO COTE D'IVOIRE</a></li>
+<li><a href="/doc/EN/softpay#section-25">Payment by CELTIIS CASH BENIN</a></li>
+<li><a href="/doc/EN/softpay#section-13">Payment by PAYDUNYA</a></li>
+</ul>
+<larecipe-card type="danger" style="outline: none;box-shadow: none;border-bottom: 0px; border-right: 0px; border-left: 0px; border-top: 0px; margin:none">
+       <p style="text-align: justify; font-family: Garamond; font-size:1.2em  ">
+             Read all the <span style="color:#000000"> sections in blue </span> to better understand the documentation and the <span style="color:#000000"> sections in orange </span> signifying the alert in order to avoid mistakes to be made during the integrations and the detailed procedures for the integrations.
+       </p>
+</larecipe-card>
+<p><a name="section-1"></a></p>
+<h2>GENERATION OF API KEYS</h2>
+<larecipe-card style="outline: none;box-shadow: none;border-bottom: 0px; border-right: 0px; border-left: 0px; border-top: 0px">
+<p style="text-align: justify">
+API keys are your digital references towards PayDunya systems. We use them to identify your account and the applications you will create. These keys are necessary for any integration of the APIs of PayDunya's payments APIs. Here are the steps to follow:
+</p>
+
+<ul>
+<li>
+First you need have a PayDunya Business account activated. <a href="https://paydunya.com/signup" style="color:#1894dd"> Create </a> one if it is not yet the case.
+</li>
+
+<li>
+<a href="https://paydunya.com/login" style="color:#1894dd">Login</a> to your account and click on
+<a href="https://paydunya.com/integration-setups" style="color:#1894dd">Integration API </a>at the menu level on the left.
+</li>
+
+<li>
+Click on the button <a href="https://paydunya.com/integration-setups/create" style=" color:#1894dd"> Set up a new application </a> and fill out the form.
+</li>
+
+<li>
+Choose <code style="color:#0070B2; font-weight:bold; text-transform:uppercase"><strong>Test mode, I want to make payment tests</strong></code> and
+        <code style="color:#0070B2; font-weight:bold; text-transform:uppercase"><strong>Enable production mode</strong></code>.
+</li>
+
+</ul>
+
+</larecipe-card>
+<!-- Section-2 -->
+<p><a name="section-2"></a></p>
+<h2>API integration</h2>
+<hr />
+<h4 style="color:#0040B2; text-transform:uppercase">ENDPOINTS API LIVE</h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v1/checkout-invoice/create</strong></code></pre>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">POST REQUEST HTTP</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+curl -H "Content-Type: application/json" \
+-H "PAYDUNYA-MASTER-KEY: wQzk9ZwR-Qq9m-0hD0-zpud-je5coGC3FHKW" \
+-H "PAYDUNYA-PRIVATE-KEY: live_private_rMIdJM3PLLhLjyArx9tF3VURAF5" \
+-H "PAYDUNYA-TOKEN: IivOiOxGJuWhc5znlIiK" \
+-X POST -d '{"invoice": {"total_amount": 5000, "description": "Chaussure VANS dernier modèle"},"store": {"name": "Magasin le Choco"}}' \
+"https://app.paydunya.com/api/v1/checkout-invoice/create"
+</code></pre>
+</div>
+</div>
+<hr />
+<h4 style="color:#0040B2; text-transform:uppercase">EXPECTED RESPONSE</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+    "response_code":"00",
+    "response_text":"https://app.paydunya.com/checkout/invoice/ERtyuILouhhRHICF0HboN",
+    "description":"Checkout Invoice Created",
+    "token":"ERtyuILouhhRHICF0HboN"
+}
+</code></pre>
+</div>
+</div>
+<h3 style="color:#0040B2; text-transform:uppercase">1 - Complete JSON structure of the data to be sent</h3>
+<hr />
+<p style="text-align: justify">
+  Here is presented below, the complete structure of the PayDunya invoicing JSON object. Most items are optional, but get in the habit of providing them all as it will give you much more flexibility. The required JSON nodes for submitting a bill payment HTTP POST request to our API Endpoints are: the root node <code style="color:#0070B2; font-weight:bold"><strong>invoice</strong></code> and its child node <code style="color:#0070B2; font-weight:bold"><strong>total_amount</strong></code> as well as the root node <code style="color:#0070B2; font-weight:bold"><strong>store</strong></code> and its child node <code style="color:#0070B2; font-weight:bold"><strong>name</strong></code>.
+</p>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+    "invoice": {
+        "items": {},
+        "taxes": {},
+        "total_amount": 5000,
+        "description": "",
+        "store": {
+                "name": "Magasin le Choco",
+                "tagline": "",
+                "postal_address": "",
+                "phone": "",
+                "logo_url": "",
+                "website_url": ""
+         },
+        "custom_data": {},
+        "actions": {
+            "cancel_url": "",
+            "return_url": "",
+            "callback_url": ""
+        }
+      }
+}
+</code></pre>
+</div>
+</div>
+<larecipe-card type="secondary">
+    <h4 style="color:#0040B2; text-transform:uppercase"><i class="fa fa-lightbulb-o"></i>  Note</h4><br>
+    <p style="text-align: justify; font-family: Garamond; font-size:1.2em ">
+        If a <code style="color:#0070B2; font-weight:bold">logo_url</code> is provided when creating a <code style="color:#0070B2; font-weight:bold">checkout invoice</code>, it will be displayed on the payment page. Otherwise, the account's default logo will be shown. If no logo is configured, a generic <code style="color:#0070B2; font-weight:bold">market icon</code> will be displayed instead.
+    </p>
+</larecipe-card>
+<h3 style="color:#0040B2; text-transform:uppercase">2 - Adding items to the PayDunya invoice</h3>
+<hr />
+<p style="text-align: justify">
+Refer to the full JSON structure to you know exactly where to insert the following structure. The <code style="color:#0070B2; font-weight:bold"><strong>"items"</strong></code> are used to display to the customer on the payment page the list of items he has ordered. Under no circumstances will PayDunya use any of the amounts declared in <code style="color:#0070B2; font-weight:bold"><strong>"items"</strong></code> to bill the customer.
+</p>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+    "items": {
+        "item_0": {
+            "name": "Chaussures Croco",
+            "quantity": 3,
+            "unit_price": "10000",
+            "total_price": "30000",
+            "description": "Chaussures faites en peau de crocrodile authentique qui chasse la pauvreté"
+        },
+        "item_1": {
+            "name": "Chemise Glacée",
+            "quantity": 1,
+            "unit_price": "5000",
+            "total_price": "5000",
+            "description": ""
+        }
+}
+</code></pre>
+</div>
+</div>
+<h3 style="color:#0040B2; text-transform:uppercase">3 - Add taxes (optional)</h3>
+<hr />
+<p style="text-align: justify">
+If you want to display on the PayDunya invoice the taxes you apply (TVA, delivery costs...) you can do so using the JSON node <code style="color:#0070B2; font-weight:bold"><strong>taxes</strong></code> as shown below.
+</p>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+"taxes": {
+    "tax_0": {
+        "name": "TVA (18%)",
+        "amount": 6300
+    },
+    "tax_1": {
+        "name": "Livraison",
+        "amount": 1000
+    }
+}
+</code></pre>
+</div>
+</div>
+<h3 style="color:#0040B2; text-transform:uppercase">4 - Adding custom data (optional)</h3>
+<hr />
+<p style="text-align: justify">
+If you need to add additional data (for example for a contest, you can save information about each winner) for later use, we offer you the possibility to save this data on our servers and to be able to get them back after successful payment.
+</p>
+<p> {info.fa-lightbulb-o} </p>
+<hr />
+<h4 style="color:#0040B2; text-transform:uppercase">Exemple 1</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+"custom_data": {
+    "categorie": "Jeu concours",
+    "periode":  "Noël 2015",
+    "numero_gagnant": 5,
+    "prix" : "Bon de réduction de 50%"
+}
+</code></pre>
+</div>
+</div>
+<hr />
+<h4 style="color:#0040B2; text-transform:uppercase">Exemple 2</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+"custom_data": {
+    "phone_brand": "Nokia",
+    "IMEI": "72892821010728",
+    "model": "Luna"
+}
+</code></pre>
+</div>
+</div>
+<h3 style="color:#0040B2; text-transform:uppercase">5 - IPN configuration (Instant Payment Notification)</h3>
+<hr />
+<p style="text-align: justify;">
+It may be that for reasons x or y, that the payment confirmation is not instantaneous (for example the time that the customer types his secret code on his telephone or the latency time of the telephone network), the IPN allows you Instantly receive transaction information for payment <code style="color:#0070B2; font-weight:bold; text-transform:uppercase">confirmed</code>, <code style="color:#0070B2; font-weight:bold; text-transform:uppercase">canceled</code> or <code style="color:#0070B2; font-weight:bold; text-transform:uppercase">failed</code>.
+</p>
+<p style="text-align: justify">
+The IPN corresponds to the URL of a file on your server on which you wish to receive payment transaction information, this information is to be processed in the back office. PayDunya uses this URL to send you instantly, by request <code style="color:#0070B2; font-weight:bold"><strong>POST</strong></code>, payment transaction information.
+</p>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+"actions": {
+    "callback_url": "http://www.magasin-le-choco.com/callback_url.php"
+}
+</code></pre>
+</div>
+</div>
+<larecipe-card type="secondary" style="outline: none;box-shadow: none;border-bottom: 0px; border-right: 0px; border-left: 0px; border-top: 0px; margin:none">
+       <p style="text-align: justify; font-family: Garamond; font-size:1.2em  ">
+            The successful validation of the payment transaction returns the structure below containing the information on the customer, the URL of his PayDunya invoice in PDF version and also a hash to verify that the data received does indeed come from our servers.
+            Furthermore, it is essential to understand for information purposes that the payments <code style="color:#666; font-weight:bold;">canceled</code> or <code style="color:#666; font-weight:bold;">Failed</code> keep the same response format except the status value changes : for failed payments the status becomes <code style="color:#666; font-weight:bold;">failed</code> and for payments <code style="color:#666; font-weight:bold;">cancelled</code> becomes <code style="color:#666; font-weight:bold;">cancelled</code>.
+       </p>
+</larecipe-card>
+<hr />
+<h4 style="color:#0040B2; text-transform:uppercase">Expected Response:</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+array (
+  'data' =&gt; 
+    array (
+     'response_code' =&gt; '00',
+     'response_text' =&gt; 'Transaction Found',
+     'hash' =&gt; '8c6666a27fe5daeb76dae6abc7308a557dca5be1bda85dfe5d81fa330cdc0bc3c4b37765fe5d2cc36aa2ba0f9284226a80f5488d14740fa70769d6079a179406',
+     'invoice' =&gt; 
+        array (
+         'token' =&gt; 'test_jkEdPY8SuG',
+         'items' =&gt; 
+            array (
+             'item_0' =&gt; 
+                array (
+                  'name' =&gt; 'Chaussures Croco',
+                  'quantity' =&gt; '3',
+                  'unit_price' =&gt; '10000',
+                  'total_price' =&gt; '30000',
+                  'description' =&gt; 'Chaussures faites en peau de crocrodile authentique qui chasse la pauvreté',
+               ),
+             'item_1' =&gt; 
+                array (
+                 'name' =&gt; 'Chemise Glacée',
+                 'quantity' =&gt; '1',
+                 'unit_price' =&gt; '5000',
+                 'total_price' =&gt; '5000',
+                 'description' =&gt; '',
+               ),
+           ),
+          'taxes' =&gt; 
+            array (
+              'tax_0' =&gt; 
+                array (
+                  'name' =&gt; 'TVA (18%)',
+                  'amount' =&gt; '6300',
+               ),
+              'tax_1' =&gt; 
+                array (
+                'name' =&gt; 'Livraison',
+                'amount' =&gt; '1000',
+              ),
+      ),
+      'token': 'test_Jh2T8skw1j',
+      'total_amount' =&gt; '42300',
+      'description' =&gt; 'Payment de 42300 FCFA pour article(s) achetés sur Magasin le Choco',
+      ),
+      'custom_data' =&gt; 
+        array (
+          'categorie' =&gt; 'Jeu concours',
+          'periode' =&gt; 'Noël 2015',
+          'numero_gagnant' =&gt; '5',
+          'prix' =&gt; 'Bon de réduction de 50%',
+        ),
+      'actions' =&gt; 
+        array (
+          'cancel_url' =&gt; 'http://magasin-le-choco.com/cancel_url.aspx',
+          'callback_url' =&gt; 'http://magasin-le-choco.com/callback_url.aspx',
+          'return_url' =&gt; 'http://magasin-le-choco.com/return_url.aspx',
+        ),
+      'mode' =&gt; 'test',
+      'status' =&gt; 'completed',
+      'customer' =&gt; 
+        array (
+         'name' =&gt; 'Alioune Faye',
+         'phone' =&gt; '774563209',
+         'email' =&gt; '<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a0c1ccc9cfd5cec5c6c1d9c5e0c7cdc1c9cc8ec3cfcd">[email&#160;protected]</a>',
+        ),
+      'receipt_url' =&gt; 'https://paydunya.com/sandbox-checkout/receipt/pdf/test_jkEdPY8SuG.pdf',
+    ),
+  )  
+</code></pre>
+</div>
+</div>
+<larecipe-card type="secondary" style="outline: none;box-shadow: none;border-bottom: 0px; border-right: 0px; border-left: 0px; border-top: 0px; margin:none">
+       <p style="text-align: justify; font-family: Garamond; font-size:1.2em  ">
+           The hash returned by PayDunya is the hash of your MasterKey (main key). This hash will allow you to ensure that the data you have received comes from our servers. The algorithm used to obtain the hash is <code style="color:#666; ">SHA-512</code>. In the expected response, a failure message is entered in the node <code style="color:#666; ">fail_reason</code> only for transactions by <code style="color:#666; ">card failed</code> ou <code style="color:#666; ">canc</code>.
+       </p>
+</larecipe-card>
+<p><a name="section-19"></a></p>
+<h2>Payment by BANK CARD</h2>
+<hr />
+<larecipe-card type="warning" style="outline: none;box-shadow: none;border-bottom: 0px; border-right: 0px; border-left: 0px; border-top: 0px; margin:none">
+    <h4 style="color:#0040B2; text-transform:uppercase"><i class="fa fa-exclamation-triangle"></i>  Alerte</h4><br>
+    <p style="text-align: justify; font-family: Garamond; font-size:1.2em  ">
+      The SOFTPAY API for bank card payments is only available to PCI-DSS certified companies. Activation is done on request.
+    </p>
+</larecipe-card>
+<h4 style="color:#0040B2; text-transform:uppercase">BANK CARD API</h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v1/softpay/card</strong></code></pre>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">REQUEST HTTP POST</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">{
+  "full_name": "John Doe",
+  "email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="14607167605464756d70617a6d753a777b79">[email&#160;protected]</a>",
+  "card_number": "1234567890123456",
+  "card_cvv": "123",
+  "card_expired_date_year": "25",
+  "card_expired_date_month": "11",
+  "token": "T3JgbeD3xHXoWtmqOktm"
+}
+</code></pre>
+</div>
+</div>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected Response</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">{
+  "success": true,
+  "message": "Le paiement a été effectué avec succès.",
+  "fees"   : 100, // Si c'est le payeur qui supporte les frais.
+  "currency" : "XOF" // Si c'est le payeur qui supporte les frais.
+}
+</code></pre>
+</div>
+</div>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected Response 3DS CARD CASE</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">{
+  "success": true,
+  "message": "Rediriger vers cette URL pour completer le paiement.",
+  "url": "https://paydunya.com/card_3ds_redirect?key=eyJ0aHJlZURTU2VydmVyVHJhbnNJRCI6IjYwYmRjNmU0LWRjNjMtNDIxNy05OTU3LTVjZDc0M5zSUQiOiJmZjkxMzc1Mi0zOGRmLTRjZTYtYjM5Zi00MTg4MTE0OTg1ZWQiLCJjaGFsbGVuZ2VXaW5kb3dTaXplIjoiMDUiLCJtZXNzYWdlVHlwZSI6IkNSZXEiLCJtZXNzYWdlVmVyc2lvbiI6IjIuMS4wIn0&amp;url=https://authentication.cardinalcommerce.com/ThreeDSecure/V2_1_0/CReq",
+  "fees"   : 100, // Si c'est le payeur qui supporte les frais.
+  "currency" : "XOF" // Si c'est le payeur qui supporte les frais.
+}
+</code></pre>
+</div>
+</div>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected Failed Response</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">{
+  "success": false,
+    "message": "Transaction annulée ou Refus de paiement en lien avec votre établissement bancaire.",
+    "errors": {
+        "message": "Transaction annulée ou Refus de paiement en lien avec votre établissement bancaire.",
+        "description": "Transaction annulée ou Refus de paiement en lien avec votre établissement bancaire."
+  }
+}
+</code></pre>
+</div>
+</div>
+<p><a name="section-3"></a></p>
+<h2>Payment by ORANGE MONEY SENEGAL</h2>
+<larecipe-card type="secondary" style="outline: none;box-shadow: none;border-bottom: 0px; border-right: 0px; border-left: 0px; border-top: 0px; margin:none">
+       <p style="text-align: justify; font-family: Garamond; font-size:1.2em  ">
+       Discover our brand new Orange Money Senegal API update! Now offer your customers the possibility to pay easily by <code style="color:#666; ">QR CODE</code>.
+       For a quick and easy integration, follow the documentation below.
+       </p>
+</larecipe-card>
+<h4 style="color:#0040B2; text-transform:uppercase">ORANGE MONEY SENEGAL API QR CODE</h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v1/softpay/new-orange-money-senegal</strong></code></pre>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">REQUEST HTTP POST</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+  "customer_name": "John Doe",
+  "customer_email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="106475636450777d71797c3e737f7d">[email&#160;protected]</a>",
+  "phone_number": "778676477",
+  "invoice_token": "GS46gkCAnRv3WfRwFdJU",
+}
+</code></pre>
+</div>
+</div>
+<ul>
+<li>&quot;customer_name&quot;: This is the name of the payer</li>
+<li>&quot;customer_email&quot;: This is the email of the payer</li>
+<li>&quot;phone_number&quot;: This is the payer phone number</li>
+<li>&quot;invoice_token&quot;: This is the payment TOKEN generated above</li>
+</ul>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected Response</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+  "success": true,
+  "message": "Rediriger vers cette URL pour completer le paiement.",
+  "url": "https://app.paydunya.com/recharge-orange-sn?data%5Bqrcode%5D=iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAAAAACIM%2FFCAAAAAklEQVR4nGKkkSsAAAHxSURBVO3Q23EbQQwEQOaftB3AaaCBZJZX2sbX1RKPab7%2B%2FJJ6%2Fe8A%2F6pATiuQ0wrktAI5rUBOq18KedX1wable%2Fr1ixlAQEAuhqSjz555eers9y96QEBAroekkOm7Pz0DtxlAQEBAtkvml0UYEBAQkDdD5p5mKv0KAgICsoWk6gOkMCne1zKAgICA9Kff973lg4CA3AnZVgow9z975qkuyvemQUDi6u9Ng7wZ8jyUjqbTaUOzuemPZBAQkCshffj%2BXOpsws95QEBAQJoTzdEU%2BBmj%2F%2F5kMwgIyJWQ9XiBbTjz9fQCAgICksbnc%2F3svDNFrTggICBXQraomdbsmQmLAgEBuRgyr03B0lTzMt997v9gAwgIyMWQOXDf03w3L%2FMsCAjIzZAUrKkmRv%2BSCgQEBGQeSYHTS%2FOHzJy%2BEwQEBKQZScAUI22r4oUNICAgINvaBp4JaQoEBARkhqTxPuTzPf069%2Fd8EBCQmyHbmk%2FP%2Fenl2Z9ugYCAgKRgackcO%2FXMe%2Bb98SIICMjFkG2wbbyv7fwkGwgIyPWQtOS5MB2a3%fA%2FSwICAhID9l%2BJ%2BD8PdNAQEBAekgfL%2FXMtcgAAgJyPWRePh%2Faxmj%2BqE9%2BBQEBuRjS1BxpjpribckgICAgP7hATiuQ0wrktAI5rUBOK5DT6i8Qn6uozO88rQAAAABJRU5ErkJggg%3D%3D&amp;data%5Btoken%5D=2da19f97721d74b725cd0bfec625637f52a4fe8180069fdcea8e0658b319a1",
+  "other_url": {
+      "om_url": "https://orangemoneysn.page.link/BqPM68VcrMniRxE",
+      "maxit_url": "https://sugu.orange-sonatel.com/mp/dpBtHptARK6Br_t5k3"
+    },
+  "fees"   : 100, // Si c'est le payeur qui supporte les frais.
+  "currency"   : "XOF" // Si c'est le payeur qui supporte les frais.
+}
+</code></pre>
+</div>
+</div>
+<ul>
+<li>&quot;url&quot;: This is to redirect the payer to the payment page with the QR CODE</li>
+<li>&quot;om_url&quot;: This is to redirect the payer to their Orange Money application if they use a mobile phone</li>
+<li>&quot;maxit_url&quot;: This is to redirect the payer to their Maxit application if they use a mobile phone</li>
+</ul>
+<p><br></p>
+<p><a name="section-4"></a></p>
+<h2>Payment by FREE MONEY SENEGAL</h2>
+<hr />
+<h4 style="color:#0040B2; text-transform:uppercase">FREE MONEY API</h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v1/softpay/free-money-senegal</strong></code></pre>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">REQUEST HTTP POST </h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+  "customer_name": "Fallou",
+  "customer_email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="bdc9d8cec9fddad0dcd4d193ded2d0">[email&#160;protected]</a>",
+  "phone_number": "768690999",
+  "payment_token": "GS46gkCAnRv3WfRwFdJU"
+}
+</code></pre>
+</div>
+</div>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected Response</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+  "success": true,
+  "message": "Opération réussi, Veuillez tapez #150# pour finaliser votre paiement",
+  "fees"   : 100, // Si c'est le payeur qui supporte les frais.
+  "currency": "XOF" // Si c'est le payeur qui supporte les frais.
+
+  "data": {
+    "status": "PENDING",
+    "amount": 200,
+    "currency": "XOF",
+    "customermsisdn": 768690999,
+    "transactionid": "MP210921.1230.B04577",
+    "externaltransactionid": "FM076_93108370"
+  },
+}
+</code></pre>
+</div>
+</div>
+<p><a name="section-5"></a></p>
+<h2>Payment by EXPRESSO SENEGAL</h2>
+<hr />
+<h4 style="color:#0040B2; text-transform:uppercase">EXPRESSO API</h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v1/softpay/expresso-senegal</strong></code></pre>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">REQUEST HTTP POST </h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+  "expresso_sn_fullName": "Fallou",
+  "expresso_sn_email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9ce8f9efe8dcfbf1fdf5f0b2fff3f1">[email&#160;protected]</a>",
+  "expresso_sn_phone": "705189525",
+  "payment_token": "GS46gkCAnRv3WfRwFdJU"
+}
+</code></pre>
+</div>
+</div>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected Response</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+  "success": true,
+  "message": "Votre paiement est en cours de traitement. Merci de valider le paiement après reception de sms pour le compléter.",
+  "fees"   : 100, // Si c'est le payeur qui supporte les frais.
+  "currency": "XOF" // Si c'est le payeur qui supporte les frais.
+}
+</code></pre>
+</div>
+</div>
+<p><a name="section-6"></a></p>
+<h2>Payment by WAVE SENEGAL</h2>
+<hr />
+<h4 style="color:#0040B2; text-transform:uppercase">WAVE API</h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v1/softpay/wave-senegal</strong></code></pre>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">REQUEST HTTP POST </h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+  "wave_senegal_fullName": "Fallou",
+  "wave_senegal_email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="bfcbdacccbffd8d2ded6d391dcd0d2">[email&#160;protected]</a>",
+  "wave_senegal_phone": "777777777",
+  "wave_senegal_payment_token": "OnW1IkMIQDTiJnQ9S3Ix"
+}
+</code></pre>
+</div>
+</div>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected Response</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+  "success": true,
+  "message": "Rediriger vers cette URL pour completer le paiement.",
+  "url": "https://pay.wave.com/c/cos-1cj669hbr1350?a=200&amp;c=XOF&amp;m=JOE",
+  "fees"   : 100, // Si c'est le payeur qui supporte les frais.
+  "currency": "XOF" // Si c'est le payeur qui supporte les frais.
+}
+</code></pre>
+</div>
+</div>
+<p><a name="section-17"></a></p>
+<h2>Payment by WIZALL SENEGAL</h2>
+<hr />
+<h4 style="color:#0040B2; text-transform:uppercase">WIZALL API</h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v1/softpay/wizall-money-senegal</strong></code></pre>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">REQUEST HTTP POST</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">{
+  "customer_name": "John Doe",
+  "customer_email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="84f0e1f7f0c4e3e9e5ede8aae7ebe9">[email&#160;protected]</a>",
+  "phone_number": "777777777",
+  "invoice_token": "RAV6KK9Ncfy2a6vb3KDT"
+}
+</code></pre>
+</div>
+</div>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected Response</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">{
+    "success": true,
+    "message": "Requête de paiement effectuée!",
+    "data": {
+        "Operation": "MerchantGetMoney",
+        "TransactionID": "286513913",
+        "details": {
+            "message": "MerchantGetMoney Successful",
+            "service": "merchant-get-money",
+            "cid": "489eca906856e440e193ab19"
+        }
+    },
+    "fees"   : 100, // Si c'est le payeur qui supporte les frais.
+    "currency": "XOF" // Si c'est le payeur qui supporte les frais.
+}
+</code></pre>
+</div>
+</div>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">WIZALL API CONFIRM</h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v1/softpay/wizall-money-senegal/confirm</strong></code></pre>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">REQUEST HTTP POST</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">{
+  "authorization_code": "461050",
+  "phone_number": "777777777",
+  "transaction_id": "286513913"
+}
+</code></pre>
+</div>
+</div>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected Response</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">{
+  "success": true,
+  "message": "Paiement réussi",
+  "return_url": "https://www.paydunya.com/successful-payment",
+  "token": "oeKyZGwexXkBk4uYyRoJ"
+}
+</code></pre>
+</div>
+</div>
+<p><a name="section-7"></a></p>
+<h2>Payment by ORANGE MONEY CÔTE D'IVOIRE</h2>
+<hr />
+<p style="text-align: justify">
+After generating the token, you must ask the end user to generate an Orange Money payment code by following the following USSD code:
+</p>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">#144*82# + option 2 to generate an payment code</code></pre>
+</div>
+</div>
+<p><br/></p>
+<h4 style="color:#0040B2; text-transform:uppercase">ORANGE MONEY CÔTE D'IVOIRE API</h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v1/softpay/orange-money-ci</strong></code></pre>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">REQUEST HTTP POST </h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">{
+  "orange_money_ci_customer_fullname": "John Doe",
+  "orange_money_ci_email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="067263757246616b676f6a2865696b">[email&#160;protected]</a>",
+  "orange_money_ci_phone_number": "0777568646",
+  "orange_money_ci_otp": "8562",
+  "payment_token": "ljUZxD5T3RRxhpoOl66b"
+}
+</code></pre>
+</div>
+</div>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected Response</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">{
+    "success": true,
+    "message": "Paiement effectué avec succès."
+    "fees"   : 100, // Si c'est le payeur qui supporte les frais.
+    "currency": "XOF" // Si c'est le payeur qui supporte les frais.
+}
+</code></pre>
+</div>
+</div>
+<p><a name="section-8"></a></p>
+<h2>Payment by MTN CÔTE D'IVOIRE</h2>
+<hr />
+<h4 style="color:#0040B2; text-transform:uppercase">MTN CÔTE D'IVOIRE API</h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v1/softpay/mtn-ci</strong></code></pre>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">REQUEST HTTP POST </h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+  "mtn_ci_customer_fullname": "Fallou",
+  "mtn_ci_email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="027667717642656f636b6e2c616d6f">[email&#160;protected]</a>",
+  "mtn_ci_phone_number": "664142312",
+  "mtn_ci_wallet_provider": "MTNCI",
+  "payment_token": "OnW1IkMIQDTiJnQ9S3Ix"
+}
+</code></pre>
+</div>
+</div>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected Response</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+  "success": true,
+  "message": "success message",
+  "fees"   : 100, // Si c'est le payeur qui supporte les frais.
+  "currency": "XOF" // Si c'est le payeur qui supporte les frais.
+}
+</code></pre>
+</div>
+</div>
+<p><a name="section-15"></a></p>
+<h2>Payment by MOOV CÔTE D'IVOIRE</h2>
+<hr />
+<h4 style="color:#0040B2; text-transform:uppercase">MOOV CÔTE D'IVOIRE API </h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v1/softpay/moov-ci</strong></code></pre>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">REQUEST HTTP POST</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+    "moov_ci_customer_fullname": "Camille",
+    "moov_ci_email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="bcdfddd1d5d0d0d9d1d5d0d0c58bfcdbd1ddd5d092dfd3d1">[email&#160;protected]</a>",
+    "moov_ci_phone_number": "0153401679",
+    "payment_token": "dzSNGqLCohvsFq9KlCmN"
+}
+</code></pre>
+</div>
+</div>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected Response</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+    "success": true,
+    "message": "Votre transaction a été validé avec succès.",
+    "fees"   : 100, // Si c'est le payeur qui supporte les frais.
+    "currency": "XOF" // Si c'est le payeur qui supporte les frais.
+}
+</code></pre>
+</div>
+</div>
+<larecipe-card type="secondary">
+    <h4 style="color:#0040B2; text-transform:uppercase"><i class="fa fa-lightbulb-o"></i> Note </h4>
+    <br>
+    <p style="text-align: justify; font-family: Garamond; font-size:1.2em">
+      When you make a payment by <code style="color:#666; text-transform:lowercase">MOOV CI</code>, a popup automatically opens on your phone with a field for entering your <code style="color:#666; text-transform:lowercase">secret code</code> for payment validation. 
+    </p>
+    <p style="text-align: justify; font-family: Garamond; font-size:1.2em">
+      If the validation time exceeds <code style="color:red; text-transform:lowercase">30 seconds</code> , the API returns the response below:
+    </p>
+</larecipe-card>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected Response</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+    "success": false,
+    "message": "Vous avez dépassé le délais de validation de la transaction."
+}
+</code></pre>
+</div>
+</div>
+<p><a name="section-20"></a></p>
+<h2>Payment by WAVE CÔTE D'IVOIRE</h2>
+<hr />
+<h4 style="color:#0040B2; text-transform:uppercase">WAVE CÔTE D'IVOIRE API</h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v1/softpay/wave-ci</strong></code></pre>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">REQUEST HTTP POST </h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+  "wave_ci_fullName": "Fallou",
+  "wave_ci_email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6511001611250208040c094b060a08">[email&#160;protected]</a>",
+  "wave_ci_phone": "777777777",
+  "wave_ci_payment_token": "OnW1IkMIQDTiJnQ9S3Ix"
+}
+</code></pre>
+</div>
+</div>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected Response</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+  "success": true,
+  "message": "Rediriger vers cette URL pour completer le paiement.",
+  "url": "https://pay.wave.com/c/cos-1cj669hbr1350?a=200&amp;c=XOF&amp;m=JOE",
+  "fees"   : 100, // Si c'est le payeur qui supporte les frais.
+  "currency": "XOF" // Si c'est le payeur qui supporte les frais.
+}
+</code></pre>
+</div>
+</div>
+<p><a name="section-9"></a></p>
+<h2>Payment by ORANGE MONEY BURKINA FASO</h2>
+<hr />
+<h4 style="color:#0040B2; text-transform:uppercase">ORANGE MONEY BURKINA FASO API</h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v1/softpay/orange-money-burkina</strong></code></pre>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">REQUEST HTTP POST </h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+  "name_bf": "Fallou",
+  "email_bf": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0a7e6f797e4a6d676b636624696567">[email&#160;protected]</a>",
+  "phone_bf": "76950976",
+  "otp_code": "89525",
+  "payment_token": "lLTs7h0tor82tchzvSec"
+}
+</code></pre>
+</div>
+</div>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected Response</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+  "success": true,
+  "message": "success message",
+  "fees"   : 100, // Si c'est le payeur qui supporte les frais.
+  "currency": "XOF" // Si c'est le payeur qui supporte les frais.
+}
+</code></pre>
+</div>
+</div>
+<p><a name="section-10"></a></p>
+<h2>Payment by MOOV BURKINA FASO</h2>
+<hr />
+<h4 style="color:#0040B2; text-transform:uppercase">MOOV BURKINA FASO API</h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v1/softpay/moov-burkina</strong></code></pre>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">REQUEST HTTP POST </h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+  "moov_burkina_faso_fullName": "Fallou",
+  "moov_burkina_faso_email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4430213730042329252d286a272b29">[email&#160;protected]</a>",
+  "moov_burkina_faso_phone_number": "51765664",
+  "moov_burkina_faso_payment_token": "lLTs7h0tor82tchzvSec"
+}
+</code></pre>
+</div>
+</div>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected Response</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+  "success": true,
+  "message": "Veuillez compléter le paiement en composant le *555*6#.",
+  "fees"   : 100, // Si c'est le payeur qui supporte les frais.
+  "currency": "XOF" // Si c'est le payeur qui supporte les frais.
+}
+</code></pre>
+</div>
+</div>
+<p><a name="section-11"></a></p>
+<h2>Payment by Moov BENIN</h2>
+<hr />
+<h4 style="color:#0040B2; text-transform:uppercase">MOOV BENIN API</h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v1/softpay/moov-benin</strong></code></pre>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">REQUEST HTTP POST </h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+   "moov_benin_customer_fullname": "Camille",
+   "moov_benin_email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c3a0a2aeaaafafa6aeaaafafbaf483a4aea2aaafeda0acae">[email&#160;protected]</a>",
+   "moov_benin_phone_number": "0140253725",
+   "payment_token": "lLTs7h0tor82tchzvSec"
+}
+</code></pre>
+</div>
+</div>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected Response</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+  "success": true,
+  "message": "Success message",
+  "fees"   : 100, // Si c'est le payeur qui supporte les frais.
+  "currency": "XOF" // Si c'est le payeur qui supporte les frais.
+}
+</code></pre>
+</div>
+</div>
+<p><a name="section-12"></a></p>
+<h2>Payment by MTN BENIN</h2>
+<hr />
+<h4 style="color:#0040B2; text-transform:uppercase">MTN BENIN API</h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v1/softpay/mtn-benin</strong></code></pre>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">REQUEST HTTP POST </h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+  "mtn_benin_customer_fullname": "Camille",
+  "mtn_benin_email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a5c6c4c8ccc9c9c0c8ccc9c9dc92e5c2c8c4ccc98bc6cac8">[email&#160;protected]</a>",
+  "mtn_benin_phone_number": "66414231",
+  "mtn_benin_wallet_provider": "MTNBENIN",
+  "payment_token": "lLTs7h0tor82tchzvSec"
+}
+</code></pre>
+</div>
+</div>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected Response</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+  "success": true,
+  "message": "Votre paiement est en cours de traitement. Merci de valider le paiement après reception de sms pour le compléter",
+  "fees"   : 100, // Si c'est le payeur qui supporte les frais.
+  "currency": "XOF" // Si c'est le payeur qui supporte les frais.
+}
+</code></pre>
+</div>
+</div>
+<p><a name="section-14"></a></p>
+<h2>Payment by T-MONEY TOGO</h2>
+<hr />
+<h4 style="color:#0040B2; text-transform:uppercase">T-MONEY API</h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v1/softpay/t-money-togo</strong></code></pre>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">REQUEST HTTP POST </h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+  "name_t_money": "Camille",
+  "email_t_money": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="88edf0ede5f8e4edc8f8e9f1ecfde6f1e9a6ebe7e5">[email&#160;protected]</a>",
+  "phone_t_money": "70707070","
+  "payment_token": "lLTs7h0tor82tchzvSec"
+}
+</code></pre>
+</div>
+</div>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected Response</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+  "success": true,
+  "message": "Votre paiement est en cours de traitement. Merci de valider le paiement après reception de sms pour le compléter.",
+  "fees"   : 100, // Si c'est le payeur qui supporte les frais.
+  "currency": "XOF" // Si c'est le payeur qui supporte les frais.
+}
+</code></pre>
+</div>
+</div>
+<p><a name="section-21"></a></p>
+<h2>Payment by MOOV TOGO</h2>
+<hr />
+<h4 style="color:#0040B2; text-transform:uppercase">Moov Togo API</h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v1/softpay/moov-togo</strong></code></pre>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">REQUEST HTTP POST</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">{
+  "moov_togo_customer_fullname": "TEST",
+  "moov_togo_email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="46322335320636273f2233283f276825292b">[email&#160;protected]</a>",
+  "moov_togo_customer_address": "DAKAR",
+  "moov_togo_phone_number": "12345678",
+  "payment_token": "ERtyuIrLouhhRHICF0HboN"
+}
+</code></pre>
+</div>
+</div>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected Response</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">{
+  "success": true,
+  "message": "Transaction effectuée avec succès",
+  "fees"   : 100, // Si c'est le payeur qui supporte les frais.
+  "currency"   : "XOF" // Si c'est le payeur qui supporte les frais.
+}
+</code></pre>
+</div>
+</div>
+<p><a name="section-16"></a></p>
+<h2>Payment by ORANGE MONEY MALI</h2>
+<hr />
+<h4 style="color:#0040B2; text-transform:uppercase">ORANGE MONEY MALI API</h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v1/softpay/orange-money-mali</strong></code></pre>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">REQUEST HTTP POST</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">{
+    "orange_money_mali_customer_fullname": "Camille",
+    "orange_money_mali_email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e380828e8a8f8f868e8a8f8f9ad4a3848e828a8fcd808c8e">[email&#160;protected]</a>",
+    "orange_money_mali_phone_number": "90239415",
+    "orange_money_mali_customer_address" : "Bamako",
+    "payment_token": "9MHW084mlDTpExGW8OY4"
+}
+</code></pre>
+</div>
+</div>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected Response</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">{
+    "success": true,
+    "message": "Paiement enregistré, en attente de confirmation du client"
+}
+</code></pre>
+</div>
+</div>
+<p><a name="section-18"></a></p>
+<h2>Payment by MOOV MALI</h2>
+<hr />
+<h4 style="color:#0040B2; text-transform:uppercase">MOOV MALI API</h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v1/softpay/moov-mali</strong></code></pre>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">REQUEST HTTP POST</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">{
+  "moov_ml_customer_fullname": "John Doe",
+  "moov_ml_email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="55213026211525342c31203b2c347b363a38">[email&#160;protected]</a>",
+  "moov_ml_phone_number": "90239415",
+  "moov_ml_customer_address" : "Bamako",
+  "payment_token": "6KIFXkAiAU70uuam5Dix"
+}
+</code></pre>
+</div>
+</div>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected Response</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">{
+    "success": true,
+    "message": "Merci de finaliser le paiement sur votre téléphone.",
+    "fees"   : 100, // Si c'est le payeur qui supporte les frais.
+    "currency"   : "XOF" // Si c'est le payeur qui supporte les frais.
+}
+</code></pre>
+</div>
+</div>
+<p><a name="section-22"></a></p>
+<h2>Payment by MTN CAMEROUN</h2>
+<hr />
+<h4 style="color:#0040B2; text-transform:uppercase">MTN CAMEROUN API</h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v1/softpay/mtn-cameroun</strong></code></pre>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">REQUEST HTTP POST</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">{
+  "mtn_cameroun_customer_fullname": "John Doe",
+  "mtn_cameroun_email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a0d4c5d3d4e0d0c1d9c4d5ced9c18ec3cfcd">[email&#160;protected]</a>",
+  "mtn_cameroun_phone_number": "670000000",
+  "mtn_cameroun_wallet_provider": "MTNCAMEROUN",
+  "payment_token": "6KIFXkAiAU70uuam5Dsix"
+}
+</code></pre>
+</div>
+</div>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected Response</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">{
+    "success": true,
+    "message": "Votre paiement est en cours de traitement. Merci de valider le paiement après reception de sms pour le compléter.",
+    "fees"   : 100, // Si c'est le payeur qui supporte les frais.
+    "currency"   : "XAF" // Si c'est le payeur qui supporte les frais.
+}
+</code></pre>
+</div>
+</div>
+<p><a name="section-23"></a></p>
+<h2>Payment by DJAMO SENEGAL</h2>
+<hr />
+<h4 style="color:#0040B2; text-transform:uppercase">Endpoints API DJAMO </h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v1/softpay/djamo</strong></code></pre>
+<h4 style="color:#0040B2; text-transform:uppercase">Requête POST HTTP</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">{
+    "djamo_fullName": "Camille",
+    "djamo_email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2340424e4a4f4f464e4a4f4f5a1463444e424a4f0d404c4e">[email&#160;protected]</a>",
+    "djamo_phone": "778676477",
+    "code_country": "sn",
+    "djamo_payment_token": "9MHW084mlDTpExGW8OY4"
+}
+</code></pre>
+</div>
+</div>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">Response awaited</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">{
+    "success": true,
+    "url": "https://p.djamo.com/payment-link/?type=payment_confirmation&amp;chargeId=363a0bea-7859-4cd7-a489-6d74d00c8469",
+    "message": "Rediriger vers cette URL pour completer le paiement."
+}
+</code></pre>
+</div>
+</div>
+<p><a name="section-24"></a></p>
+<h2>Payment by DJAMO COTE D'IVOIRE</h2>
+<hr />
+<h4 style="color:#0040B2; text-transform:uppercase">Endpoints API DJAMO </h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v1/softpay/djamo</strong></code></pre>
+<h4 style="color:#0040B2; text-transform:uppercase">Requête POST HTTP</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">{
+    "djamo_fullName": "Camille",
+    "djamo_email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9af9fbf7f3f6f6fff7f3f6f6e3addafdf7fbf3f6b4f9f5f7">[email&#160;protected]</a>",
+    "djamo_phone": "0777568646",
+    "code_country": "ci",
+    "djamo_payment_token": "9MHW084mlDTpExGW8OY4"
+}
+</code></pre>
+</div>
+</div>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">Response awaited</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">{
+    "success": true,
+    "url": "https://p.djamo.com/payment-link/?type=payment_confirmation&amp;chargeId=363a0bea-7859-4cd7-a489-6d74d00c8469",
+    "message": "Rediriger vers cette URL pour completer le paiement."
+}
+</code></pre>
+</div>
+</div>
+<p><a name="section-25"></a></p>
+<h2>Payment by CELTIIS CASH BENIN</h2>
+<hr />
+<h4 style="color:#0040B2; text-transform:uppercase">Endpoints API CELTIIS CASH BENIN </h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v1/softpay/celtiis-cash</strong></code></pre>
+<h4 style="color:#0040B2; text-transform:uppercase">Requête POST HTTP</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">{
+    "celtiis_cash_customer_fullname": "Camille",
+    "celtiis_cash_customer_email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ff9c9e929693939a9296939386c8bf98929e9693d19c9092">[email&#160;protected]</a>",
+    "celtiis_cash_phone_number": "0140000000",
+    "payment_token": "hwPVvYMjPklWGkXczBpF"
+}
+</code></pre>
+</div>
+</div>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">Response awaited</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">{
+    "success": true,
+    "message": "Le paiement a été éffectué avec succès.",
+    "data": {
+        "resulttype": "0",
+        "resultcode": "0",
+        "transactionid": "DFC12RMEJH"
+    }
+}
+</code></pre>
+</div>
+</div>
+<p><a name="section-13"></a></p>
+<h2>Payment by PAYDUNYA</h2>
+<hr />
+<h4 style="color:#0040B2; text-transform:uppercase">PAYDUNYA API</h4>
+<pre><code class="language-bash" style="color:white"><strong>https://app.paydunya.com/api/v1/softpay/paydunya</strong></code></pre>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">REQUEST HTTP POST </h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+  "customer_name": "John Doe",
+  "customer_email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="62071a070f120e072212031b06170c1b034c010d0f">[email&#160;protected]</a>",
+  "phone_phone": "77777777",
+  "password": "12345678",
+  "invoice_token": "lLTs7h0tor82tchzvSec"
+}
+
+</code></pre>
+</div>
+</div>
+<p><br></p>
+<h4 style="color:#0040B2; text-transform:uppercase">Expected Response</h4>
+<div class="code-window">
+<div class="code-preview">
+<pre><code class="language-javascript">
+{
+  "success": true,
+  "message": "Success message",
+  "fees"   : 100, // Si c'est le payeur qui supporte les frais.
+  "currency": "XOF" // Si c'est le payeur qui supporte les frais.
+}
+</code></pre>
+</div>
+</div>
+			</div>
+</div>
+
+            <larecipe-back-to-top></larecipe-back-to-top>
+        </div>
+
+
+        <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+            window.config = [];
+        </script>
+
+        <script type="text/javascript">
+            if(localStorage.getItem('larecipeSidebar') == null) {
+                localStorage.setItem('larecipeSidebar', !! 1);
+            }
+        </script>
+
+        <script src="https://developers.paydunya.com/vendor/binarytorch/larecipe/assets/js/app.js"></script>
+
+        <script>
+            window.LaRecipe = new CreateLarecipe(config)
+        </script>
+
+        <!-- Google Analytics -->
+                <!-- /Google Analytics -->
+
+        
+        <script>
+            LaRecipe.run()
+        </script>
+    <script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a50d17750ea98650',t:'MTc5MzA1NTc3OA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
