@@ -3,7 +3,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { main, runDoctor, runInit, runTrigger } from "../src/index.js";
+import { addRecipe, listRecipes, main, runDoctor, runInit, runTrigger } from "../src/index.js";
 
 function project(files: Record<string, string>): string {
   const root = mkdtempSync(join(tmpdir(), "pont-cli-"));
@@ -188,5 +188,29 @@ describe("pont trigger", () => {
 
   it("scénario inconnu → code 1", async () => {
     expect(await main(["trigger", "nimporte"], process.cwd(), silent)).toBe(1);
+  });
+});
+
+describe("pont add recipe", () => {
+  it("liste et classe les recettes", () => {
+    expect(listRecipes().map((r) => r.id)).toContain("wallet");
+    expect(listRecipes("portefeuille avec transfert entre amis")[0]?.id).toBe("wallet");
+  });
+
+  it("installe la recette wallet sans rien écraser, avec les étapes à suivre", async () => {
+    const root = nextProject();
+    await runInit({ cwd: root, agent: false, dryRun: false, testPayment: false, log: silent });
+    const first = addRecipe({ cwd: root, recipeId: "wallet", dryRun: false, log: silent });
+    expect(first.created).toEqual(["lib/pont-wallet.ts"]);
+    expect(first.installCommand).toBe("pnpm add @pont/ledger @pont/recipes");
+    expect(first.manualSteps[0]).toContain("handleWalletEvent");
+    expect(readFileSync(join(root, "lib/pont-wallet.ts"), "utf8")).toContain("new WalletService");
+    expect(addRecipe({ cwd: root, recipeId: "wallet", dryRun: false, log: silent }).skipped).toEqual(["lib/pont-wallet.ts"]);
+  });
+
+  it("recette inconnue ou stack non prise en charge", async () => {
+    expect(await main(["add", "recipe", "inconnue"], nextProject(), silent)).toBe(1);
+    const express = project({ "package.json": JSON.stringify({ dependencies: { express: "4" } }) });
+    expect(addRecipe({ cwd: express, recipeId: "wallet", dryRun: false, log: silent }).created).toEqual([]);
   });
 });

@@ -19,7 +19,9 @@
     "@pont/node": "workspace:*",
     "@pont/engine": "workspace:*",
     "@pont/sandbox": "workspace:*",
-    "@pont/store-convex": "workspace:*"
+    "@pont/store-convex": "workspace:*",
+    "@pont/recipes": "workspace:*",
+    "@pont/framework": "workspace:*"
   },
   "license": "UNLICENSED",
   "files": [

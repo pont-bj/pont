@@ -59,9 +59,15 @@ importers:
       '@pont/engine':
         specifier: workspace:*
         version: link:../engine
+      '@pont/framework':
+        specifier: workspace:*
+        version: link:../framework
       '@pont/node':
         specifier: workspace:*
         version: link:../node
+      '@pont/recipes':
+        specifier: workspace:*
+        version: link:../recipes
       '@pont/sandbox':
         specifier: workspace:*
         version: link:../sandbox
@@ -205,6 +211,9 @@ importers:
         specifier: workspace:*
         version: link:../ledger
     devDependencies:
+      '@pont/node':
+        specifier: workspace:*
+        version: link:../node
       '@pont/sandbox':
         specifier: workspace:*
         version: link:../sandbox
