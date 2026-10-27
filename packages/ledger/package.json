@@ -1,0 +1,22 @@
+{
+  "name": "@pont/ledger",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": { ".": "./src/index.ts" },
+  "license": "UNLICENSED",
+  "files": ["dist"],
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p .",
+    "test": "vitest run",
+    "build": "tsup src/index.ts --format esm --dts --clean --target node20"
+  },
+  "dependencies": { "@pont/core": "workspace:*", "@pont/framework": "workspace:*", "zod": "3.25.76" },
+  "publishConfig": {
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" } },
+    "access": "restricted"
+  }
+}

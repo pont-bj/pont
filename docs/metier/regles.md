@@ -24,3 +24,15 @@ Chaque règle porte un identifiant stable. Ne jamais réutiliser un identifiant 
 | R-019 | Webhooks sortants : HTTPS obligatoire en live, adresses internes et redirections refusées (SSRF), signature recalculée à chaque tentative, ~3 jours de reprises. | Sprint 2 |
 | R-020 | Instruction du dashboard vers le backend du marchand : signée, horodatée (± 5 min), à usage unique (nonce), limitée à un périmètre et un plafond fixés par le marchand ; refusable. | ADR-001 (accepté) |
 | R-012 | Chaque connexion d'agrégateur affiche au marchand les clauses CGU qui le concernent. | ADR-001 (accepté) |
+
+## Registre, portefeuilles, plafonds (ADR-002, ADR-003)
+
+| ID | Règle | Origine |
+|---|---|---|
+| R-030 | Toute écriture est équilibrée (total débits = total crédits), en une seule devise, avec au moins deux lignes de montants entiers strictement positifs. Une écriture n'est jamais modifiée ni supprimée : on la corrige par une écriture inverse. | ADR-002 |
+| R-031 | Un compte utilisateur (`available`, `held`) ne peut jamais devenir négatif. Le contrôle et l'écriture sont atomiques : deux retraits simultanés ne peuvent pas dépasser le solde. | ADR-002 |
+| R-032 | Un dépôt n'est crédité qu'après la confirmation du paiement par l'agrégateur (R-001), une seule fois par paiement (clé d'idempotence = identifiant du paiement). | ADR-002 |
+| R-033 | Retrait : les fonds passent de `available` à `held` avant l'envoi à l'agrégateur ; à la confirmation, `held` sort vers le compte de transit ; en cas d'échec, `held` revient à `available`. Jamais d'envoi sans blocage préalable. | ADR-002 |
+| R-034 | La réconciliation compare le solde du compte de transit (par agrégateur et devise) au solde réel chez l'agrégateur ; tout écart est signalé, jamais corrigé automatiquement. | ADR-002 |
+| R-035 | Plafonds par palier KYC : solde maximal, opération unitaire maximale, sorties sur 24 h et sur 30 jours glissants. Un compte gelé n'effectue aucune sortie. Le contrôle précède le blocage des fonds. | ADR-003 |
+| R-036 | Comptes système (transit, frais) : ils peuvent être négatifs (soldes d'ouverture non saisis), mais chaque écart est visible à la réconciliation. | ADR-002 |
