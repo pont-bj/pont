@@ -24,7 +24,8 @@
   "dependencies": {
     "@pont/core": "workspace:*",
     "@pont/engine": "workspace:*",
-    "@pont/framework": "workspace:*"
+    "@pont/framework": "workspace:*",
+    "@pont/ledger": "workspace:*"
   },
   "publishConfig": {
     "main": "./dist/index.js",

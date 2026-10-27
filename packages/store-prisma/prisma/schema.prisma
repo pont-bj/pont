@@ -47,6 +47,46 @@ model PontDelivery {
   @@map("pont_deliveries")
 }
 
+// Registre en partie double (module ledger). Le solde est matérialisé sur le compte et modifié
+// dans la même transaction que l'écriture, par mise à jour conditionnelle (R-031).
+model PontLedgerAccount {
+  id            String  @id
+  code          String  @unique
+  currency      String
+  normal        String
+  allowNegative Boolean @map("allow_negative")
+  balance       BigInt  @default(0)
+  createdAt     BigInt  @map("created_at")
+
+  @@map("pont_ledger_accounts")
+}
+
+model PontLedgerEntry {
+  id             String  @id
+  idempotencyKey String  @unique @map("idempotency_key")
+  fingerprint    String
+  currency       String
+  description    String
+  reverses       String?
+  metadata       Json
+  createdAt      BigInt  @map("created_at")
+
+  @@map("pont_ledger_entries")
+}
+
+model PontLedgerLine {
+  id        Int    @id @default(autoincrement())
+  entryId   String @map("entry_id")
+  accountId String @map("account_id")
+  direction String
+  amount    BigInt
+  createdAt BigInt @map("created_at")
+
+  @@index([accountId, createdAt])
+  @@index([entryId])
+  @@map("pont_ledger_lines")
+}
+
 model PontWorkflowRun {
   workflow       String
   idempotencyKey String @map("idempotency_key")

@@ -229,6 +229,9 @@ importers:
       '@pont/framework':
         specifier: workspace:*
         version: link:../framework
+      '@pont/ledger':
+        specifier: workspace:*
+        version: link:../ledger
     devDependencies:
       '@pont/sandbox':
         specifier: workspace:*
