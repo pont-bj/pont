@@ -49,7 +49,7 @@ Tests : 129 (core 11, engine 76, node 12, store-convex 6, cli 17, mcp 7). Typech
 | T-011 | CinetPay : vérification `x-token` + endpoint de statut confirmés | backend | après T-002 |
 | T-025 | SDK PHP / Laravel, plugin WooCommerce | backend | |
 | T-028 | Valider `@pont/store-convex` sur un vrai déploiement Convex (les tests tournent sous `convex-test`) | backend | |
-| T-008 | Maquettes Lunacy du dashboard | frontend | |
+| T-008 | Maquettes Lunacy du dashboard | frontend | ✅ 7 écrans validés 2026-10-27 |
 
 ## Framework (ADR-003)
 

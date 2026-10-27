@@ -86,12 +86,12 @@ Inter. Chiffres tabulaires pour tous les montants.
 | # | Écran | Fichier | Statut |
 |---|---|---|---|
 | 1 | Vue d'ensemble | `maquettes/01-vue-ensemble-desktop-v2.png` | ✅ validé (2026-10-27) |
-| 2 | Paiements — liste | `maquettes/02-paiements.png` | ⏳ à valider |
-| 3 | Paiement — détail et chronologie | `maquettes/03-paiement-detail.png` | ⏳ à valider |
-| 4 | Retraits | `maquettes/04-retraits.png` | ⏳ à valider |
-| 5 | Agrégateurs (connexions, santé, couverture) | `maquettes/05-agregateurs.png` | ⏳ à valider |
-| 6 | Développeurs — Intégration (commande, agent IA, clés, webhook) | `maquettes/06-developpeurs.png` | ⏳ à valider |
-| 7 | Développeurs — Cas d'usage (recettes du framework, ADR-003) | `maquettes/07-cas-usage.png` | ⏳ à valider |
+| 2 | Paiements — liste | `maquettes/02-paiements.png` | ✅ validé (2026-10-27) |
+| 3 | Paiement — détail et chronologie | `maquettes/03-paiement-detail.png` | ✅ validé (2026-10-27) |
+| 4 | Retraits | `maquettes/04-retraits.png` | ✅ validé (2026-10-27) |
+| 5 | Agrégateurs (connexions, santé, couverture) | `maquettes/05-agregateurs.png` | ✅ validé (2026-10-27) |
+| 6 | Développeurs — Intégration (commande, agent IA, clés, webhook) | `maquettes/06-developpeurs.png` | ✅ validé (2026-10-27) |
+| 7 | Développeurs — Cas d'usage (recettes du framework, ADR-003) | `maquettes/07-cas-usage.png` | ✅ validé (2026-10-27) |
 
 Historique : v1 de la vue d'ensemble (`01-vue-ensemble-desktop-v1.png`) refusée (jaune, trop chargée).
 
