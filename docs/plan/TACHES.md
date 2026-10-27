@@ -50,3 +50,13 @@ Tests : 129 (core 11, engine 76, node 12, store-convex 6, cli 17, mcp 7). Typech
 | T-025 | SDK PHP / Laravel, plugin WooCommerce | backend | |
 | T-028 | Valider `@pont/store-convex` sur un vrai déploiement Convex (les tests tournent sous `convex-test`) | backend | |
 | T-008 | Maquettes Lunacy du dashboard | frontend | |
+
+## Framework (ADR-003)
+
+| ID | Tâche | Agent | Note |
+|---|---|---|---|
+| T-040 | Contrat de module, moteur de workflows avec compensation, format de recette | code-principal | |
+| T-041 | `@pont/store-prisma` (Prisma Postgres) : mêmes stores que Convex | backend | |
+| T-042 | Modules `ledger` (partie double), `wallets`, `limits` | backend + metier (R-030 à R-034) | |
+| T-043 | Recette « Portefeuille mobile » de bout en bout + `pont add recipe` + MCP `list_recipes` / `apply_recipe` | backend | |
+| T-044 | Licence et découpage open source / propriétaire | François | |
