@@ -9,4 +9,4 @@ dist
 .convex
 coverage
 vendor
-src/generated
+**/src/generated/
