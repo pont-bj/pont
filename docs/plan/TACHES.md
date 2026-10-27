@@ -55,7 +55,8 @@ Tests : 129 (core 11, engine 76, node 12, store-convex 6, cli 17, mcp 7). Typech
 
 | ID | Tâche | Agent | Note |
 |---|---|---|---|
-| T-040 | Contrat de module, moteur de workflows avec compensation, format de recette | code-principal | |
+| T-040 | Contrat de module, moteur de workflows avec compensation, format de recette (`@pont/framework`) | code-principal | ✅ v1 2026-10-27 ; limites → T-045 |
+| T-045 | Workflows durables : persister chaque étape, reprise après crash, verrou par clé d'idempotence | backend | avant le module ledger en production |
 | T-041 | `@pont/store-prisma` (Prisma Postgres) : mêmes stores que Convex | backend | |
 | T-042 | Modules `ledger` (partie double), `wallets`, `limits` | backend + metier (R-030 à R-034) | |
 | T-043 | Recette « Portefeuille mobile » de bout en bout + `pont add recipe` + MCP `list_recipes` / `apply_recipe` | backend | |
