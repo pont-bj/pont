@@ -29,7 +29,7 @@
 | T-032 | Instructions signées (R-020) côté marchand : Ed25519, ± 5 min, nonce, périmètre, plafond, audit | backend | ✅ 2026-10-27 |
 | T-033 | Brouillon des CGU (`docs/legal/CGU-brouillon.md`) | metier | ✅ brouillon, juriste requis |
 
-Tests : 129 (core 11, engine 76, node 12, store-convex 6, cli 17, mcp 7). Typecheck : 0 erreur sur 12 paquets.
+Tests : 183 (core 11, framework 14, engine 76, ledger 14, recipes 10, node 12, store-convex 6, store-prisma 8, cli 20, mcp 8). Typecheck : 0 erreur sur 16 paquets.
 
 ## Décisions en attente (François)
 
