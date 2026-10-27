@@ -1,0 +1,59 @@
+// Modèles Pont pour Prisma Postgres. À copier dans le schéma Prisma du projet (voir README).
+// Les enregistrements sont stockés en JSONB (`data`) ; les colonnes à côté servent aux index et aux verrous.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model PontRecord {
+  kind        String
+  recordId    String   @map("record_id")
+  provider    String
+  attemptId   String   @map("attempt_id")
+  providerRef String?  @map("provider_ref")
+  paymentId   String?  @map("payment_id")
+  unsettled   Boolean
+  updatedAt   BigInt   @map("updated_at")
+  data        Json
+
+  @@id([kind, recordId])
+  @@index([kind, provider, attemptId])
+  @@index([kind, provider, providerRef])
+  @@index([kind, unsettled, updatedAt])
+  @@index([kind, paymentId])
+  @@map("pont_records")
+}
+
+model PontIdempotency {
+  key         String @id
+  fingerprint String
+  recordId    String @map("record_id")
+
+  @@map("pont_idempotency")
+}
+
+model PontDelivery {
+  deliveryId    String  @id @map("delivery_id")
+  status        String
+  nextAttemptAt BigInt? @map("next_attempt_at")
+  data          Json
+
+  @@index([status, nextAttemptAt])
+  @@map("pont_deliveries")
+}
+
+model PontWorkflowRun {
+  workflow       String
+  idempotencyKey String @map("idempotency_key")
+  status         String
+  leaseUntil     BigInt @map("lease_until")
+  data           Json
+
+  @@id([workflow, idempotencyKey])
+  @@map("pont_workflow_runs")
+}
