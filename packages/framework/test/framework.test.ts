@@ -91,6 +91,53 @@ describe("workflows avec compensation", () => {
     expect(calls).toBe(1);
   });
 
+  it("durable : chaque étape est persistée dès qu'elle se termine", async () => {
+    const store = new MemoryWorkflowRunStore();
+    const snapshots: string[] = [];
+    const workflow = createWorkflow<object>("persist", [
+      { name: "a", invoke: async () => "A" },
+      { name: "b", invoke: async () => { snapshots.push(JSON.stringify((await store.get("persist", "p"))?.steps.map((s) => s.name))); return "B"; } },
+    ]);
+    await workflow.run({}, { idempotencyKey: "p", store });
+    expect(snapshots).toEqual(['["a"]']);
+  });
+
+  it("reprise après arrêt : les étapes réussies ne sont pas rejouées, l'entrée d'origine fait foi", async () => {
+    let now = 0;
+    const store = new MemoryWorkflowRunStore();
+    const calls: string[] = [];
+    let crash = true;
+    const workflow = createWorkflow<{ amount: number }>("reprise", [
+      { name: "bloquer", invoke: async (input) => { calls.push(`bloquer ${input.amount}`); return input.amount; } },
+      { name: "envoyer", invoke: async (input) => { if (crash) throw Object.assign(new Error("arrêt"), { crash: true }); calls.push(`envoyer ${input.amount}`); return "ok"; } },
+    ]);
+    // Simule un arrêt du serveur pendant « envoyer » : on intercepte avant la compensation.
+    const crashing = createWorkflow<{ amount: number }>("reprise", [
+      { name: "bloquer", invoke: async (input) => { calls.push(`bloquer ${input.amount}`); return input.amount; } },
+      { name: "envoyer", invoke: () => new Promise(() => {}) },
+    ]);
+    void crashing.run({ amount: 5000 }, { idempotencyKey: "r", store, now: () => now, leaseMs: 1_000 });
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    expect((await store.get("reprise", "r"))?.status).toBe("running");
+
+    // Bail encore valide : une autre exécution est refusée.
+    await expect(workflow.run({ amount: 5000 }, { idempotencyKey: "r", store, now: () => now })).rejects.toThrow(/déjà en cours/);
+
+    // Bail expiré : reprise ; « bloquer » n'est pas rejoué, l'entrée d'origine (5000) est utilisée.
+    now = 2_000;
+    crash = false;
+    const resumed = await workflow.run({ amount: 999 }, { idempotencyKey: "r", store, now: () => now });
+    expect(resumed.status).toBe("succeeded");
+    expect(calls).toEqual(["bloquer 5000", "envoyer 5000"]);
+  });
+
+  it("fournit des clés d'idempotence stables par étape pour les appels externes", async () => {
+    const keys: string[] = [];
+    const workflow = createWorkflow<object>("cles", [{ name: "payer", invoke: async (_i, ctx) => keys.push(ctx.idempotencyKey("payer")) }]);
+    await workflow.run({}, { idempotencyKey: "commande-1", store: new MemoryWorkflowRunStore() });
+    expect(keys).toEqual(["cles:commande-1:payer"]);
+  });
+
   it("refuse un workflow vide ou des étapes en double", () => {
     expect(() => createWorkflow("vide", [])).toThrow(PontError);
     expect(() => createWorkflow("double", [{ name: "a", invoke: async () => 1 }, { name: "a", invoke: async () => 2 }])).toThrow(/double/);
