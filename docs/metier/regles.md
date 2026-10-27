@@ -36,3 +36,4 @@ Chaque règle porte un identifiant stable. Ne jamais réutiliser un identifiant 
 | R-034 | La réconciliation compare le solde du compte de transit (par agrégateur et devise) au solde réel chez l'agrégateur ; tout écart est signalé, jamais corrigé automatiquement. | ADR-002 |
 | R-035 | Plafonds par palier KYC : solde maximal, opération unitaire maximale, sorties sur 24 h et sur 30 jours glissants. Un compte gelé n'effectue aucune sortie. Le contrôle précède le blocage des fonds. | ADR-003 |
 | R-036 | Comptes système (transit, frais) : ils peuvent être négatifs (soldes d'ouverture non saisis), mais chaque écart est visible à la réconciliation. | ADR-002 |
+| R-037 | Frais de retrait : ils s'ajoutent au montant envoyé. On bloque `montant + frais` ; à la confirmation, le transit baisse exactement du montant envoyé par l'agrégateur et les frais vont au compte de revenus. Les frais sont figés au moment de la demande. | Recette wallet, 2026-10-27 |

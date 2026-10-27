@@ -190,6 +190,25 @@ importers:
         specifier: 3.25.76
         version: 3.25.76
 
+  packages/recipes:
+    dependencies:
+      '@pont/core':
+        specifier: workspace:*
+        version: link:../core
+      '@pont/engine':
+        specifier: workspace:*
+        version: link:../engine
+      '@pont/framework':
+        specifier: workspace:*
+        version: link:../framework
+      '@pont/ledger':
+        specifier: workspace:*
+        version: link:../ledger
+    devDependencies:
+      '@pont/sandbox':
+        specifier: workspace:*
+        version: link:../sandbox
+
   packages/sandbox:
     dependencies:
       '@pont/core':

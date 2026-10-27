@@ -5,8 +5,12 @@ import {
   type DepositRequest,
   type Operator,
   type Payment,
+  type Payout,
+  type PayoutRequest,
   type ProviderAdapter,
   type ProviderCallOutcome,
+  type TransferAccepted,
+  type TransferVerified,
   type VerifiedState,
   type WebhookCheck,
 } from "@pont/core";
@@ -45,6 +49,7 @@ export class SandboxAdapter implements ProviderAdapter {
   readonly id = "sandbox" as const;
   readonly mode = "test" as const;
   private readonly records = new Map<string, SandboxRecord>();
+  private readonly payouts = new Map<string, SandboxRecord>();
   private readonly now: () => number;
   /** Délai après lequel un paiement jamais confirmé expire. */
   private readonly expiryMs: number;
@@ -101,6 +106,32 @@ export class SandboxAdapter implements ProviderAdapter {
   async checkWebhook(_headers: Headers, rawBody: string): Promise<WebhookCheck> {
     const match = /"attemptId"\s*:\s*"([^"]+)"/.exec(rawBody);
     return { valid: match !== null, lookup: match?.[1] ? { by: "attemptId", value: match[1] } : null };
+  }
+
+  /** Retraits simulés : mêmes numéros magiques (…0000002 et …0000008 échouent, …0000007 est ambigu puis réussi). */
+  async createPayout(request: PayoutRequest): Promise<ProviderCallOutcome<TransferAccepted>> {
+    const phone = normalizePhone(request.input.recipient.phone, request.input.country);
+    const scenario = scenarioFor(phone.e164);
+    if (scenario === "provider_down_before_push") return { kind: "unavailable_before_push", reason: "sandbox: agrégateur indisponible" };
+    this.payouts.set(request.attemptId, { scenario, amount: request.input.amount, currency: request.input.currency, createdAt: this.now() });
+    if (scenario === "ambiguous_timeout") return { kind: "ambiguous", reason: "sandbox: timeout après envoi" };
+    return { kind: "ok", value: { providerRef: `sbx_po_${request.attemptId}`, status: "processing" } };
+  }
+
+  async verifyPayout(payout: Pick<Payout, "attemptId" | "providerRef">): Promise<ProviderCallOutcome<TransferVerified>> {
+    const record = this.payouts.get(payout.attemptId);
+    if (!record) return { kind: "ok", value: { status: "failed", amount: null, currency: null, providerRef: null, failureCode: "not_found" } };
+    const failed = record.scenario === "insufficient_funds" || record.scenario === "declined_by_customer";
+    return {
+      kind: "ok",
+      value: {
+        status: failed ? "failed" : "succeeded",
+        amount: record.amount,
+        currency: record.currency,
+        providerRef: `sbx_po_${payout.attemptId}`,
+        failureCode: failed ? "recipient_not_found" : null,
+      },
+    };
   }
 
   /** Nombre de webhooks que le sandbox enverrait pour ce paiement (doublon simulé). */

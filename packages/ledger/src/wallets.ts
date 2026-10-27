@@ -98,17 +98,21 @@ export class Wallets {
     );
   }
 
-  /** Solde un retrait confirmé : les fonds bloqués sortent vers le transit de l'agrégateur, frais éventuels compris. */
+  /**
+   * Solde un retrait confirmé. `amount` = montant réellement envoyé par l'agrégateur ; les frais s'y ajoutent.
+   * Le blocage préalable doit donc couvrir `amount + fee`. Le transit baisse exactement du montant envoyé,
+   * pour rester réconciliable avec le solde réel chez l'agrégateur (R-034).
+   */
   async settle(input: { userId: string; currency: Currency; amount: number; fee?: number; holdId: string; provider: string }): Promise<void> {
     const { held } = await this.accounts(input.userId, input.currency);
     const transit = await this.system("transit", input.provider, input.currency);
     const fee = input.fee ?? 0;
+    if (!Number.isInteger(fee) || fee < 0) throw new PontError("invalid_request", "Frais entiers et positifs uniquement.");
     const lines = [
-      { accountId: held.id, direction: "debit" as const, amount: input.amount },
-      { accountId: transit.id, direction: "credit" as const, amount: input.amount - fee },
+      { accountId: held.id, direction: "debit" as const, amount: input.amount + fee },
+      { accountId: transit.id, direction: "credit" as const, amount: input.amount },
     ];
     if (fee > 0) lines.push({ accountId: (await this.system("fees", "", input.currency)).id, direction: "credit", amount: fee });
-    if (fee >= input.amount) throw new PontError("invalid_request", "Les frais doivent être inférieurs au montant.");
     assertPosted(
       await this.ledger.post({
         idempotencyKey: `settle:${input.holdId}`,
@@ -147,6 +151,11 @@ export class Wallets {
     const { available } = await this.accounts(userId, currency);
     const movements = await this.ledger.movements(available, { since });
     return movements.filter((m) => m.direction === "debit").reduce((sum, m) => sum + m.amount, 0);
+  }
+
+  /** Solde d'un compte système (transit par agrégateur, frais), pour la réconciliation (R-034). */
+  async systemBalance(kind: "transit" | "fees", currency: Currency, provider = ""): Promise<number> {
+    return this.ledger.balance(await this.system(kind, provider, currency));
   }
 
   private async accounts(userId: string, currency: Currency): Promise<{ available: Account; held: Account }> {
