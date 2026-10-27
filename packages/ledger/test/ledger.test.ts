@@ -70,14 +70,18 @@ describe("portefeuilles (R-031 à R-033)", () => {
     const { wallets } = setup();
     await wallets.open("awa", "XOF");
     await wallets.deposit({ userId: "awa", currency: "XOF", amount: 10_000, provider: "pawapay", paymentId: "pay_1" });
-    await wallets.hold({ userId: "awa", currency: "XOF", amount: 6_000, holdId: "po_1" });
-    expect(await wallets.balance("awa", "XOF")).toMatchObject({ available: 4_000, held: 6_000 });
+    // Retrait de 6 000 avec 100 de frais : on bloque 6 100, l'agrégateur envoie 6 000.
+    await wallets.hold({ userId: "awa", currency: "XOF", amount: 6_100, holdId: "po_1" });
+    expect(await wallets.balance("awa", "XOF")).toMatchObject({ available: 3_900, held: 6_100 });
     await wallets.settle({ userId: "awa", currency: "XOF", amount: 6_000, fee: 100, holdId: "po_1", provider: "pawapay" });
-    expect(await wallets.balance("awa", "XOF")).toMatchObject({ available: 4_000, held: 0 });
+    expect(await wallets.balance("awa", "XOF")).toMatchObject({ available: 3_900, held: 0 });
+    // Transit = 10 000 entrés − 6 000 réellement envoyés ; frais = 100 (R-034).
+    expect(await wallets.systemBalance("transit", "XOF", "pawapay")).toBe(4_000);
+    expect(await wallets.systemBalance("fees", "XOF")).toBe(100);
 
     await wallets.hold({ userId: "awa", currency: "XOF", amount: 3_000, holdId: "po_2" });
     await wallets.release({ userId: "awa", currency: "XOF", amount: 3_000, holdId: "po_2" });
-    expect(await wallets.balance("awa", "XOF")).toMatchObject({ available: 4_000, held: 0 });
+    expect(await wallets.balance("awa", "XOF")).toMatchObject({ available: 3_900, held: 0 });
   });
 
   it("jamais de découvert : blocage au-delà du disponible refusé", async () => {
