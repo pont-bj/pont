@@ -60,5 +60,5 @@ Tests : 129 (core 11, engine 76, node 12, store-convex 6, cli 17, mcp 7). Typech
 | T-041 | `@pont/store-prisma` (Prisma Postgres) : mêmes stores que Convex + runs de workflows | backend | ✅ 2026-10-27, testé sur Postgres 16 réel |
 | T-042 | Modules `ledger` (partie double), `wallets`, `limits` (`@pont/ledger`) + règles R-030 à R-036 | backend + metier | ✅ mémoire 2026-10-27 ; Postgres → T-046 |
 | T-046 | Stockage Prisma du registre, R-031 vérifiée sous concurrence réelle | backend | ✅ 2026-10-27 (50 retraits / 20 connexions) |
-| T-043 | Recette « Portefeuille mobile » de bout en bout + `pont add recipe` + MCP `list_recipes` / `apply_recipe` | backend | |
+| T-043 | Recette « Portefeuille mobile » de bout en bout + `pont add recipe` + MCP `list_recipes` / `apply_recipe` | backend | ✅ 2026-10-27 (code généré vérifié à la compilation) |
 | T-044 | Licence et découpage open source / propriétaire | François | |

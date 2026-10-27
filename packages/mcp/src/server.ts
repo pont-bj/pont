@@ -3,7 +3,7 @@ import { isAbsolute } from "node:path";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { buildWebhookDelivery, type PontEvent } from "@pont/engine";
-import { SCENARIO_NAMES, detectProject, runDoctor, runInit, runTrigger } from "@pont/cli";
+import { SCENARIO_NAMES, addRecipe, detectProject, listRecipes, runDoctor, runInit, runTrigger } from "@pont/cli";
 import { COUNTRIES, DOCS, ERROR_CODES, OPERATORS, coverage, explainError, searchDocs } from "./knowledge.js";
 
 // Serveur MCP niveau 1 : intégration. Sandbox uniquement — aucun outil n'effectue d'opération réelle.
@@ -41,6 +41,7 @@ export function createPontMcpServer(options: { fetch?: typeof fetch } = {}): Mcp
       instructions:
         "Pont intègre les paiements mobile money africains (FedaPay, PawaPay, PayDunya, Kkiapay). " +
         "Pour intégrer : detect_stack → scaffold_integration (apply=false pour prévisualiser, puis apply=true) → create_test_payment → run_doctor. " +
+        "Pour une fintech (portefeuille, tontine…) : list_recipes avec la description du projet, puis apply_recipe. " +
         "Règles : montant fixé côté serveur, clé d'idempotence sur chaque création, ne livrer que sur status=succeeded. " +
         "Tous les outils fonctionnent en sandbox ; aucun n'effectue d'opération financière réelle.",
     },
@@ -205,6 +206,46 @@ export function createPontMcpServer(options: { fetch?: typeof fetch } = {}): Mcp
     async ({ query }) => {
       const sections = searchDocs(query);
       return ok({ results: sections.map((s) => ({ id: s.id, title: s.title, body: s.body })) });
+    },
+  );
+
+  server.registerTool(
+    "list_recipes",
+    {
+      title: "Cas d'usage (recettes)",
+      description:
+        "Liste les cas d'usage du framework Pont (portefeuille mobile, tontine, séquestre…). Avec `description`, classe les recettes " +
+        "selon le projet décrit par l'utilisateur (ex. « appli de porte-monnaie avec recharge et retrait »).",
+      inputSchema: { description: z.string().optional().describe("Description libre de la fintech à construire.") },
+      annotations: { readOnlyHint: true, openWorldHint: false },
+    },
+    async ({ description }) => {
+      const recipes = listRecipes(description);
+      return ok({ recipes }, recipes.length === 0 ? "Aucune recette ne correspond : proposez l'intégration de base (scaffold_integration)." : undefined);
+    },
+  );
+
+  server.registerTool(
+    "apply_recipe",
+    {
+      title: "Installer un cas d'usage",
+      description:
+        "Installe une recette dans le projet : génère le code (sans rien écraser) et renvoie la commande d'installation et les étapes " +
+        "à faire. Par défaut, prévisualise seulement (apply=false). Prérequis : scaffold_integration déjà appliqué.",
+      inputSchema: {
+        projectDir: projectDirSchema,
+        recipeId: z.string().min(1).describe("Identifiant de la recette (voir list_recipes)."),
+        apply: z.boolean().default(false),
+      },
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+    },
+    async ({ projectDir, recipeId, apply }) => {
+      const error = checkProjectDir(projectDir);
+      if (error) return fail(error);
+      const log: string[] = [];
+      const result = addRecipe({ cwd: projectDir, recipeId, dryRun: !apply, log: (line) => log.push(line) });
+      if (!result.recipe) return fail(log.join("\n"));
+      return ok({ applied: apply, ...result, log }, apply ? "Recette installée." : "Prévisualisation : rien n'a été écrit.");
     },
   );
 

@@ -31,11 +31,11 @@ function nextProject(): string {
 }
 
 describe("serveur MCP Pont", () => {
-  it("expose les 8 outils et les ressources de doc", async () => {
+  it("expose les 10 outils et les ressources de doc", async () => {
     const client = await connect();
     const { tools } = await client.listTools();
     expect(tools.map((t) => t.name).sort()).toEqual([
-      "create_test_payment", "detect_stack", "explain_error", "get_coverage", "run_doctor", "scaffold_integration", "search_docs", "simulate_webhook",
+      "apply_recipe", "create_test_payment", "detect_stack", "explain_error", "get_coverage", "list_recipes", "run_doctor", "scaffold_integration", "search_docs", "simulate_webhook",
     ]);
     const { resources } = await client.listResources();
     expect(resources.map((r) => r.uri)).toContain("pont://docs/quickstart");
@@ -61,6 +61,21 @@ describe("serveur MCP Pont", () => {
 
     const { data: doctor } = await call(client, "run_doctor", { projectDir: root });
     expect(doctor).toMatchObject({ ok: true, findings: [] });
+  });
+
+  it("recettes : un agent trouve et installe le portefeuille", async () => {
+    const client = await connect();
+    const root = nextProject();
+    await call(client, "scaffold_integration", { projectDir: root, apply: true });
+    const { data: found } = await call(client, "list_recipes", { description: "une appli de porte-monnaie avec recharge et retrait" });
+    expect((found?.recipes as Array<{ id: string }>)[0]?.id).toBe("wallet");
+    const { data: preview } = await call(client, "apply_recipe", { projectDir: root, recipeId: "wallet" });
+    expect(preview).toMatchObject({ applied: false, created: ["lib/pont-wallet.ts"] });
+    expect(existsSync(join(root, "lib/pont-wallet.ts"))).toBe(false);
+    const { data: applied } = await call(client, "apply_recipe", { projectDir: root, recipeId: "wallet", apply: true });
+    expect(applied?.installCommand).toBe("npm install @pont/ledger @pont/recipes");
+    expect(existsSync(join(root, "lib/pont-wallet.ts"))).toBe(true);
+    expect((await call(client, "apply_recipe", { projectDir: root, recipeId: "inconnue" })).result.isError).toBe(true);
   });
 
   it("refuse un chemin relatif ou inexistant", async () => {

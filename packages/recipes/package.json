@@ -3,10 +3,16 @@
   "version": "0.1.0",
   "type": "module",
   "main": "./src/index.ts",
-  "exports": { ".": "./src/index.ts" },
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "license": "UNLICENSED",
-  "files": ["dist"],
-  "engines": { "node": ">=20" },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "typecheck": "tsc --noEmit -p .",
     "test": "vitest run",
@@ -18,11 +24,19 @@
     "@pont/framework": "workspace:*",
     "@pont/ledger": "workspace:*"
   },
-  "devDependencies": { "@pont/sandbox": "workspace:*" },
+  "devDependencies": {
+    "@pont/sandbox": "workspace:*",
+    "@pont/node": "workspace:*"
+  },
   "publishConfig": {
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
-    "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" } },
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    },
     "access": "restricted"
   }
 }
