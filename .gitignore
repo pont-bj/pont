@@ -10,3 +10,7 @@ dist
 coverage
 vendor
 **/src/generated/
+deploy/self-host/.env
+apps/dashboard/data/
+apps/dashboard/.next/
+*.tsbuildinfo
