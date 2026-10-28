@@ -1,0 +1,528 @@
+---
+title: "Tutoriel : paiement de factures"
+description: "Un back-end TypeScript complet pour encaisser des factures par mobile money et les rembourser, de npm init jusqu'au déploiement."
+---
+
+Ce tutoriel construit le **back-end** d'une application imaginaire, **FactureBJ** : un artisan crée une facture, le client la règle par mobile money, l'application est prévenue, et l'artisan peut rembourser. Le front-end est laissé de côté : votre application web ou mobile appellera simplement les routes créées ici.
+
+Le code est en **TypeScript**, mais il n'utilise que de l'HTTP et du JSON : chaque étape se traduit telle quelle en PHP, Python, Go ou Java.
+
+<Callout type="info">
+Tout se teste dans le **sandbox**, sans compte d'agrégateur. Aucun vrai agrégateur n'a été contacté dans ce tutoriel : le passage en réel est décrit à la dernière étape.
+</Callout>
+
+## Ce que vous allez construire
+
+```mermaid
+sequenceDiagram
+  participant C as Client (front)
+  participant A as FactureBJ (votre back-end)
+  participant P as Pont (self-host :8787)
+  participant G as Agrégateur
+  C->>A: POST /factures/:id/payer
+  A->>P: POST /v1/payments (montant lu en base)
+  P->>G: demande de paiement
+  A-->>C: nextAction (redirection ou attente)
+  G-->>P: confirmation
+  P->>A: webhook payment.succeeded (signé)
+  A->>A: facture = payée
+```
+
+Règle d'or : **le montant vient toujours de votre base, jamais du front-end.** Et la facture ne passe à « payée » que sur le webhook signé, jamais sur la réponse de création.
+
+## Prérequis
+
+- Node.js 20 ou plus, Docker, Git.
+- Pont installé en local : suivez [Installation](/demarrer/installation). À la fin, Pont répond sur `http://localhost:8787` et votre `.env` contient `PONT_API_KEY` et `PONT_ADMIN_TOKEN`.
+
+## Modules utilisés
+
+| Module | Rôle |
+|---|---|
+| `express` | Serveur HTTP (v5) |
+| `zod` | Validation de toutes les entrées |
+| `prisma` + `@prisma/client` | Base PostgreSQL de **votre** application (factures) |
+| `tsx` | Exécuter le TypeScript en développement |
+| `vitest` | Tests |
+
+Vous n'avez pas besoin de `@pont-bj/node` ici : votre back-end parle à Pont en HTTP, comme il le ferait depuis n'importe quel langage. Le paquet est utile si vous embarquez le moteur dans votre processus ([Paquets npm](/reference/paquets)).
+
+<Steps>
+<Step>
+
+## 1. Initialiser le projet
+
+```bash
+mkdir facturebj && cd facturebj
+npm init -y
+npm install express@5 zod @prisma/client@6
+npm install -D typescript tsx vitest prisma@6 @types/express @types/node
+npx tsc --init --strict --target es2022 --module nodenext --moduleResolution nodenext --outDir dist --rootDir src
+mkdir src
+```
+
+Dans `package.json`, ajoutez :
+
+```json
+{
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "vitest run"
+  }
+}
+```
+
+</Step>
+<Step>
+
+## 2. Variables d'environnement
+
+Créez `.env` (et ajoutez-le à `.gitignore` : **jamais de secret dans Git**) :
+
+```bash
+DATABASE_URL="postgresql://facturebj:facturebj@localhost:5433/facturebj"
+PONT_URL="http://localhost:8787"
+PONT_API_KEY="<la valeur de PONT_API_KEY du .env de Pont>"
+PONT_WEBHOOK_SECRET="<rempli à l'étape 7>"
+PORT=4000
+```
+
+Validez-les une fois au démarrage, avec Zod, plutôt que de lire `process.env` partout. Fichier `src/env.ts` :
+
+```ts
+import { z } from "zod";
+
+const schema = z.object({
+  DATABASE_URL: z.string().min(1),
+  PONT_URL: z.string().url(),
+  PONT_API_KEY: z.string().min(1),
+  PONT_WEBHOOK_SECRET: z.string().min(1),
+  PORT: z.coerce.number().int().default(4000),
+});
+
+export const env = schema.parse(process.env);
+```
+
+Lancez avec `node --env-file=.env` (Node 20+), ou `tsx --env-file=.env`. Adaptez les scripts `dev` et `start` en conséquence.
+
+</Step>
+<Step>
+
+## 3. La base de données des factures
+
+Une base PostgreSQL dédiée à votre application (celle de Pont est à part) :
+
+```bash
+docker run -d --name facturebj-db -p 5433:5432 \
+  -e POSTGRES_USER=facturebj -e POSTGRES_PASSWORD=facturebj -e POSTGRES_DB=facturebj \
+  postgres:16
+npx prisma init
+```
+
+`prisma/schema.prisma` :
+
+```prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum StatutFacture {
+  brouillon
+  en_attente
+  payee
+  echouee
+  remboursee
+}
+
+model Facture {
+  id         String        @id @default(cuid())
+  numero     String        @unique
+  montant    Int           // entier en XOF, jamais de décimale
+  telephone  String
+  statut     StatutFacture @default(brouillon)
+  pontId     String?       @unique // identifiant du paiement côté Pont
+  creeLe     DateTime      @default(now())
+}
+
+// Pour dédoublonner les webhooks (Pont rejoue en cas d'échec).
+model EvenementTraite {
+  id      String   @id // Pont-Event-Id
+  traiteLe DateTime @default(now())
+}
+```
+
+```bash
+npx prisma migrate dev --name init
+```
+
+</Step>
+<Step>
+
+## 4. Un petit client Pont
+
+Tous les appels passent par une fonction. Elle ajoute la clé, parse l'erreur JSON de Pont (`{ "error": { "code", "message", "fix" } }`) et ne fuit jamais de secret. `src/pont.ts` :
+
+```ts
+import { z } from "zod";
+import { env } from "./env.js";
+
+export class PontError extends Error {
+  constructor(
+    readonly status: number,
+    readonly code: string,
+    message: string,
+  ) {
+    super(message);
+  }
+}
+
+const errorBody = z.object({
+  error: z.object({ code: z.string(), message: z.string() }),
+});
+
+export async function pont<T>(
+  method: "GET" | "POST",
+  path: string,
+  schema: z.ZodType<T>,
+  body?: unknown,
+  idempotencyKey?: string,
+): Promise<T> {
+  const res = await fetch(`${env.PONT_URL}${path}`, {
+    method,
+    headers: {
+      authorization: `Bearer ${env.PONT_API_KEY}`,
+      "content-type": "application/json",
+      ...(idempotencyKey ? { "idempotency-key": idempotencyKey } : {}),
+    },
+    body: body === undefined ? undefined : JSON.stringify(body),
+  });
+  const json: unknown = await res.json();
+  if (!res.ok) {
+    const parsed = errorBody.safeParse(json);
+    throw new PontError(
+      res.status,
+      parsed.success ? parsed.data.error.code : "unknown",
+      parsed.success ? parsed.data.error.message : "Erreur Pont",
+    );
+  }
+  return schema.parse(json);
+}
+
+export const paymentSchema = z.object({
+  id: z.string(),
+  status: z.string(),
+  amount: z.number().int(),
+  currency: z.string(),
+  reference: z.string(),
+  needsReconciliation: z.boolean().optional(),
+  nextAction: z
+    .object({ type: z.string(), url: z.string().optional() })
+    .passthrough()
+    .nullable()
+    .optional(),
+});
+export type Payment = z.infer<typeof paymentSchema>;
+```
+
+</Step>
+<Step>
+
+## 5. Créer et payer une facture
+
+`src/index.ts` démarre l'application ; les routes vivent dans `src/factures.ts`.
+
+```ts
+import { Router } from "express";
+import { PrismaClient } from "@prisma/client";
+import { z } from "zod";
+import { PontError, paymentSchema, pont } from "./pont.js";
+
+export const prisma = new PrismaClient();
+export const factures = Router();
+
+const creation = z.object({
+  numero: z.string().min(1).max(40),
+  montant: z.number().int().positive(),
+  telephone: z.string().regex(/^\+\d{8,15}$/), // format international
+});
+
+factures.post("/factures", async (req, res) => {
+  const donnees = creation.safeParse(req.body);
+  if (!donnees.success) return res.status(400).json({ erreur: donnees.error.flatten() });
+  const facture = await prisma.facture.create({ data: donnees.data });
+  res.status(201).json(facture);
+});
+
+factures.post("/factures/:id/payer", async (req, res) => {
+  const facture = await prisma.facture.findUnique({ where: { id: req.params.id } });
+  if (!facture) return res.status(404).json({ erreur: "Facture introuvable" });
+  if (facture.statut === "payee") return res.status(409).json({ erreur: "Déjà payée" });
+
+  try {
+    // La référence = l'identifiant de la facture : rappeler cette route
+    // ne crée jamais un deuxième paiement (idempotence, voir /concepts/idempotence).
+    const paiement = await pont("POST", "/v1/payments", paymentSchema, {
+      amount: facture.montant, // lu en base, jamais envoyé par le client
+      currency: "XOF",
+      country: "BJ",
+      customer: { phone: facture.telephone },
+      reference: facture.id,
+      description: `Facture ${facture.numero}`,
+    });
+    await prisma.facture.update({
+      where: { id: facture.id },
+      data: { statut: "en_attente", pontId: paiement.id },
+    });
+    // Le front affiche selon nextAction : redirection, attente de validation sur le téléphone…
+    res.status(201).json({ paiementId: paiement.id, nextAction: paiement.nextAction ?? null });
+  } catch (e) {
+    if (e instanceof PontError) return res.status(502).json({ erreur: e.message, code: e.code });
+    throw e;
+  }
+});
+
+factures.get("/factures/:id", async (req, res) => {
+  const facture = await prisma.facture.findUnique({ where: { id: req.params.id } });
+  if (!facture) return res.status(404).json({ erreur: "Facture introuvable" });
+  res.json(facture);
+});
+```
+
+<Callout type="warn">
+`nextAction` dit au front quoi faire : `redirect` (ouvrir l'URL de l'agrégateur), `await_customer` (le client valide sur son téléphone), `preauth_code_required` ou `client_widget`. Voir [Paiements](/reference/api/paiements).
+</Callout>
+
+</Step>
+<Step>
+
+## 6. Recevoir le webhook signé
+
+Pont appelle votre serveur à chaque changement de statut, avec deux en-têtes : `Pont-Signature: t=<unix>,v1=<hmac>` et `Pont-Event-Id`. Le HMAC porte sur `t + "." + corps brut` : il faut donc le **corps brut**, avant tout `JSON.parse`. Fichier `src/webhooks.ts` :
+
+```ts
+import express, { Router } from "express";
+import { createHmac, timingSafeEqual } from "node:crypto";
+import { z } from "zod";
+import { env } from "./env.js";
+import { prisma } from "./factures.js";
+
+export const webhooks = Router();
+
+function signatureValide(entete: string | undefined, brut: Buffer): boolean {
+  if (!entete) return false;
+  const morceaux = new Map(entete.split(",").map((p) => p.split("=") as [string, string]));
+  const t = morceaux.get("t");
+  if (!t || Math.abs(Date.now() / 1000 - Number(t)) > 300) return false; // tolérance 300 s
+  const attendu = createHmac("sha256", env.PONT_WEBHOOK_SECRET).update(`${t}.${brut.toString("utf8")}`).digest("hex");
+  // Plusieurs v1= possibles pendant une rotation de secret.
+  return entete
+    .split(",")
+    .filter((p) => p.startsWith("v1="))
+    .some((p) => {
+      const recu = Buffer.from(p.slice(3), "hex");
+      const att = Buffer.from(attendu, "hex");
+      return recu.length === att.length && timingSafeEqual(recu, att);
+    });
+}
+
+const evenement = z.object({
+  id: z.string(),
+  type: z.string(),
+  object: z.enum(["payment", "payout", "refund"]),
+  created_at: z.number(),
+  data: z.object({ id: z.string(), status: z.string() }).passthrough(),
+});
+
+// express.raw : on garde les octets exacts pour vérifier la signature.
+webhooks.post("/webhooks/pont", express.raw({ type: "*/*" }), async (req, res) => {
+  const brut = req.body as Buffer;
+  if (!signatureValide(req.header("pont-signature"), brut)) return res.sendStatus(401);
+
+  const evt = evenement.safeParse(JSON.parse(brut.toString("utf8")));
+  if (!evt.success) return res.sendStatus(400);
+  const eventId = req.header("pont-event-id") ?? evt.data.id;
+
+  // Dédoublonnage : une clé primaire unique fait le travail, même en concurrence.
+  try {
+    await prisma.evenementTraite.create({ data: { id: eventId } });
+  } catch {
+    return res.sendStatus(200); // déjà traité : on répond OK pour stopper les relances
+  }
+
+  if (evt.data.object === "payment") {
+    const statut =
+      evt.data.type === "payment.succeeded" ? "payee"
+      : evt.data.type === "payment.refunded" ? "remboursee"
+      : ["payment.failed", "payment.expired", "payment.cancelled"].includes(evt.data.type) ? "echouee"
+      : null;
+    if (statut) {
+      await prisma.facture.updateMany({ where: { pontId: evt.data.data.id }, data: { statut } });
+    }
+  }
+  res.sendStatus(200);
+});
+```
+
+Assemblez le tout dans `src/index.ts`. **Montez le webhook avant `express.json()`**, sinon le corps est déjà consommé :
+
+```ts
+import express from "express";
+import { env } from "./env.js";
+import { factures } from "./factures.js";
+import { webhooks } from "./webhooks.js";
+
+const app = express();
+app.use(webhooks);
+app.use(express.json());
+app.use(factures);
+app.listen(env.PORT, () => console.log(`FactureBJ sur :${env.PORT}`));
+```
+
+Répondez vite (200) : Pont relance sinon à 0 s, 1 min, 5 min, 30 min, 2 h, 6 h, 12 h, 1 j, 2 j, 3 j.
+
+</Step>
+<Step>
+
+## 7. Brancher Pont sur votre webhook
+
+Déclarez l'URL auprès de Pont avec le jeton admin. Le secret n'est affiché **qu'une fois** :
+
+```bash
+PONT_ADMIN_TOKEN=$(grep '^PONT_ADMIN_TOKEN=' ../pont/.env | cut -d= -f2 | tr -d '"')
+curl -s -X POST http://localhost:8787/admin/webhooks/endpoints \
+  -H "authorization: Bearer $PONT_ADMIN_TOKEN" \
+  -H "content-type: application/json" \
+  -d '{"url":"http://host.docker.internal:4000/webhooks/pont"}'
+```
+
+Copiez le `secret` (`whsec_…`) retourné dans `PONT_WEBHOOK_SECRET`. Selon votre installation, Pont (dans Docker) joint votre machine via `host.docker.internal` (ou l'IP du réseau Docker sous Linux).
+
+</Step>
+<Step>
+
+## 8. Tester avec les numéros magiques du sandbox
+
+Le sandbox simule des scénarios selon le numéro de téléphone. Les huit numéros sont `+229010` suivi de `0000001` à `0000008`.
+
+```bash
+npm run dev
+# 1. créer une facture
+curl -s -X POST localhost:4000/factures -H "content-type: application/json" \
+  -d '{"numero":"F-001","montant":15000,"telephone":"+2290100000001"}'
+# 2. la payer (remplacez <id>)
+curl -s -X POST localhost:4000/factures/<id>/payer
+# 3. quelques secondes plus tard
+curl -s localhost:4000/factures/<id>
+```
+
+| Numéro | Scénario | Ce que vous devez constater |
+|---|---|---|
+| `+2290100000001` | succès | facture `payee` |
+| `+2290100000002` | solde insuffisant | facture `echouee` |
+| `+2290100000003` | jamais confirmé | reste `en_attente`, puis `echouee` à l'expiration |
+| `+2290100000004` | succès, webhook en double | `payee`, un seul traitement (dédoublonnage) |
+| `+2290100000005` | succès, webhook tardif | `en_attente` un moment, puis `payee` |
+| `+2290100000008` | refusé par le client | `echouee` |
+
+Vous pouvez aussi déclencher un scénario depuis le terminal : `npx @pont-bj/cli trigger <scénario>` (voir [CLI](/reference/cli)).
+
+<Callout type="info">
+Une facture bloquée « en attente » n'est pas perdue : Pont réconcilie lui-même toutes les 30 s. Vous pouvez forcer la vérification avec `POST /v1/payments/{id}/refresh`.
+</Callout>
+
+</Step>
+<Step>
+
+## 9. Rembourser
+
+Un remboursement n'est possible que sur un paiement `succeeded`. Sans montant, c'est un remboursement total. Ajoutez à `src/factures.ts` :
+
+```ts
+const remboursement = z.object({ montant: z.number().int().positive().optional() });
+
+factures.post("/factures/:id/rembourser", async (req, res) => {
+  const donnees = remboursement.safeParse(req.body ?? {});
+  if (!donnees.success) return res.status(400).json({ erreur: donnees.error.flatten() });
+  const facture = await prisma.facture.findUnique({ where: { id: req.params.id } });
+  if (!facture?.pontId || facture.statut !== "payee") {
+    return res.status(409).json({ erreur: "Seule une facture payée est remboursable" });
+  }
+  try {
+    const refund = await pont(
+      "POST",
+      `/v1/payments/${facture.pontId}/refunds`,
+      z.object({ id: z.string(), status: z.string() }).passthrough(),
+      donnees.data.montant ? { amount: donnees.data.montant } : {},
+      `remboursement-${facture.id}-${donnees.data.montant ?? "total"}`, // évite un double remboursement
+    );
+    res.status(202).json(refund);
+  } catch (e) {
+    if (e instanceof PontError) return res.status(422).json({ erreur: e.message, code: e.code });
+    throw e;
+  }
+});
+```
+
+La facture passe à `remboursee` à l'arrivée du webhook `payment.refunded`, comme pour le paiement.
+
+<Callout type="warn">
+Le **sandbox ne supporte pas les remboursements** : il répond `422 no_provider_available`. C'est normal ; testez cette route avec un agrégateur réel en mode test, ou vérifiez seulement la gestion de l'erreur.
+</Callout>
+
+</Step>
+<Step>
+
+## 10. Tester le code
+
+Isolez la logique de signature dans une fonction pure et testez-la (`vitest`). Exemple minimal `src/webhooks.test.ts` : signez un corps avec un secret de test, vérifiez qu'il passe, puis modifiez un octet et vérifiez qu'il est refusé, puis avancez `t` de plus de 300 s. Les trois cas protègent contre la falsification et le rejeu.
+
+```bash
+npm test
+```
+
+</Step>
+<Step>
+
+## 11. Déployer
+
+1. **Pont** : suivez [Mise en production](/guides/mise-en-production) (HTTPS, proxy, sauvegardes). Le webhook que vous déclarez doit alors être une URL **publique en HTTPS** de votre back-end.
+2. **Votre back-end** : build et conteneur.
+
+```dockerfile
+FROM node:22-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npx prisma generate && npm run build
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/index.js"]
+```
+
+3. **Variables en production** : `DATABASE_URL` (base gérée), `PONT_URL` (adresse privée de Pont, jamais publique pour `/admin`), `PONT_API_KEY`, `PONT_WEBHOOK_SECRET`. Stockez-les dans le gestionnaire de secrets de votre hébergeur.
+4. **Redéclarez le webhook** auprès du Pont de production : un nouveau secret est généré.
+5. **Passage en réel** : branchez vos clés d'agrégateur dans Pont et suivez [Passer en réel](/demarrer/passer-en-reel). Aucun changement dans votre code : seul Pont change de fournisseur.
+
+</Step>
+</Steps>
+
+## Check-list avant le live
+
+- Le montant vient de la base, la facture ne passe `payee` que sur webhook signé.
+- `reference` = identifiant de facture : un double clic ne crée pas deux paiements.
+- Signature vérifiée sur le corps brut, tolérance 300 s, dédoublonnage sur `Pont-Event-Id`.
+- Aucun secret dans le dépôt ni dans les logs.
+- Le webhook répond en moins de quelques secondes.
+
+## Pour aller plus loin
+
+- [Idempotence](/concepts/idempotence) et [Statuts](/concepts/statuts)
+- [Webhooks sortants](/reference/api/webhooks-sortants)
+- [Tutoriel : portefeuille mobile](/tutoriels/portefeuille-mobile)
