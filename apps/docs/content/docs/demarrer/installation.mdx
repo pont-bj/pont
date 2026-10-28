@@ -43,3 +43,14 @@ Le script :
 3. démarre le serveur et le dashboard.
 
 Relançable sans risque : un secret existant n'est jamais écrasé. Ouvrez ensuite http://localhost:3300 : **le premier visiteur crée le compte administrateur**, ensuite les inscriptions sont fermées.
+
+## Depuis votre application
+
+Le serveur se déploie avec Docker ; votre application, elle, installe le SDK et pilote Pont avec le CLI :
+
+```bash
+npm install @pont-bj/node            # SDK TypeScript / Node.js
+npx @pont-bj/cli init                # intègre Pont dans votre projet et lance un paiement de test en sandbox
+```
+
+Toutes les commandes sont décrites dans [Ligne de commande](/reference/cli), et chaque module dans [Paquets npm](/reference/paquets).

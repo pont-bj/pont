@@ -1,0 +1,116 @@
+---
+title: "Ligne de commande (pont)"
+description: "Toutes les commandes du CLI Pont : intégrer, auditer, tester dans le sandbox, ajouter un cas d'usage, intégrer un agrégateur absent."
+---
+
+Le CLI est le paquet npm `@pont-bj/cli`. Il expose la commande `pont`.
+
+```bash
+# sans installer (recommandé pour un essai)
+npx @pont-bj/cli init
+
+# ou installé dans le projet
+npm install --save-dev @pont-bj/cli
+npx pont init
+
+# ou globalement
+npm install --global @pont-bj/cli
+pont --help
+```
+
+<Callout type="info">
+Le nom `pont` seul désigne un autre paquet sur npm. Pour `npx`, utilisez toujours `@pont-bj/cli` (ou installez le CLI d'abord, puis `npx pont`).
+</Callout>
+
+## Commandes
+
+| Commande | Rôle |
+|---|---|
+| `pont init [--agent] [--stores convex] [--dry-run] [--no-test]` | Intègre Pont dans le projet courant |
+| `pont doctor [--ci] [--json]` | Audit de sécurité de l'intégration |
+| `pont recipes [description]` | Liste les cas d'usage (classés par pertinence si vous décrivez votre besoin) |
+| `pont add recipe <id> [--dry-run]` | Installe un cas d'usage (par exemple `wallet`) |
+| `pont trigger <scénario>` | Rejoue un scénario du sandbox et affiche les événements reçus |
+| `pont provider new [--from spec.json] [--out dossier] [--force] [--dry-run]` | Génère l'adaptateur d'un agrégateur à partir d'une fiche |
+| `pont provider import <url\|fichier> [--out brouillon.json] [--force]` | Génère un brouillon de fiche à partir de la spécification OpenAPI d'un agrégateur |
+
+Le code de sortie est `0` en cas de succès et `1` sinon : les commandes s'utilisent donc telles quelles dans une CI.
+
+## `pont init`
+
+Détecte votre stack (voir [Détection de la stack](/agents-ia/detection-de-stack)), écrit les fichiers d'intégration, ajoute les variables au `.env`, puis lance un paiement de test dans le sandbox.
+
+| Option | Effet |
+|---|---|
+| `--dry-run` | Montre le plan, n'écrit rien |
+| `--no-test` | Ne lance pas le paiement de test final |
+| `--agent` | Ajoute une section `AGENTS.md` et la configuration MCP pour un assistant IA |
+| `--stores convex` | Génère aussi les tables et le fichier de stockage Convex (défaut : `memory`, développement uniquement) |
+
+Un fichier déjà présent n'est jamais écrasé : il est signalé. Pont n'installe rien lui-même : il affiche la commande d'installation du SDK avec le gestionnaire de paquets détecté (pnpm, yarn, bun ou npm), par exemple `pnpm add @pont-bj/node`.
+
+## `pont doctor`
+
+Audite le code et la configuration : fichier `.env` versionné, secret exposé au navigateur, route de webhook absente, montant ou statut pris dans la requête ou l'URL de retour au lieu de la vérification serveur, sandbox ou HTTP en mode live, secrets trop faibles.
+
+```bash
+npx pont doctor            # rapport lisible
+npx pont doctor --json     # rapport structuré
+npx pont doctor --ci       # code de sortie 1 si un contrôle échoue
+```
+
+## `pont trigger`
+
+Rejoue un scénario du sandbox sans toucher à un agrégateur. Les scénarios correspondent aux numéros magiques (`+229010` suivi du suffixe) :
+
+| Scénario | Numéro | Résultat |
+|---|---|---|
+| `success` | `+2290100000001` | Paiement réussi |
+| `insufficient_funds` | `+2290100000002` | Solde insuffisant |
+| `never_confirmed` | `+2290100000003` | Jamais confirmé |
+| `success_duplicate_webhook` | `+2290100000004` | Réussi, webhook reçu en double |
+| `success_late_webhook` | `+2290100000005` | Réussi, webhook tardif |
+| `provider_down_before_push` | `+2290100000006` | Agrégateur indisponible avant l'envoi |
+| `ambiguous_timeout` | `+2290100000007` | Délai dépassé, statut ambigu |
+| `declined_by_customer` | `+2290100000008` | Refusé par le client |
+
+```bash
+npx pont trigger insufficient_funds
+```
+
+## `pont recipes` et `pont add recipe`
+
+```bash
+npx pont recipes "portefeuille mobile"   # cherche un cas d'usage
+npx pont add recipe wallet --dry-run     # aperçu
+npx pont add recipe wallet               # installe la recette
+```
+
+La recette `wallet` (portefeuille, registre en partie double, plafonds KYC) demande le stockage PostgreSQL. Voir [Portefeuille et registre](/guides/portefeuille-et-registre).
+
+## Intégrer un agrégateur absent
+
+Pour un agrégateur que Pont ne connaît pas, deux commandes enchaînées :
+
+```bash
+# 1. Brouillon depuis la spécification OpenAPI (https:// uniquement pour une URL)
+npx pont provider import https://api.agregateur.example/openapi.json --out agregateur.draft.json
+
+# 2. Après relecture et complétion du brouillon, génération de l'adaptateur
+npx pont provider new --from agregateur.draft.json --out ./adaptateurs
+```
+
+`import` écrit le brouillon et un rapport en trois blocs : ce qui a été lu, ce qui est à relire, ce qui est à renseigner. Il ne devine jamais un statut ambigu (par exemple `ACCEPTED` n'est pas traité comme un succès) et marque chaque champ inconnu `A_COMPLETER_<champ>`. `provider new` refuse tant qu'un de ces marqueurs reste.
+
+Deux adresses à ne pas confondre dans la fiche :
+
+| Variable | Adresse |
+|---|---|
+| `{callbackUrl}` | Le webhook de Pont, appelé par l'agrégateur |
+| `{returnUrl}` | La page où le client revient après paiement (champ omis si vous n'en donnez pas) |
+
+<Callout type="warn">
+`pont provider import` demande le CLI 0.2.0 ou plus. La distinction `{returnUrl}` est disponible dans la version suivante du CLI. Un adaptateur généré n'a pas été éprouvé chez l'agrégateur : testez-le en sandbox, puis avec vos propres clés, avant la production.
+</Callout>
+
+Détail complet : [Intégrer un agrégateur absent](https://github.com/pont-bj/pont/blob/main/docs/self-host/integration-agregateur.md).

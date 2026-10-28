@@ -1,0 +1,75 @@
+---
+title: "Paquets npm"
+description: "Les modules @pont-bj publiés sur npm : à quoi sert chacun, quand l'installer, avec la commande exacte."
+---
+
+Pont est publié sous le scope npm `@pont-bj`. La plupart des projets n'en installent qu'un seul : `@pont-bj/node`. Les autres sont des briques que vous n'ajoutez que pour un besoin précis.
+
+## Pour intégrer Pont à votre application
+
+| Paquet | Quand l'installer | Commande |
+|---|---|---|
+| `@pont-bj/node` | **Par défaut.** SDK TypeScript / Node.js : paiements, webhooks, vérification de signature. Embarque le sandbox et les adaptateurs FedaPay, PawaPay, PayDunya, Kkiapay et CinetPay | `npm install @pont-bj/node` |
+| `@pont-bj/cli` | Pour `pont init`, `doctor`, `trigger`, `provider import` | `npm install --save-dev @pont-bj/cli` |
+| `@pont-bj/mcp` | Pour brancher un assistant IA (Claude Code, Cursor…) sur le sandbox | `npx -y @pont-bj/mcp` |
+
+Avec un autre gestionnaire : `pnpm add @pont-bj/node`, `yarn add @pont-bj/node` ou `bun add @pont-bj/node`.
+
+```ts
+import { createPontFromEnv, verifyPontSignature } from "@pont-bj/node";
+
+const pont = createPontFromEnv(); // lit PONT_MODE, PONT_SANDBOX, les clés d'agrégateurs…
+```
+
+## Briques fonctionnelles
+
+| Paquet | Rôle | Commande |
+|---|---|---|
+| `@pont-bj/ledger` | Registre en partie double, portefeuilles et plafonds KYC | `npm install @pont-bj/ledger` |
+| `@pont-bj/recipes` | Cas d'usage prêts à l'emploi (recette `wallet`) | `npm install @pont-bj/recipes` |
+| `@pont-bj/auth` | Rôles et permissions de votre fintech (`definePont`) | `npm install @pont-bj/auth` |
+| `@pont-bj/sandbox` | Simulateur à numéros magiques (déjà inclus dans `@pont-bj/node`) | `npm install @pont-bj/sandbox` |
+
+## Stockage
+
+| Paquet | Rôle | Commande |
+|---|---|---|
+| `@pont-bj/store-prisma` | Stockage PostgreSQL via Prisma (paiements, **registre et portefeuilles**) | `npm install @pont-bj/store-prisma` |
+| `@pont-bj/store-convex` | Stockage Convex (paiements seulement) | `npm install @pont-bj/store-convex` |
+
+Voir [Stockage](/guides/stockage).
+
+## Adaptateurs d'agrégateurs
+
+Déjà inclus dans `@pont-bj/node`. Installez-les seuls pour construire un runtime sur mesure :
+
+| Paquet | Agrégateur |
+|---|---|
+| `@pont-bj/adapter-fedapay` | FedaPay |
+| `@pont-bj/adapter-pawapay` | pawaPay |
+| `@pont-bj/adapter-paydunya` | PayDunya |
+| `@pont-bj/adapter-kkiapay` | Kkiapay |
+| `@pont-bj/adapter-cinetpay` | CinetPay |
+
+## Fondations (pour étendre Pont)
+
+| Paquet | Rôle |
+|---|---|
+| `@pont-bj/core` | Contrat partagé : modèle de paiement, statuts, interface `ProviderAdapter` |
+| `@pont-bj/engine` | Orchestration, vérification, règles de reprise |
+| `@pont-bj/framework` | Briques communes (validation, erreurs, utilitaires) |
+
+Pour écrire votre propre adaptateur, implémentez `ProviderAdapter` de `@pont-bj/core` ou utilisez `pont provider import` / `pont provider new` (voir [Ligne de commande](/reference/cli)).
+
+## Le serveur n'est pas sur npm
+
+`@pont-bj/server` (API HTTP, webhooks, planificateur) est **privé** : il se déploie avec Docker, pas avec `npm install`. Voir [Installation](/demarrer/installation).
+
+```bash
+cd deploy/self-host
+./setup.sh
+```
+
+<Callout type="info">
+Les paquets `@pont-bj/*` sont en version 0.x : l'API peut encore évoluer entre deux versions mineures. Le fichier `CHANGELOG.md` du dépôt liste les changements.
+</Callout>
