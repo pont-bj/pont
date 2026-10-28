@@ -41,7 +41,8 @@ jobs:
       - name: Vérifier la présence du jeton
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: test -n "$NODE_AUTH_TOKEN" || { echo "NPM_TOKEN absent : créer le secret (voir docs/open-source/publication-npm.md)"; exit 1; }
+        run: |
+          test -n "$NODE_AUTH_TOKEN" || { echo "NPM_TOKEN absent : créer le secret (voir docs/open-source/publication-npm.md)"; exit 1; }
       - name: Publier (pnpm applique publishConfig et remplace workspace:*)
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
