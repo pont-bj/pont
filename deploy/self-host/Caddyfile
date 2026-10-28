@@ -1,0 +1,63 @@
+# Proxy de production de Pont (profil `prod`). HTTPS automatique (Let's Encrypt) pour de vrais domaines,
+# certificat interne pour `localhost` et `*.localhost` (tests locaux).
+# Domaines : PONT_DOMAIN (API et webhooks) et DASHBOARD_DOMAIN (interface), deux noms différents.
+
+(securite) {
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "no-referrer"
+		X-Frame-Options "DENY"
+		-Server
+	}
+}
+
+# Journal d'accès sans secrets : jamais d'en-têtes d'authentification ni de cookies.
+(journal) {
+	log {
+		output stdout
+		format filter {
+			wrap json
+			request>headers>Authorization delete
+			request>headers>Cookie delete
+			request>headers>Idempotency-Key delete
+			resp_headers>Set-Cookie delete
+		}
+	}
+}
+
+# API Pont : ce que les agrégateurs et votre application appellent.
+{$PONT_DOMAIN} {
+	import securite
+	import journal
+	request_body {
+		max_size 1MB
+	}
+
+	# /admin est réservé au dashboard, qui parle au serveur par le réseau Docker interne : refusé ici.
+	handle /admin* {
+		respond "Interdit" 403
+	}
+
+	@public path /hooks/* /v1/* /health
+	handle @public {
+		reverse_proxy pont:8080 {
+			header_up -X-Forwarded-For
+			header_up X-Forwarded-For {remote_host}
+		}
+	}
+
+	handle {
+		respond "Introuvable" 404
+	}
+}
+
+# Dashboard.
+{$DASHBOARD_DOMAIN} {
+	import securite
+	import journal
+	request_body {
+		max_size 2MB
+	}
+	reverse_proxy dashboard:3000
+}

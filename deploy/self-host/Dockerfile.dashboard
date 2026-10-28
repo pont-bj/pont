@@ -1,0 +1,11 @@
+FROM node:22-slim
+ENV PNPM_HOME=/pnpm PATH=/pnpm:$PATH CI=true NEXT_TELEMETRY_DISABLED=1
+RUN corepack enable && apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+COPY . .
+RUN pnpm install --frozen-lockfile --filter @pont/dashboard... && pnpm --filter @pont/dashboard build
+RUN mkdir -p /data && chown -R node:node /app /data
+USER node
+ENV DASHBOARD_DB_PATH=/data/dashboard.db
+EXPOSE 3000
+CMD ["pnpm", "--filter", "@pont/dashboard", "start"]
