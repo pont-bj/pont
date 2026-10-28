@@ -3,7 +3,6 @@
 Orchestrateur de paiement **BYOK, non-custodial** pour l'Afrique francophone. Le client connecte ses clés FedaPay / PayDunya / CinetPay / Kkiapay ; Pont unifie l'API, les webhooks, le sandbox et la sécurité. Pont ne détient jamais de fonds. Self-host gratuit à vie ; Pont Cloud payant (Pont y conserve les clés, chiffrées par client : `docs/plan/deploiement-cloud-selfhost.md`).
 
 - Spécification : `docs/CAHIER-DES-CHARGES.md` (source de vérité du MVP)
-- Recherche marché : `~/Brain/projets/20261026-1200-orchestrateur-paiement-afrique-francophone.md`
 
 ## Structure
 

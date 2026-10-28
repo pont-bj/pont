@@ -9,7 +9,6 @@ statut: brouillon
 # Cahier des charges — MVP « Pont »
 
 > **Pont** est un nom de code. Renommer avant le lancement public (vérifier npm, Packagist, domaine, INPI/OAPI).
-> Recherche marché associée : `~/Brain/projets/20261026-1200-orchestrateur-paiement-afrique-francophone.md`.
 
 ---
 
