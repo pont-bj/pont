@@ -6,7 +6,7 @@
 |---|---|---|---|
 | T-000 | Capacités + CGU des agrégateurs | metier | ✅ 2026-10-26 |
 | T-007 | Fiche PawaPay | metier | ✅ (CGU non publiques ⏳) |
-| T-020 | Documentation agrégateurs téléchargée (`docs/providers/`) | backend | ✅ (CinetPay injoignable) |
+| T-020 | Documentation agrégateurs téléchargée (`documentation officielle de l’agrégateur`) | backend | ✅ (CinetPay injoignable) |
 | T-021 | `@pont-bj/core` : modèle, erreurs FR, états, téléphone, signatures HMAC + RFC 9421, HTTP, Zod | backend | ✅ |
 | T-022 | `@pont-bj/sandbox` : 8 numéros magiques | backend | ✅ |
 | T-023 | Adaptateurs : dépôts, vérification, webhooks (5 agrégateurs) | backend | ✅ |
@@ -27,7 +27,7 @@
 | T-014 | PawaPay Orange Burkina (PREAUTH) : `preAuthorisationCode`, instructions FR/EN de la doc | backend | ✅ 2026-10-27 |
 | T-001 | ADR-001 accepté : hybride, clés chez le marchand, instructions signées | metier | ✅ 2026-10-27 |
 | T-032 | Instructions signées (R-020) côté marchand : Ed25519, ± 5 min, nonce, périmètre, plafond, audit | backend | ✅ 2026-10-27 |
-| T-033 | Brouillon des CGU (`docs/legal/CGU-brouillon.md`) | metier | ✅ brouillon, juriste requis |
+| T-033 | Brouillon des CGU | metier | ✅ brouillon, juriste requis |
 
 Tests : 183 (core 11, framework 14, engine 76, ledger 14, recipes 10, node 12, store-convex 6, store-prisma 8, cli 20, mcp 8). Typecheck : 0 erreur sur 16 paquets.
 

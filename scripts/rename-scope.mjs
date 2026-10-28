@@ -14,7 +14,7 @@ if (!ancien?.startsWith("@") || !nouveau?.startsWith("@") || !/^@[a-z0-9][a-z0-9
 }
 const fichiers = execFileSync("git", ["ls-files", "-z"], { encoding: "utf8" })
   .split("\0")
-  .filter((f) => f && f !== "pnpm-lock.yaml" && !f.startsWith("docs/providers/") && !f.startsWith(".claude/skills/"))
+  .filter((f) => f && f !== "pnpm-lock.yaml")
   .filter((f) => /\.(ts|tsx|js|mjs|json|md|mdx|yml|yaml|php|sh|prisma)$/.test(f));
 let total = 0;
 for (const f of fichiers) {

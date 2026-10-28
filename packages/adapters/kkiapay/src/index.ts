@@ -20,7 +20,7 @@ import {
   type TransferAccepted,
 } from "@pont-bj/core";
 
-// Doc : docs/providers/kkiapay/ — fiche : docs/metier/agregateurs/kkiapay.md
+// Doc : documentation officielle de l’agrégateur — fiche : docs/metier/agregateurs/kkiapay.md
 // CGU Art. 18 : Kkiapay doit être le seul agrégateur du marchand (R-011, contrôlé par le moteur).
 const BASE_URLS: Record<Mode, string> = {
   test: "https://api-sandbox.kkiapay.me",

@@ -30,7 +30,7 @@ import {
   type WebhookContext,
 } from "@pont-bj/core";
 
-// Doc : docs/providers/pawapay/llms-full.txt — fiche : docs/metier/agregateurs/pawapay.md
+// Doc : documentation officielle de l’agrégateur — fiche : docs/metier/agregateurs/pawapay.md
 const BASE_URLS: Record<Mode, string> = {
   test: "https://api.sandbox.pawapay.io",
   live: "https://api.pawapay.io",

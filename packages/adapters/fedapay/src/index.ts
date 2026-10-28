@@ -25,13 +25,13 @@ import {
   type TransferVerified,
 } from "@pont-bj/core";
 
-// Doc : docs/providers/fedapay/ — fiche : docs/metier/agregateurs/fedapay.md
+// Doc : documentation officielle de l’agrégateur — fiche : docs/metier/agregateurs/fedapay.md
 const BASE_URLS: Record<Mode, string> = {
   test: "https://sandbox-api.fedapay.com/v1",
   live: "https://api.fedapay.com/v1",
 };
 
-// Source : docs/providers/fedapay/payment-methods.md (page officielle « Payment Methods »).
+// Source : documentation officielle de l’agrégateur (page officielle « Payment Methods »).
 const COUNTRIES: ReadonlySet<Country> = new Set(["BJ", "TG", "GN", "CI", "NE", "SN", "ML", "BF"]);
 
 /** Opérateurs proposés sur le checkout hébergé, par pays (Guinée et Niger : opérateurs hors de la liste Pont). */

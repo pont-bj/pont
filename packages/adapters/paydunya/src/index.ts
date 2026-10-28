@@ -56,7 +56,7 @@ const DISBURSE_STATUS: Record<string, TransferStatus> = {
   failed: "failed",
 };
 
-// Doc : docs/providers/paydunya/ — fiche : docs/metier/agregateurs/paydunya.md
+// Doc : documentation officielle de l’agrégateur — fiche : docs/metier/agregateurs/paydunya.md
 const BASE_URLS: Record<Mode, string> = {
   test: "https://app.paydunya.com/sandbox-api/v1",
   live: "https://app.paydunya.com/api/v1",

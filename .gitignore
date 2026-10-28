@@ -14,3 +14,7 @@ deploy/self-host/.env
 apps/dashboard/data/
 apps/dashboard/.next/
 *.tsbuildinfo
+
+# Outils locaux
+.claude/
+skills-lock.json

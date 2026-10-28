@@ -32,7 +32,7 @@ Pont devient **l'infrastructure de paiement des fintechs africaines** en ajoutan
 
 - Si Pont détenait ou faisait circuler les fonds lui-même, il deviendrait émetteur de monnaie électronique ou établissement de paiement : agrément BCEAO obligatoire. Ce n'est pas le cas.
 - C'est la fintech qui porte la relation avec ses utilisateurs, son propre agrément (ou celui de son partenaire) et ses obligations KYC/LBC-FT. Pont fournit l'outillage (paliers, plafonds, gel), pas la conformité elle-même.
-- À faire valider par le juriste en même temps que les CGU (`docs/legal/CGU-brouillon.md`).
+- À faire valider par le juriste en même temps que les CGU.
 
 ## Conséquences
 

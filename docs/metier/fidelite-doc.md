@@ -1,6 +1,6 @@
 # Fidélité du code à la documentation des agrégateurs
 
-Aucun test réel en sandbox n'est possible pour l'instant (décision du 2026-10-27). Ce tableau dit, pour chaque comportement codé, s'il vient **mot pour mot de la doc officielle** (dans `docs/providers/`), d'une **déduction** raisonnable, ou d'une **hypothèse** à surveiller en production.
+Aucun test réel en sandbox n'est possible pour l'instant (décision du 2026-10-27). Ce tableau dit, pour chaque comportement codé, s'il vient **mot pour mot de la doc officielle** (dans `documentation officielle de l’agrégateur`), d'une **déduction** raisonnable, ou d'une **hypothèse** à surveiller en production.
 
 Règle de sécurité qui compense : un statut inconnu ne devient **jamais** un succès (il reste `pending` / `processing`), et tout succès est relu par API avec contrôle du montant (R-001, R-013).
 
@@ -13,7 +13,7 @@ Règle de sécurité qui compense : un statut inconnu ne devient **jamais** un s
 | Opérateurs couverts par pays (checkout hébergé et retraits) | ✅ `payment-methods.md` |
 | Réponses sous la clé `v1/transaction` ou à plat | 🔶 déduction (SDK officiels vs OpenAPI) : les deux formes sont gérées |
 | Statuts `pending`, `approved`, `canceled`, `transferred` | ✅ OpenAPI ; `declined` déduit de l'événement `transaction.declined` |
-| Signature webhook `X-FEDAPAY-SIGNATURE: t=…,s=HMAC_SHA256(t.body)`, tolérance 300 s | ✅ code source du SDK officiel (`docs/providers/fedapay/sdk-Webhook.ts`) |
+| Signature webhook `X-FEDAPAY-SIGNATURE: t=…,s=HMAC_SHA256(t.body)`, tolérance 300 s | ✅ code source du SDK officiel (`documentation officielle de l’agrégateur`) |
 | Payouts : `POST /payouts` (avec le `mode` officiel) puis `PUT /payouts/start {payouts:[{id}]}` | ✅ guide payouts + `payment-methods.md` |
 | Statuts payout `pending → started → processing → sent / failed` | ✅ guide payouts |
 | Préfixe `payout.` dans le nom des événements de payout | ⚠️ hypothèse (seuls les événements `transaction.*` sont listés) |
@@ -47,7 +47,7 @@ Règle de sécurité qui compense : un statut inconnu ne devient **jamais** un s
 
 | Comportement | Source |
 |---|---|
-| `POST /api/v1/transactions/status` et `/revert`, en-têtes `x-api-key`, `x-private-key`, `x-secret-key`, URLs sandbox/live | ✅ SDK officiel Node (`docs/providers/kkiapay/sdk/`) |
+| `POST /api/v1/transactions/status` et `/revert`, en-têtes `x-api-key`, `x-private-key`, `x-secret-key`, URLs sandbox/live | ✅ SDK officiel Node (`documentation officielle de l’agrégateur`) |
 | Statuts `SUCCESS`, `FAILED` | ✅ exemples de la doc ; tout autre statut reste `pending` |
 | Webhook `x-kkiapay-secret` = secret saisi dans le dashboard | ✅ doc |
 | Remboursement total seulement, mobile money réussi, frais non rendus | ✅ doc |

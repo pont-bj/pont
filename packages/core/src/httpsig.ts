@@ -1,7 +1,7 @@
 import { createHash, createPublicKey, verify as cryptoVerify, constants } from "node:crypto";
 import { safeEqual } from "./signature.js";
 
-// Vérification des signatures HTTP RFC 9421, telle que décrite par PawaPay (docs/providers/pawapay/llms-full.txt, « Signatures in API »).
+// Vérification des signatures HTTP RFC 9421, telle que décrite par PawaPay (documentation officielle de l’agrégateur, « Signatures in API »).
 
 export type HttpSignatureAlgorithm = "ecdsa-p256-sha256" | "ecdsa-p384-sha384" | "rsa-pss-sha512" | "rsa-v1_5-sha256";
 
