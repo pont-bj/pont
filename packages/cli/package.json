@@ -21,7 +21,8 @@
     "@pont/sandbox": "workspace:*",
     "@pont/store-convex": "workspace:*",
     "@pont/recipes": "workspace:*",
-    "@pont/framework": "workspace:*"
+    "@pont/framework": "workspace:*",
+    "zod": "3.25.76"
   },
   "license": "UNLICENSED",
   "files": [
