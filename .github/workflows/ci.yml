@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verifier:
+    runs-on: ubuntu-latest
+    services:
+      # Les tests de packages/store-prisma visent localhost:55432 (ignorés si injoignable).
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: pont
+          POSTGRES_DB: pont_test
+        ports:
+          - 55432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm -r typecheck
+      - name: Créer le schéma de test (pas de migrations dans le dépôt)
+        run: pnpm --filter @pont/store-prisma exec prisma db push --accept-data-loss
+      - run: pnpm -r test
