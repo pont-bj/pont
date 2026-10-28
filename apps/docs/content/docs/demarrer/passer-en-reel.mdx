@@ -1,0 +1,12 @@
+---
+title: "Passer en réel"
+description: "Brancher vos vrais agrégateurs et mettre Pont en production."
+---
+
+1. Renseignez les clés de vos agrégateurs dans `.env`.
+2. `PONT_MODE=live`, `PONT_SANDBOX=false`.
+3. Mettez le serveur et le dashboard derrière HTTPS avec `./setup.sh --prod` (proxy Caddy, domaines, services internes non exposés) : voir [la mise en production](/guides/mise-en-production).
+4. Déclarez l'URL `https://<votre-domaine>/hooks/<agrégateur>` dans la console de chaque agrégateur.
+5. `docker compose up -d`.
+
+Le serveur refuse de démarrer en live avec un stockage non durable ou avec le sandbox actif.

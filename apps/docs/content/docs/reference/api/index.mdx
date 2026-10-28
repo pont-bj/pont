@@ -1,0 +1,42 @@
+---
+title: Référence de l'API
+description: Toutes les routes de Pont, générées depuis la spécification OpenAPI 3.1 du serveur.
+---
+
+Pont expose trois familles de routes. Chaque page ci-contre détaille les paramètres, les schémas, les réponses d'erreur et des exemples à copier.
+
+| Famille | Qui l'appelle | Authentification |
+|---|---|---|
+| `/v1/*` | Votre application | `Authorization: Bearer <PONT_API_KEY>` |
+| `/admin/*` | Le dashboard | `Authorization: Bearer <PONT_ADMIN_TOKEN>` |
+| `/hooks/<agrégateur>` | Les agrégateurs | Signature vérifiée par Pont |
+
+## Essayer en 30 secondes
+
+```bash title="Créer un paiement sandbox"
+curl -X POST http://localhost:8787/v1/payments \
+  -H "authorization: Bearer $PONT_API_KEY" \
+  -H "content-type: application/json" \
+  -d '{"amount":5000,"currency":"XOF","country":"BJ","customer":{"phone":"+2290100000001"},"reference":"commande-42"}'
+```
+
+Résultat attendu : `201` et un paiement `pending` avec `nextAction.type = "await_customer"`.
+
+## Règles communes
+
+- **Montants entiers** : le XOF et le XAF n'ont pas de décimales.
+- **Idempotence** : en-tête `Idempotency-Key` (8 à 255 caractères), sinon `auto:<type>:<reference>`. Même clé avec un contenu différent : `409 idempotency_conflict`.
+- **Erreurs** : `{ "error": { "code", "message", "fix"? } }`. Voir [les codes d'erreur](/reference/erreurs).
+- **Paiement ambigu** : le statut ne change pas, `needsReconciliation` passe à `true`. Voir [les statuts](/concepts/statuts).
+
+La spécification brute est disponible : [`openapi.json`](/openapi.json).
+
+## Pages
+
+<Cards>
+  <Card title="Paiements" href="/reference/api/paiements" description="Créer, lire, vérifier, rembourser." />
+  <Card title="Retraits" href="/reference/api/retraits" description="Envoyer de l'argent vers Mobile Money." />
+  <Card title="Portefeuilles" href="/reference/api/portefeuilles" description="Soldes, dépôts, retraits, transferts." />
+  <Card title="Webhooks sortants" href="/reference/api/webhooks-sortants" description="Événements signés envoyés à votre application." />
+  <Card title="Administration" href="/reference/api/administration" description="Routes du dashboard." />
+</Cards>

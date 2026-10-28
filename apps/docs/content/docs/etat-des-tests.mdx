@@ -1,0 +1,33 @@
+---
+title: "Ce qui est testé, et ce qui ne l'est pas"
+description: "L'état réel de la vérification de Pont, sans enjolivure."
+---
+
+Pont manipule de l'argent : vous devez savoir ce qui a été vérifié.
+
+## Vérifié
+
+- **Tests automatisés** sur chaque paquet (plus de 230 au total) : moteur, idempotence, webhooks, registre, rôles, serveur, coffre.
+- **Vrai PostgreSQL** : idempotence sous concurrence (20 créations simultanées, un seul paiement), 50 retraits simultanés sans découvert, écriture identique envoyée 20 fois : une seule enregistrée.
+- **Pile Docker complète**, en mode PostgreSQL **et** en mode Convex : installation depuis zéro, relance de `setup.sh`, paiement sandbox, rejeu idempotent, persistance après redémarrage du serveur.
+- **Authentification** : premier administrateur, inscription fermée, mauvais mot de passe, redirections, accès par rôle.
+- **Portefeuille sur PostgreSQL** : dépôt sans double crédit, retrait, transfert, plafonds, gel de compte, état conservé après redémarrage.
+- **Coffre de clés** : chiffrement et déchiffrement, refus avec une autre clé maître, secrets jamais renvoyés en clair, règle Kkiapay, conservation après redémarrage.
+- **Dashboard dans un vrai navigateur** : enregistrement et suppression de clés, ajout et retrait de destinataires de webhooks.
+
+## Non vérifié
+
+- **Aucun vrai agrégateur n'a été contacté.** Tout a été testé en sandbox ou avec des clés factices. Les adaptateurs suivent la documentation des agrégateurs, pas une expérience en production.
+- Les boutons du dashboard autres que Clés et Webhooks (création d'utilisateur, éditeur de rôles, paiement de test, gel de compte) ont été testés par leur logique et leur rendu, pas par des clics de navigateur.
+- Les webhooks sortants n'ont pas été livrés à un vrai récepteur.
+- Le portefeuille **n'existe pas avec Convex**.
+- Pas de migrations de base versionnées : les tables se créent avec `prisma db push` ou `convex deploy`.
+
+## Pas encore construit
+
+- Pont Cloud (hébergement, facturation, chiffrement par client).
+- E-mail (SMTP) : mot de passe oublié, invitations, alertes.
+- Outil d'intégration d'agrégateur personnalisé.
+- Authentification à deux facteurs, organisations, plusieurs rôles par utilisateur.
+- Plafonds KYC appliqués automatiquement depuis le rôle.
+- Une suite de tests de conformité réutilisable pour les adaptateurs de stockage.

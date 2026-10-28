@@ -1,0 +1,29 @@
+@import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+@import "fumadocs-openapi/css/preset.css";
+
+/* Couleurs Pont : indigo de la landing et du dashboard (#4F46E5). */
+:root {
+  --color-fd-primary: hsl(243, 75%, 59%);
+  --color-fd-primary-foreground: hsl(0, 0%, 100%);
+  --color-fd-ring: hsl(243, 75%, 59%);
+  --color-fd-accent: hsla(243, 75%, 59%, 0.1);
+  --color-fd-accent-foreground: hsl(243, 75%, 40%);
+}
+
+.dark {
+  --color-fd-primary: hsl(243, 90%, 74%);
+  --color-fd-primary-foreground: hsl(243, 40%, 10%);
+  --color-fd-ring: hsl(243, 90%, 74%);
+  --color-fd-accent: hsla(243, 90%, 74%, 0.15);
+  --color-fd-accent-foreground: hsl(243, 90%, 85%);
+}
+
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-outfit), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}

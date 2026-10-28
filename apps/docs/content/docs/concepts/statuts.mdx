@@ -1,0 +1,63 @@
+---
+title: "Statuts d'un paiement"
+description: "Le cycle de vie normalisé, identique pour tous les agrégateurs."
+---
+
+Chaque agrégateur a ses propres statuts. Pont les ramène à un **modèle unique**.
+
+| Statut | Sens |
+|---|---|
+| `pending` | Créé, en attente du client |
+| `processing` | Le client a validé, l'agrégateur traite |
+| `succeeded` | Confirmé **et vérifié** auprès de l'agrégateur |
+| `failed` | Refusé ou échoué |
+| `expired` | Jamais confirmé dans le délai |
+| `cancelled` | Annulé |
+| `refunded`, `partially_refunded` | Remboursé en totalité ou en partie |
+
+## Le cycle de vie
+
+```mermaid
+stateDiagram-v2
+  [*] --> created
+  created --> pending: envoyé à l'agrégateur
+  pending --> processing: le client valide
+  pending --> expired: jamais confirmé
+  pending --> cancelled: annulé
+  pending --> failed: refusé
+  processing --> succeeded: verify() confirme
+  processing --> failed: refusé
+  succeeded --> partially_refunded: remboursement partiel
+  succeeded --> refunded: remboursement total
+  partially_refunded --> refunded: reste remboursé
+```
+
+Un paiement ne passe à `succeeded` qu'après `adapter.verify()` : Pont interroge l'agrégateur, il ne croit jamais un webhook sur parole.
+
+```mermaid
+sequenceDiagram
+  participant A as Votre application
+  participant P as Pont
+  participant G as Agrégateur
+  A->>P: POST /v1/payments
+  P->>G: demande de paiement
+  G-->>P: en attente
+  P-->>A: 201 pending
+  G->>P: webhook (signature vérifiée)
+  P->>G: verify() : le paiement est-il réglé ?
+  G-->>P: oui
+  P->>P: statut = succeeded
+  P-->>A: webhook payment.succeeded (signé)
+```
+
+## Le cas ambigu : `needsReconciliation`
+
+« Ambigu » n'est **pas** un statut. Quand l'agrégateur ne permet pas de savoir si l'argent est parti (délai dépassé, réponse incohérente), le paiement garde son statut et porte `needsReconciliation: true`. Pont ne devine pas : il **vérifie** à chaque cycle tant que l'agrégateur ne tranche pas, et émet l'événement `payment.needs_reconciliation`. Pont ne réessaie jamais le paiement chez un autre agrégateur, ce qui éviterait un double débit.
+
+## Réconciliation
+
+Toutes les 30 secondes (`PONT_TICK_SECONDS`), Pont revérifie les opérations non réglées. Un webhook perdu ne bloque donc jamais un paiement.
+
+## Les scénarios du sandbox
+
+Les 7 derniers chiffres du numéro choisissent le comportement : voir [Premier paiement](/demarrer/premier-paiement).

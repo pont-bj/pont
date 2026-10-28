@@ -1,0 +1,20 @@
+---
+title: "Erreurs"
+description: "Format des erreurs et correspondance code / statut HTTP."
+---
+
+```json
+{ "error": { "code": "invalid_request", "message": "La requête est invalide. …" } }
+```
+
+| Code | HTTP |
+|---|---|
+| `invalid_request` | 400 |
+| `unauthorized` | 401 |
+| `forbidden` | 403 |
+| `payment_not_found`, `not_found` | 404 |
+| `idempotency_conflict`, `invalid_transition` | 409 |
+| `amount_not_allowed`, `invalid_phone`, `no_provider_available`, `limit_exceeded`, `insufficient_funds`, `withdrawal_failed` | 422 |
+| `ledger_unavailable` | 501 |
+| `provider_rejected` | 502 |
+| `internal_error`, `configuration_error` | 500 |

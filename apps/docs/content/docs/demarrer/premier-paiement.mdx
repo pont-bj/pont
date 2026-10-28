@@ -1,0 +1,144 @@
+---
+title: "Premier paiement"
+description: "Créer, confirmer et rembourser un paiement dans le sandbox, sans compte d'agrégateur."
+---
+
+Objectif : un paiement de 5 000 XOF qui passe de `pending` à `succeeded`, en moins de cinq minutes. Aucun agrégateur n'est contacté : le sandbox simule tout.
+
+**Prérequis** : Pont tourne ([installation](/demarrer/installation)) et `PONT_API_KEY` est dans votre `.env`.
+
+<Steps>
+<Step>
+
+### Créer le paiement
+
+<Tabs items={["curl", "TypeScript", "PHP"]}>
+<Tab value="curl">
+```bash title="Terminal"
+PONT_API_KEY=$(grep '^PONT_API_KEY=' .env | cut -d= -f2 | tr -d '"')
+
+curl -X POST http://localhost:8787/v1/payments \
+  -H "authorization: Bearer $PONT_API_KEY" \
+  -H "content-type: application/json" \
+  -d '{
+    "amount": 5000,
+    "currency": "XOF",
+    "country": "BJ",
+    "customer": { "phone": "+2290100000001" },
+    "reference": "commande-42"
+  }'
+```
+</Tab>
+<Tab value="TypeScript">
+```ts title="creer-paiement.ts"
+const response = await fetch("http://localhost:8787/v1/payments", {
+  method: "POST",
+  headers: {
+    authorization: `Bearer ${process.env.PONT_API_KEY}`,
+    "content-type": "application/json",
+  },
+  body: JSON.stringify({
+    amount: 5000,
+    currency: "XOF",
+    country: "BJ",
+    customer: { phone: "+2290100000001" },
+    reference: "commande-42",
+  }),
+});
+
+const payment: unknown = await response.json();
+console.log(response.status, payment);
+```
+</Tab>
+<Tab value="PHP">
+```php title="creer-paiement.php"
+<?php
+$ch = curl_init('http://localhost:8787/v1/payments');
+curl_setopt_array($ch, [
+    CURLOPT_POST => true,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_HTTPHEADER => [
+        'authorization: Bearer ' . getenv('PONT_API_KEY'),
+        'content-type: application/json',
+    ],
+    CURLOPT_POSTFIELDS => json_encode([
+        'amount' => 5000,
+        'currency' => 'XOF',
+        'country' => 'BJ',
+        'customer' => ['phone' => '+2290100000001'],
+        'reference' => 'commande-42',
+    ]),
+]);
+echo curl_exec($ch), PHP_EOL;
+```
+</Tab>
+</Tabs>
+
+Résultat attendu : HTTP `201` et un paiement `pending`.
+
+```json title="Réponse"
+{
+  "id": "pay_84a49a19050240ebb01077bdb806c672",
+  "status": "pending",
+  "amount": 5000,
+  "currency": "XOF",
+  "provider": "sandbox",
+  "reference": "commande-42",
+  "nextAction": { "type": "await_customer", "message": "Validez le paiement sur votre téléphone (simulation)." },
+  "needsReconciliation": false
+}
+```
+
+</Step>
+<Step>
+
+### Vérifier le paiement
+
+Pont interroge l'agrégateur (ici, le sandbox) et met le statut à jour. Sans appel, le cycle automatique le fait dans les 30 secondes.
+
+```bash title="Terminal"
+curl -X POST http://localhost:8787/v1/payments/pay_84a49a19050240ebb01077bdb806c672/refresh \
+  -H "authorization: Bearer $PONT_API_KEY"
+```
+
+Résultat attendu : `"status": "succeeded"`.
+
+</Step>
+<Step>
+
+### Rejouer la même requête
+
+Renvoyez exactement la requête de l'étape 1. Pont renvoie **le même paiement**, sans débit supplémentaire : la `reference` sert de clé d'idempotence. Avec la même référence et un montant différent, vous obtenez `409 idempotency_conflict`.
+
+</Step>
+</Steps>
+
+<Figure fichier="paiement-detail.webp" alt="Détail d’un paiement avec sa chronologie" legende="Votre premier paiement dans le dashboard, avec sa chronologie." />
+
+## Choisir le scénario
+
+Les 7 derniers chiffres du numéro choisissent le comportement du sandbox.
+
+| Numéro (fin) | Comportement |
+|---|---|
+| `0000001` | Succès |
+| `0000002` | Solde insuffisant |
+| `0000003` | Jamais confirmé |
+| `0000004` | Succès, webhook en double |
+| `0000005` | Succès, webhook tardif |
+| `0000006` | Agrégateur en panne |
+| `0000007` | Délai ambigu (`needsReconciliation`) |
+| `0000008` | Refusé par le client |
+
+Le dashboard propose aussi le bouton **Lancer un paiement de test**.
+
+## Erreurs fréquentes
+
+| Vous voyez | Cause | Correction |
+|---|---|---|
+| `401 unauthorized` | Clé absente ou fausse | `Authorization: Bearer <PONT_API_KEY>` (pas le jeton admin) |
+| `400 invalid_request` | `amount` non entier, `reference` absente | Montant entier, `reference` de 1 à 64 caractères |
+| `409 idempotency_conflict` | Même `reference`, contenu différent | Nouvelle référence, ou renvoyez le même contenu |
+| `422 no_provider_available` | Remboursement en sandbox | Le sandbox ne gère pas les remboursements |
+
+Suite : [passer en réel](/demarrer/passer-en-reel) ou [la référence de l'API](/reference/api).

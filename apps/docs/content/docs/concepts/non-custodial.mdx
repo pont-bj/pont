@@ -1,0 +1,24 @@
+---
+title: "Non-custodial et BYOK"
+description: "Pont ne détient jamais de fonds et travaille avec vos propres clés d'agrégateurs."
+---
+
+## Pont ne touche pas à l'argent
+
+Les fonds circulent **uniquement** entre vos clients, les agrégateurs et vous, selon les contrats que vous avez signés avec chaque agrégateur. Pont est un prestataire technique : il transmet vos ordres, vérifie les confirmations et tient la comptabilité.
+
+Cela change tout pour la conformité : Pont n'est ni un compte de cantonnement ni un établissement de paiement.
+
+## BYOK : vos clés, vos comptes
+
+*Bring your own keys* : vous créez vos comptes chez les agrégateurs et vous donnez vos clés à Pont.
+
+- **Self-host** : les clés restent sur **votre** serveur, en variables d'environnement ou dans le [coffre chiffré](/guides/cles-et-webhooks).
+- **Pont Cloud** (à venir) : Pont conserve les clés, chiffrées. Le positionnement non-custodial porte alors sur l'argent, pas sur les clés. Voir [Pont Cloud](/cloud).
+
+## Règles qui protègent votre argent
+
+- Un paiement ne passe à `succeeded` qu'après `adapter.verify()` : Pont interroge l'agrégateur, il ne croit pas un webhook sur parole.
+- Un état incertain (`needsReconciliation: true`) déclenche une vérification, **jamais** un nouvel essai chez un autre agrégateur : c'est ce qui évite le double débit.
+- Kkiapay ne peut pas être combiné avec un autre agrégateur (CGU Art. 18) : Pont refuse cette configuration.
+- Aucun secret dans les logs ni dans les réponses d'erreur.

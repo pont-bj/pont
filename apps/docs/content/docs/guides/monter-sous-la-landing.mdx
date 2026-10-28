@@ -1,0 +1,40 @@
+---
+title: "Monter la doc sous la landing"
+description: "Servir cette documentation sur /docs du même domaine que la landing, avec une réécriture Next.js."
+---
+
+Le site de documentation (`apps/docs`) est un projet Next.js distinct, configuré avec `basePath: "/docs"` : toutes ses pages et ses ressources (`/docs/_next/…`) vivent sous `/docs`. Pour l'afficher sur le domaine de la landing, la landing la réécrit vers le déploiement de la documentation.
+
+## Réécriture dans la landing
+
+Dans `next.config.ts` de la landing :
+
+```ts
+const DOCS_URL = process.env.DOCS_URL; // ex. https://pont-docs.vercel.app
+
+const config = {
+  async rewrites() {
+    if (!DOCS_URL) return [];
+    return [
+      { source: "/docs", destination: `${DOCS_URL}/docs` },
+      { source: "/docs/:path*", destination: `${DOCS_URL}/docs/:path*` },
+      { source: "/llms.txt", destination: `${DOCS_URL}/docs/llms.txt` },
+    ];
+  },
+};
+export default config;
+```
+
+Comme le `basePath` est identique des deux côtés, aucune réécriture des liens n'est nécessaire, et les ressources `/docs/_next/*` passent par la même règle.
+
+## Développement local
+
+```bash
+pnpm --filter @pont/docs dev      # http://localhost:3400/docs
+pnpm --filter @pont/docs build
+pnpm --filter @pont/docs start    # production locale, port 3400
+```
+
+## Ajouter une page
+
+Créez un fichier `.mdx` dans `apps/docs/content/docs/<section>/` avec `title` et `description` en en-tête, puis ajoutez son nom dans le `meta.json` de la section pour fixer l'ordre.

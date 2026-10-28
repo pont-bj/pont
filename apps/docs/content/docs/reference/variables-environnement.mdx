@@ -1,0 +1,21 @@
+---
+title: "Variables d'environnement"
+description: "Toutes les variables du fichier .env du self-host."
+---
+
+| Variable | Rôle |
+|---|---|
+| `PONT_MODE` | `test` (défaut) ou `live` |
+| `PONT_SANDBOX` | `true` : aucun agrégateur n'est contacté (numéros magiques). Interdit en live |
+| `PONT_STORE`, `DATABASE_URL` | Stockage (voir ci-dessus) |
+| `PONT_PUBLIC_URL`, `DASHBOARD_URL` | URL publiques (HTTPS en production) |
+| `PONT_PORT`, `DASHBOARD_PORT` | Ports exposés (8787, 3300) |
+| `PONT_API_KEY` | Clé que **votre application** présente à `/v1` (générée) |
+| `PONT_ADMIN_TOKEN` | Jeton du dashboard pour `/admin` (généré) |
+| `PONT_WALLET_CURRENCY`, `PONT_LIMITS`, `PONT_WITHDRAWAL_FEE_BPS` | Portefeuille : devise, plafonds par palier KYC, frais de retrait (voir [portefeuille et registre](/guides/portefeuille-et-registre)) |
+| `PONT_ROLES_PRESET` | Modèle de rôles : `portefeuille`, `tontine`, `marketplace` |
+| `PONT_SIGNUP_ROLE` | Rôle des inscrits publics (vide : inscription fermée) |
+| `PONT_TRUSTED_ORIGINS` | URL de votre application autorisées à appeler l'authentification |
+| `PONT_ENCRYPTION_KEY` | Clé maître du coffre (générée) : chiffre les clés d'agrégateurs saisies dans le dashboard. La perdre oblige à les ressaisir. Voir [clés et webhooks](/guides/cles-et-webhooks) |
+| `PONT_WEBHOOK_URL`, `PONT_WEBHOOK_SECRET` | Où Pont envoie les événements (paiement réussi…), signés |
+| `FEDAPAY_*`, `PAWAPAY_*`, `PAYDUNYA_*`, `KKIAPAY_*` | Clés des agrégateurs : un agrégateur est activé dès que ses variables sont présentes |

@@ -1,0 +1,84 @@
+---
+title: "Visite guidée du dashboard"
+description: "Chaque écran du dashboard Pont : ce qu'on y voit, ce qu'on y fait, et le raccourci clavier pour y aller."
+---
+
+Le dashboard est installé avec Pont (`http://localhost:3300` en local). Il lit l'API d'administration de votre serveur : tout ce que vous y voyez vient de **vos** données, rien n'est envoyé ailleurs. Les captures ci-dessous viennent d'une installation de démonstration en sandbox.
+
+<Callout type="info">
+Partout, `g` puis une lettre change de page, `/` ou `⌘K` ouvre la recherche et `?` affiche tous les raccourcis. Sur les pages longues, un panneau « Sur cette page » en bas à droite saute à une section avec les touches `1` à `9` (ou `j` / `k`).
+</Callout>
+
+## Vue d'ensemble — `g` `o`
+
+<Figure fichier="apercu.webp" alt="Vue d'ensemble du dashboard : montant encaissé, taux de succès, retraits, graphique sur 7 jours et derniers paiements" legende="La vue d'ensemble : trois indicateurs, le volume des 7 derniers jours et les derniers paiements." />
+
+On y lit l'essentiel en un coup d'œil : montant encaissé, taux de succès, retraits envoyés. Un bandeau jaune apparaît s'il y a des opérations **à réconcilier** : Pont les revérifie tout seul, ne les relancez pas. En sandbox, le bouton « Paiement de test » lance un paiement avec le scénario choisi.
+
+Les chiffres portent sur les 200 derniers paiements : aucun pourcentage de variation n'est inventé.
+
+## Paiements — `g` `p`
+
+<Figure fichier="paiements.webp" alt="Liste des paiements avec onglets Tous, Réussis, En attente, Échoués, À réconcilier, drapeaux de pays et logos d'agrégateurs" legende="Les paiements, filtrables par statut, avec le pays (drapeau) et l'agrégateur (logo)." />
+
+Filtrez par statut avec les onglets, parcourez avec la pagination, exportez en CSV. Cliquez une ligne pour ouvrir le détail.
+
+## Détail d'un paiement
+
+<Figure fichier="paiement-detail.webp" alt="Détail d'un paiement : chronologie des événements et tableau des détails" legende="La chronologie raconte le paiement étape par étape ; à droite, les identifiants et les remboursements." />
+
+La **chronologie** ne contient que des événements réels : création, demande envoyée au client, notification de l'agrégateur, vérification, notification de votre application. À droite : identifiant, référence, clé d'idempotence, remboursements. Le bouton « Rembourser » apparaît pour un paiement réussi, si votre rôle a le droit `paiements.rembourser`.
+
+## Agrégateurs — `g` `a`
+
+<Figure fichier="agregateurs.webp" alt="Cartes des agrégateurs avec leur état et tableau de couverture par pays avec drapeaux" legende="L'état de chaque agrégateur, puis ce que vos agrégateurs connectés permettent, pays par pays." />
+
+Une carte par agrégateur : état (opérationnel, dégradé, non connecté), taux de succès sur la dernière heure, capacités. Le tableau de **couverture** indique, pays par pays, quels opérateurs sont servis et par qui. Les agrégateurs personnalisés apparaissent avec le badge « Personnalisé ».
+
+## Clés — `g` `k`
+
+<Figure fichier="cles.webp" alt="Page Clés : un formulaire par agrégateur, secrets masqués" legende="Un formulaire par agrégateur. Une fois enregistré, un secret ne s’affiche plus jamais en entier." />
+
+Saisissez les clés de chaque agrégateur : elles sont chiffrées par le coffre et ne sont **jamais relues**. Laissez un champ vide pour garder la valeur actuelle. La page affiche aussi l'URL de webhook à déclarer chez l'agrégateur. Détails : [Clés et webhooks](/guides/cles-et-webhooks).
+
+## Webhooks — `g` `h`
+
+<Figure fichier="webhooks.webp" alt="Page Webhooks : adresses reçues des agrégateurs, destinataires et dernières livraisons" legende="Les adresses à déclarer chez les agrégateurs, vos destinataires, et l'historique des livraisons." />
+
+Trois blocs : les adresses que les agrégateurs appellent, les destinataires de vos événements (chacun avec son secret de signature, montré une seule fois) et les dernières livraisons, avec un bouton **Renvoyer**.
+
+## Portefeuilles — `g` `w`
+
+<Figure fichier="portefeuilles.webp" alt="Liste des portefeuilles avec solde disponible, solde bloqué, palier KYC et état" legende="Les portefeuilles de vos utilisateurs : disponible, bloqué, palier KYC, état." />
+
+Disponible uniquement avec le stockage PostgreSQL. Cliquez un portefeuille pour voir ses mouvements ; avec le droit `portefeuille.debiter`, vous pouvez **geler** un compte (il ne peut alors plus rien sortir).
+
+## Registre — `g` `l`
+
+<Figure fichier="registre.webp" alt="Registre comptable : comptes système et dernières écritures en partie double" legende="Le registre en partie double : chaque écriture est équilibrée et immuable." />
+
+Les comptes système (transit par agrégateur, frais) et les dernières écritures avec leurs lignes de débit et de crédit.
+
+## Rôles — `g` `x`
+
+<Figure fichier="roles.webp" alt="Page Rôles : liste des rôles avec leurs permissions" legende="Chaque rôle choisit ce qu'il peut voir et faire ; les changements s'appliquent immédiatement." />
+
+Définissez qui peut faire quoi dans votre fintech. Détails : [Rôles et authentification](/guides/roles-et-authentification).
+
+## E-mail et alertes — `g` `m` et `g` `t`
+
+<Figure fichier="email.webp" alt="Page E-mail : configuration du serveur SMTP" legende="Votre serveur SMTP envoie le mot de passe oublié et les alertes." />
+
+<Figure fichier="alertes.webp" alt="Page Alertes : règles activables et historique" legende="Cinq règles d'alerte, un seul e-mail récapitulatif par vérification." />
+
+Branchez votre SMTP, envoyez un e-mail de test, puis activez les alertes dont vous avez besoin.
+
+## Raccourcis clavier — `?`
+
+<Figure fichier="raccourcis.webp" alt="Fenêtre d'aide listant les raccourcis clavier de la navigation et de la page courante" legende="Appuyez sur ? n'importe où : l'aide liste aussi les sections de la page courante." />
+
+## Et ensuite ?
+
+- Branchez vos clés : [Clés et webhooks](/guides/cles-et-webhooks)
+- Passez en production : [Mise en production](/guides/mise-en-production)
+- Choisissez où vivent vos données : [Stockage](/guides/stockage)

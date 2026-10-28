@@ -1,0 +1,13 @@
+{
+  "title": "Guides",
+  "pages": [
+    "visite-du-dashboard",
+    "portefeuille-et-registre",
+    "roles-et-authentification",
+    "cles-et-webhooks",
+    "stockage",
+    "mise-en-production",
+    "exploitation",
+    "monter-sous-la-landing"
+  ]
+}
