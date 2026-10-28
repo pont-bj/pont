@@ -37,6 +37,8 @@ export interface DeliveryStore {
   update(delivery: Delivery): Promise<void>;
   get(id: string): Promise<Delivery | null>;
   due(now: number, limit: number): Promise<Delivery[]>;
+  /** Livraisons les plus récentes d'abord (dashboard). */
+  listRecent(limit: number): Promise<Delivery[]>;
 }
 
 export class MemoryDeliveryStore implements DeliveryStore {
@@ -59,6 +61,13 @@ export class MemoryDeliveryStore implements DeliveryStore {
     return [...this.deliveries.values()]
       .filter((d) => d.status === "pending" && d.nextAttemptAt !== null && d.nextAttemptAt <= now)
       .sort((a, b) => (a.nextAttemptAt ?? 0) - (b.nextAttemptAt ?? 0))
+      .slice(0, limit)
+      .map((d) => structuredClone(d));
+  }
+
+  async listRecent(limit: number): Promise<Delivery[]> {
+    return [...this.deliveries.values()]
+      .sort((a, b) => b.createdAt - a.createdAt)
       .slice(0, limit)
       .map((d) => structuredClone(d));
   }
@@ -115,6 +124,12 @@ export class WebhookRelay {
     this.fetchImpl = config.fetch ?? fetch;
     this.now = config.now ?? Date.now;
     this.schedule = config.scheduleSeconds ?? DEFAULT_RETRY_SCHEDULE;
+  }
+
+  /** Remplace les destinataires (ajout ou retrait depuis le dashboard). Valide toutes les URL avant de changer quoi que ce soit. */
+  setEndpoints(endpoints: WebhookEndpoint[]): void {
+    for (const endpoint of endpoints) assertDeliverableUrl(endpoint.url, this.config.mode);
+    this.config.endpoints = endpoints;
   }
 
   /** À brancher sur `EngineConfig.onEvent`. */

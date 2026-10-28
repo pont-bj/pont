@@ -1,4 +1,4 @@
-import { PontError, isPontError, safeEqual, verifyPontWebhook, type ProviderId } from "@pont/core";
+import { CUSTOM_PROVIDER_ID, PontError, isPontError, safeEqual, verifyPontWebhook, type ProviderAdapter, type ProviderId } from "@pont/core";
 import {
   MemoryIdempotencyStore,
   MemoryPaymentStore,
@@ -20,13 +20,14 @@ export { executeInstruction, type InstructionPolicy, type InstructionExecutorOpt
 export { PontEngine, WebhookRelay, type PontEvent } from "@pont/engine";
 export { PontError } from "@pont/core";
 
-const PROVIDERS: ReadonlySet<string> = new Set(["fedapay", "paydunya", "cinetpay", "kkiapay", "pawapay", "sandbox"]);
 
 export interface CreatePontOptions {
   env?: Record<string, string | undefined>;
   /** Persistance. Par défaut en mémoire : à remplacer en production (Convex, Postgres…). */
   stores?: { payments?: PaymentStore; payouts?: PayoutStore; refunds?: RefundStore; idempotency?: IdempotencyStore };
   routing?: EngineConfig["routing"];
+  /** Adaptateurs personnalisés (`pont provider new`), ajoutés à ceux des variables d'environnement. */
+  extraAdapters?: ProviderAdapter[];
   onEvent?: (event: PontEvent) => void | Promise<void>;
 }
 
@@ -43,7 +44,7 @@ export function createPontFromEnv(options: CreatePontOptions = {}): PontEngine {
     throw new PontError("configuration_error", "En live, un stockage persistant est obligatoire (stores.payments).");
   }
   return new PontEngine({
-    adapters: adaptersFromEnv(env),
+    adapters: [...adaptersFromEnv(env, { allowEmpty: (options.extraAdapters?.length ?? 0) > 0 }), ...(options.extraAdapters ?? [])],
     paymentStore: options.stores?.payments ?? new MemoryPaymentStore(),
     payoutStore: options.stores?.payouts ?? new MemoryPayoutStore(),
     refundStore: options.stores?.refunds ?? new MemoryRefundStore(),
@@ -61,7 +62,8 @@ export function createPontFromEnv(options: CreatePontOptions = {}): PontEngine {
  * Le corps est lu brut : ne pas le parser avant (les signatures portent sur les octets exacts).
  */
 export async function handleProviderRequest(engine: PontEngine, provider: string, request: Request): Promise<Response> {
-  if (!PROVIDERS.has(provider)) return Response.json({ error: "unknown_provider" }, { status: 404 });
+  // Un identifiant mal formé est refusé tout de suite ; un identifiant bien formé mais non enregistré reçoit 404 du moteur.
+  if (!CUSTOM_PROVIDER_ID.test(provider)) return Response.json({ error: "unknown_provider" }, { status: 404 });
   const rawBody = await request.text();
   try {
     const result = await engine.handleProviderWebhook(provider as ProviderId, request.headers, rawBody, { method: request.method, url: request.url });

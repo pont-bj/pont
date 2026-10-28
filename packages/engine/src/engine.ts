@@ -161,6 +161,11 @@ export class PontEngine {
   // ── Paiements ──────────────────────────────────────────────────────────────
 
   /** Crée un paiement. Idempotent par `idempotencyKey`. R-004 */
+  /** Agrégateurs actifs (lecture seule : couverture et état affichés par le dashboard). */
+  listAdapters(): readonly ProviderAdapter[] {
+    return [...this.adapters.values()];
+  }
+
   async createPayment(rawInput: unknown, idempotencyKey: string): Promise<Payment> {
     this.assertIdempotencyKey(idempotencyKey);
     const parsed = createPaymentSchema.safeParse(rawInput);
