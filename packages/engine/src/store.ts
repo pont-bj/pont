@@ -26,6 +26,8 @@ export interface RecordStore<T extends StoredRecord> {
   update(record: T): Promise<void>;
   /** Opérations non réglées (statut non final ou à réconcilier) dont la dernière mise à jour est antérieure à `updatedBefore`. */
   listUnsettled(updatedBefore: number, limit: number): Promise<T[]>;
+  /** Opérations les plus récemment mises à jour d'abord (dashboard, API de consultation). */
+  listRecent(limit: number): Promise<T[]>;
 }
 
 export type PaymentStore = RecordStore<Payment>;
@@ -83,6 +85,13 @@ export class MemoryRecordStore<T extends StoredRecord> implements RecordStore<T>
       .slice(0, limit)
       .map((record) => ({ ...record }));
   }
+
+  async listRecent(limit: number): Promise<T[]> {
+    return [...this.records.values()]
+      .sort((a, b) => b.updatedAt - a.updatedAt)
+      .slice(0, limit)
+      .map((record) => ({ ...record }));
+  }
 }
 
 export class MemoryPaymentStore extends MemoryRecordStore<Payment> {}
@@ -105,5 +114,37 @@ export class MemoryIdempotencyStore implements IdempotencyStore {
     if (this.records.has(key)) return false;
     this.records.set(key, record);
     return true;
+  }
+}
+
+/**
+ * Coffre de secrets : paires clé/valeur où la valeur est DÉJÀ chiffrée par l'appelant (le store ne voit jamais de clair).
+ * Clés : `provider:<agrégateur>` (identifiants d'un agrégateur), `endpoint:<id>` (destinataire de webhook).
+ */
+export interface SecretStore {
+  get(key: string): Promise<string | null>;
+  put(key: string, value: string): Promise<void>;
+  delete(key: string): Promise<void>;
+  /** Clés commençant par `prefix`, avec leur date de dernière écriture. */
+  list(prefix: string): Promise<Array<{ key: string; updatedAt: number }>>;
+}
+
+export class MemorySecretStore implements SecretStore {
+  private readonly entries = new Map<string, { value: string; updatedAt: number }>();
+
+  async get(key: string): Promise<string | null> {
+    return this.entries.get(key)?.value ?? null;
+  }
+
+  async put(key: string, value: string): Promise<void> {
+    this.entries.set(key, { value, updatedAt: Date.now() });
+  }
+
+  async delete(key: string): Promise<void> {
+    this.entries.delete(key);
+  }
+
+  async list(prefix: string): Promise<Array<{ key: string; updatedAt: number }>> {
+    return [...this.entries].filter(([key]) => key.startsWith(prefix)).map(([key, entry]) => ({ key, updatedAt: entry.updatedAt }));
   }
 }

@@ -9,6 +9,9 @@ const OPERATORS = [
   "mtn_cm", "orange_cm", "mtn_cg", "airtel_cg", "airtel_ga",
 ] as const;
 
+export const countrySchema = z.enum(COUNTRIES);
+export const operatorSchema = z.enum(OPERATORS);
+
 /** Validation à la frontière pour `POST /payments`. R-002, R-007 */
 export const createPaymentSchema = z
   .object({

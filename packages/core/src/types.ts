@@ -2,7 +2,17 @@
 
 export type Mode = "test" | "live";
 
-export type ProviderId = "fedapay" | "paydunya" | "cinetpay" | "kkiapay" | "pawapay" | "sandbox";
+/** Agrégateurs intégrés à Pont. */
+export type BuiltInProviderId = "fedapay" | "paydunya" | "cinetpay" | "kkiapay" | "pawapay" | "sandbox";
+
+/**
+ * Identifiant d'agrégateur : un intégré, ou un agrégateur personnalisé (`pont provider new`, 3 à 20 caractères
+ * `[a-z0-9_]`). `string & {}` garde l'autocomplétion des identifiants intégrés.
+ */
+export type ProviderId = BuiltInProviderId | (string & {});
+
+/** Forme d'un identifiant d'agrégateur personnalisé. */
+export const CUSTOM_PROVIDER_ID = /^[a-z][a-z0-9_]{2,19}$/;
 
 export type Capability = "deposit" | "payout" | "refund" | "verify";
 

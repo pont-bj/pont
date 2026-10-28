@@ -73,7 +73,7 @@ export function parseEnv(source: Record<string, string | undefined>): PontEnv {
   return result.data;
 }
 
-export function adaptersFromEnv(env: PontEnv): ProviderAdapter[] {
+export function adaptersFromEnv(env: PontEnv, options: { allowEmpty?: boolean } = {}): ProviderAdapter[] {
   const mode = env.PONT_MODE;
   if (env.PONT_SANDBOX === "true") {
     if (mode === "live") throw new PontError("configuration_error", "PONT_SANDBOX=true est interdit en mode live.");
@@ -135,7 +135,7 @@ export function adaptersFromEnv(env: PontEnv): ProviderAdapter[] {
     if (cinetpay) adapters.push(new CinetPayAdapter({ mode, apiKey: cinetpay.CINETPAY_API_KEY!, siteId: cinetpay.CINETPAY_SITE_ID! }));
   }
 
-  if (adapters.length === 0) {
+  if (adapters.length === 0 && !options.allowEmpty) {
     throw new PontError(
       "configuration_error",
       "Aucun agrégateur configuré.",
