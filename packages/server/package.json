@@ -1,5 +1,5 @@
 {
-  "name": "@pont/server",
+  "name": "@pont-bj/server",
   "version": "0.1.0",
   "type": "module",
   "description": "Serveur Pont autonome (self-host) : API HTTP, webhooks des agrégateurs, planificateur.",
@@ -17,14 +17,14 @@
     "build": "tsup src/index.ts src/main.ts --format esm --clean --target node20"
   },
   "dependencies": {
-    "@pont/core": "workspace:*",
-    "@pont/engine": "workspace:*",
-    "@pont/framework": "workspace:*",
-    "@pont/ledger": "workspace:*",
-    "@pont/node": "workspace:*",
-    "@pont/recipes": "workspace:*",
-    "@pont/store-convex": "workspace:*",
-    "@pont/store-prisma": "workspace:*",
+    "@pont-bj/core": "workspace:*",
+    "@pont-bj/engine": "workspace:*",
+    "@pont-bj/framework": "workspace:*",
+    "@pont-bj/ledger": "workspace:*",
+    "@pont-bj/node": "workspace:*",
+    "@pont-bj/recipes": "workspace:*",
+    "@pont-bj/store-convex": "workspace:*",
+    "@pont-bj/store-prisma": "workspace:*",
     "convex": "1.48.0",
     "nodemailer": "10.1.0",
     "zod": "3.25.76"
@@ -37,12 +37,12 @@
   "author": "François Mawutô Aboudou ZINSOU <pro@aboudouzinsou.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aboudou-cto-bloko/pont.git",
+    "url": "git+https://github.com/pont-bj/pont.git",
     "directory": "packages/server"
   },
-  "homepage": "https://github.com/aboudou-cto-bloko/pont#readme",
+  "homepage": "https://github.com/pont-bj/pont#readme",
   "bugs": {
-    "url": "https://github.com/aboudou-cto-bloko/pont/issues"
+    "url": "https://github.com/pont-bj/pont/issues"
   },
   "keywords": [
     "payments",

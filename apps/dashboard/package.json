@@ -1,5 +1,5 @@
 {
-  "name": "@pont/dashboard",
+  "name": "@pont-bj/dashboard",
   "private": true,
   "version": "0.0.0",
   "scripts": {
@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@fontsource-variable/inter": "5.3.0",
-    "@pont/auth": "workspace:*",
+    "@pont-bj/auth": "workspace:*",
     "better-auth": "1.7.14",
     "country-flag-icons": "1.6.20",
     "next": "^15.5.28",

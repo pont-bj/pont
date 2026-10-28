@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import type { RoleSet } from "@pont/auth";
+import type { RoleSet } from "@pont-bj/auth";
 import { seDeconnecter } from "@/app/actions";
 import { estDegrade } from "@/lib/calculs";
 import { getProvidersHealth } from "@/lib/pont";

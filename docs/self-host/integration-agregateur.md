@@ -102,7 +102,7 @@ Ensuite :
 
 **Sécurité : le plugin est du code exécuté par le serveur.** Charger un dossier lance son `index` avec les mêmes droits que le serveur Pont (accès réseau, variables d'environnement, base de données). N'y mettez que du code généré par vous ou relu : ne le remplissez jamais depuis une source non fiable (téléversement, dépôt public non relu). Le dossier est monté en lecture seule et seul le propriétaire du serveur y écrit ; le dashboard ne permet pas d'ajouter de code.
 
-Les imports (`@pont/core`) se résolvent depuis `packages/server` : dans le conteneur, le dossier est monté sous `/app/packages/server/plugins` pour cette raison. En dehors de Docker, placez `PONT_PLUGINS_DIR` sous `packages/server/` ou installez `@pont/core` dans le dossier du plugin.
+Les imports (`@pont-bj/core`) se résolvent depuis `packages/server` : dans le conteneur, le dossier est monté sous `/app/packages/server/plugins` pour cette raison. En dehors de Docker, placez `PONT_PLUGINS_DIR` sous `packages/server/` ou installez `@pont-bj/core` dans le dossier du plugin.
 
 ### Contrat de l'API admin (ce que le dashboard affiche)
 
@@ -136,4 +136,4 @@ Les imports (`@pont/core`) se résolvent depuis `packages/server` : dans le cont
 
 - **Testé avec un faux serveur seulement.** Les tests prouvent que l'adaptateur applique la description que vous avez donnée, pas que l'agrégateur répond ainsi. Aucun agrégateur réel n'a été contacté. Passez par le sandbox de l'agrégateur avant le live.
 - **Formats couverts** : API JSON, authentification Bearer/Basic/en-tête, webhooks signés par HMAC. Ne sont pas couverts : signatures asymétriques (RSA, RFC 9421), OAuth avec jeton à renouveler, corps non JSON (formulaire, XML), pagination, appels en plusieurs temps (création puis jeton puis envoi, comme FedaPay) : écrivez l'adaptateur à la main en vous inspirant de `packages/adapters/*`.
-- Les pays se déclarent par code ISO, mais seuls les pays connus de `@pont/core` ont une vérification de numéro de téléphone.
+- Les pays se déclarent par code ISO, mais seuls les pays connus de `@pont-bj/core` ont une vérification de numéro de téléphone.

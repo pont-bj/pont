@@ -11,7 +11,7 @@ Merci de l'intérêt que tu portes à Pont. Ce guide explique comment proposer u
 ## Installation
 
 ```bash
-git clone https://github.com/aboudou-cto-bloko/pont
+git clone https://github.com/pont-bj/pont
 cd pont
 pnpm install --frozen-lockfile
 ```
@@ -33,7 +33,7 @@ docker run -d --name pont-test-pg -p 55432:5432 \
   -e POSTGRES_PASSWORD=pont -e POSTGRES_DB=pont_test postgres:16
 ```
 
-Puis crée le schéma : `pnpm --filter @pont/store-prisma exec prisma db push`.
+Puis crée le schéma : `pnpm --filter @pont-bj/store-prisma exec prisma db push`.
 
 Aucun test ne doit contacter le réseau ni un vrai agrégateur.
 

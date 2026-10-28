@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import type { FetchLike } from "@pont/core";
+import type { FetchLike } from "@pont-bj/core";
 import { createRuntime } from "../src/runtime.js";
 
 const API_KEY = "a".repeat(32);

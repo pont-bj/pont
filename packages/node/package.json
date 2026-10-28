@@ -1,5 +1,5 @@
 {
-  "name": "@pont/node",
+  "name": "@pont-bj/node",
   "version": "0.1.0",
   "description": "SDK TypeScript / Node.js de Pont : une API unifiée au-dessus de plusieurs agrégateurs.",
   "type": "module",
@@ -13,14 +13,14 @@
     "build": "tsup src/index.ts --format esm --dts --clean --target node20"
   },
   "dependencies": {
-    "@pont/core": "workspace:*",
-    "@pont/engine": "workspace:*",
-    "@pont/sandbox": "workspace:*",
-    "@pont/adapter-fedapay": "workspace:*",
-    "@pont/adapter-pawapay": "workspace:*",
-    "@pont/adapter-paydunya": "workspace:*",
-    "@pont/adapter-kkiapay": "workspace:*",
-    "@pont/adapter-cinetpay": "workspace:*",
+    "@pont-bj/core": "workspace:*",
+    "@pont-bj/engine": "workspace:*",
+    "@pont-bj/sandbox": "workspace:*",
+    "@pont-bj/adapter-fedapay": "workspace:*",
+    "@pont-bj/adapter-pawapay": "workspace:*",
+    "@pont-bj/adapter-paydunya": "workspace:*",
+    "@pont-bj/adapter-kkiapay": "workspace:*",
+    "@pont-bj/adapter-cinetpay": "workspace:*",
     "zod": "3.25.76"
   },
   "license": "BUSL-1.1",
@@ -45,12 +45,12 @@
   "author": "François Mawutô Aboudou ZINSOU <pro@aboudouzinsou.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aboudou-cto-bloko/pont.git",
+    "url": "git+https://github.com/pont-bj/pont.git",
     "directory": "packages/node"
   },
-  "homepage": "https://github.com/aboudou-cto-bloko/pont#readme",
+  "homepage": "https://github.com/pont-bj/pont#readme",
   "bugs": {
-    "url": "https://github.com/aboudou-cto-bloko/pont/issues"
+    "url": "https://github.com/pont-bj/pont/issues"
   },
   "keywords": [
     "payments",

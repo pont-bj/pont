@@ -1,4 +1,4 @@
-# @pont/sandbox
+# @pont-bj/sandbox
 
 Simulateur de Pont à numéros magiques, pour tester sans toucher à un vrai agrégateur.
 
@@ -7,7 +7,7 @@ Simulateur de Pont à numéros magiques, pour tester sans toucher à un vrai agr
 ## Installation
 
 ```bash
-pnpm add @pont/sandbox
+pnpm add @pont-bj/sandbox
 ```
 
 ## Utilisation
@@ -16,8 +16,8 @@ Ce paquet est surtout destiné à être utilisé via les autres paquets Pont. Vo
 
 ## Documentation
 
-- Guide d'auto-hébergement : [docs/self-host](https://github.com/aboudou-cto-bloko/pont/tree/main/docs/self-host)
-- Dépôt : https://github.com/aboudou-cto-bloko/pont
+- Guide d'auto-hébergement : [docs/self-host](https://github.com/pont-bj/pont/tree/main/docs/self-host)
+- Dépôt : https://github.com/pont-bj/pont
 
 ## Licence
 

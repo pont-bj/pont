@@ -1,5 +1,5 @@
-import { defineModule, type Recipe } from "@pont/framework";
-import type { PontEngine } from "@pont/engine";
+import { defineModule, type Recipe } from "@pont-bj/framework";
+import type { PontEngine } from "@pont-bj/engine";
 import { walletRecipe } from "./wallet.js";
 
 export * from "./wallet.js";

@@ -234,7 +234,7 @@ Un paiement ne passe à `succeeded` qu'après vérification par l'API de l'agré
 2. Côté application, vérifiez la signature sur le **corps brut** (avant tout `JSON.parse`) :
 
 ```ts title="app/api/pont/route.ts"
-import { verifyPontSignature } from "@pont/node";
+import { verifyPontSignature } from "@pont-bj/node";
 
 export async function POST(request: Request) {
   const rawBody = await request.text();

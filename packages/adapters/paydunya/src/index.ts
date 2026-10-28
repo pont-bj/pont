@@ -23,7 +23,7 @@ import {
   type TransferStatus,
   type TransferVerified,
   normalizePhone,
-} from "@pont/core";
+} from "@pont-bj/core";
 
 const DISBURSE_URL = "https://app.paydunya.com/api/v2/disburse";
 

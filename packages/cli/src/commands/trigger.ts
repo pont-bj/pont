@@ -1,5 +1,5 @@
-import { MAGIC_NUMBERS } from "@pont/sandbox";
-import { createPontFromEnv, type PontEvent } from "@pont/node";
+import { MAGIC_NUMBERS } from "@pont-bj/sandbox";
+import { createPontFromEnv, type PontEvent } from "@pont-bj/node";
 
 const SCENARIOS = Object.fromEntries(Object.entries(MAGIC_NUMBERS).map(([suffix, name]) => [name, `+229010${suffix}`])) as Record<string, string>;
 

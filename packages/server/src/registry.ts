@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { PontError, type FetchLike, type Mode, type ProviderAdapter } from "@pont/core";
-import { MemoryPaymentStore } from "@pont/engine";
-import { createPontFromEnv } from "@pont/node";
+import { PontError, type FetchLike, type Mode, type ProviderAdapter } from "@pont-bj/core";
+import { MemoryPaymentStore } from "@pont-bj/engine";
+import { createPontFromEnv } from "@pont-bj/node";
 import type { Plugin, PluginLoadError } from "./plugins.js";
 import { deleteProvider, isProviderKey, listProviders, mask, overlayEnv, saveProvider, storageKey, storedValues, type ProviderView } from "./providers.js";
 import type { Vault } from "./vault.js";

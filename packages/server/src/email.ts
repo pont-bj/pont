@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import { z } from "zod";
-import { PontError } from "@pont/core";
+import { PontError } from "@pont-bj/core";
 import type { Vault } from "./vault.js";
 
 const STORAGE_KEY = "email:smtp";

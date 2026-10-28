@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createPontFromEnv } from "@pont/node";
+import { createPontFromEnv } from "@pont-bj/node";
 import { createRuntime } from "../src/runtime.js";
 import { memoryStorage, type StorageFactory } from "../src/storage.js";
 import { createWalletKit, reconcileWallet } from "../src/wallet.js";

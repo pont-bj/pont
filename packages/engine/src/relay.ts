@@ -1,6 +1,6 @@
 import { isIP } from "node:net";
 import { randomUUID } from "node:crypto";
-import { PontError, requestJson, type FetchLike, type Mode } from "@pont/core";
+import { PontError, requestJson, type FetchLike, type Mode } from "@pont-bj/core";
 import { serializeEvent, signedDelivery } from "./delivery.js";
 import type { PontEvent } from "./engine.js";
 

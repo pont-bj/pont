@@ -15,7 +15,7 @@ import {
   type ProviderCallOutcome,
   type VerifiedState,
   type WebhookCheck,
-} from "@pont/core";
+} from "@pont-bj/core";
 
 // EXPÉRIMENTAL : docs.cinetpay.com injoignable le 2026-10-26, CGU non lues, maintien au MVP en attente (T-002).
 // Endpoint d'initialisation confirmé ; endpoint de vérification et statuts à confirmer en sandbox.

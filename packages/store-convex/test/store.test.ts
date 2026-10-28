@@ -1,7 +1,7 @@
 import { convexTest } from "convex-test";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { PontEngine, WebhookRelay } from "@pont/engine";
-import { SandboxAdapter } from "@pont/sandbox";
+import { PontEngine, WebhookRelay } from "@pont-bj/engine";
+import { SandboxAdapter } from "@pont-bj/sandbox";
 import schema from "../convex/schema";
 import { createConvexStores, type ConvexRunner } from "../src/index";
 

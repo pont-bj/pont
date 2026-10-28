@@ -23,7 +23,7 @@ import {
   type TransferAccepted,
   type TransferStatus,
   type TransferVerified,
-} from "@pont/core";
+} from "@pont-bj/core";
 
 // Doc : docs/providers/fedapay/ — fiche : docs/metier/agregateurs/fedapay.md
 const BASE_URLS: Record<Mode, string> = {

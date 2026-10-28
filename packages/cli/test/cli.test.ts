@@ -36,7 +36,7 @@ describe("pont init — Next.js App Router", () => {
       "app/api/pont/cron/route.ts",
       "app/pont-demo/actions.ts",
     ]);
-    expect(result.installCommand).toBe("pnpm add @pont/node");
+    expect(result.installCommand).toBe("pnpm add @pont-bj/node");
     expect(result.testPayment?.ok).toBe(true);
 
     const env = readFileSync(join(root, ".env.local"), "utf8");
@@ -92,7 +92,7 @@ describe("pont init --stores convex", () => {
     const root = nextProject();
     const result = await runInit({ cwd: root, agent: false, dryRun: false, testPayment: false, log: silent, stores: "convex" });
     expect(result.created).toEqual(expect.arrayContaining(["convex/pontTables.ts", "convex/pontStore.ts", "convex/schema.ts"]));
-    expect(result.installCommand).toBe("pnpm add @pont/node @pont/store-convex convex");
+    expect(result.installCommand).toBe("pnpm add @pont-bj/node @pont-bj/store-convex convex");
     expect(readFileSync(join(root, ".env.local"), "utf8")).toMatch(/PONT_STORE_SECRET=[0-9a-f]{64}/);
     expect(readFileSync(join(root, "lib/pont.ts"), "utf8")).toContain("createConvexStores");
     expect(readFileSync(join(root, "app/api/pont/cron/route.ts"), "utf8")).toContain("{ relay, secret");
@@ -202,7 +202,7 @@ describe("pont add recipe", () => {
     await runInit({ cwd: root, agent: false, dryRun: false, testPayment: false, log: silent });
     const first = addRecipe({ cwd: root, recipeId: "wallet", dryRun: false, log: silent });
     expect(first.created).toEqual(["lib/pont-wallet.ts"]);
-    expect(first.installCommand).toBe("pnpm add @pont/ledger @pont/recipes");
+    expect(first.installCommand).toBe("pnpm add @pont-bj/ledger @pont-bj/recipes");
     expect(first.manualSteps[0]).toContain("handleWalletEvent");
     expect(readFileSync(join(root, "lib/pont-wallet.ts"), "utf8")).toContain("new WalletService");
     expect(addRecipe({ cwd: root, recipeId: "wallet", dryRun: false, log: silent }).skipped).toEqual(["lib/pont-wallet.ts"]);

@@ -1,4 +1,4 @@
-# @pont/cli
+# @pont-bj/cli
 
 CLI Pont : sandbox, essais de paiement et outils de développement en ligne de commande.
 
@@ -7,21 +7,21 @@ CLI Pont : sandbox, essais de paiement et outils de développement en ligne de c
 ## Installation
 
 ```bash
-pnpm add @pont/cli
+pnpm add @pont-bj/cli
 ```
 
 ## Utilisation
 
 ```ts
-// npx @pont/cli --help
+// npx @pont-bj/cli --help
 ```
 
 Voir la documentation pour des exemples complets.
 
 ## Documentation
 
-- Guide d'auto-hébergement : [docs/self-host](https://github.com/aboudou-cto-bloko/pont/tree/main/docs/self-host)
-- Dépôt : https://github.com/aboudou-cto-bloko/pont
+- Guide d'auto-hébergement : [docs/self-host](https://github.com/pont-bj/pont/tree/main/docs/self-host)
+- Dépôt : https://github.com/pont-bj/pont
 
 ## Licence
 

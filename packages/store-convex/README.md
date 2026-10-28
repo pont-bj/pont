@@ -1,4 +1,4 @@
-# @pont/store-convex
+# @pont-bj/store-convex
 
 Stockage persistant de Pont sur Convex : paiements, retraits, remboursements, idempotence, livraisons de webhooks.
 
@@ -10,7 +10,7 @@ Stockage persistant de Pont sur Convex : paiements, retraits, remboursements, id
    ```ts
    // convex/schema.ts
    import { defineSchema } from "convex/server";
-   import { pontTables } from "@pont/store-convex/convex/schema";
+   import { pontTables } from "@pont-bj/store-convex/convex/schema";
 
    export default defineSchema({ ...vosTables, ...pontTables });
    ```
@@ -23,8 +23,8 @@ Stockage persistant de Pont sur Convex : paiements, retraits, remboursements, id
 
    ```ts
    import { ConvexHttpClient } from "convex/browser";
-   import { createConvexStores } from "@pont/store-convex";
-   import { createPontFromEnv, WebhookRelay } from "@pont/node";
+   import { createConvexStores } from "@pont-bj/store-convex";
+   import { createPontFromEnv, WebhookRelay } from "@pont-bj/node";
 
    const stores = createConvexStores({
      client: new ConvexHttpClient(process.env.CONVEX_URL!),

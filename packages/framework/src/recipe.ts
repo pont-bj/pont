@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { PontError } from "@pont/core";
+import { PontError } from "@pont-bj/core";
 import type { PontModule } from "./module.js";
 
 // Format des recettes (cas d'usage) : déclaratif, lisible par la CLI (`pont add recipe`) et le MCP (`apply_recipe`).

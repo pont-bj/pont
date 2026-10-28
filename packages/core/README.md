@@ -1,4 +1,4 @@
-# @pont/core
+# @pont-bj/core
 
 Contrat partagé de Pont : modèle de paiement normalisé, statuts et interface ProviderAdapter.
 
@@ -7,7 +7,7 @@ Contrat partagé de Pont : modèle de paiement normalisé, statuts et interface 
 ## Installation
 
 ```bash
-pnpm add @pont/core
+pnpm add @pont-bj/core
 ```
 
 ## Utilisation
@@ -16,8 +16,8 @@ Ce paquet est surtout destiné à être utilisé via les autres paquets Pont. Vo
 
 ## Documentation
 
-- Guide d'auto-hébergement : [docs/self-host](https://github.com/aboudou-cto-bloko/pont/tree/main/docs/self-host)
-- Dépôt : https://github.com/aboudou-cto-bloko/pont
+- Guide d'auto-hébergement : [docs/self-host](https://github.com/pont-bj/pont/tree/main/docs/self-host)
+- Dépôt : https://github.com/pont-bj/pont
 
 ## Licence
 

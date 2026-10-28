@@ -1,4 +1,4 @@
-# @pont/adapter-cinetpay
+# @pont-bj/adapter-cinetpay
 
 Adaptateur CinetPay pour Pont (implémente ProviderAdapter).
 
@@ -7,21 +7,21 @@ Adaptateur CinetPay pour Pont (implémente ProviderAdapter).
 ## Installation
 
 ```bash
-pnpm add @pont/adapter-cinetpay
+pnpm add @pont-bj/adapter-cinetpay
 ```
 
 ## Utilisation
 
 ```ts
-import { CinetPayAdapter } from "@pont/adapter-cinetpay";
+import { CinetPayAdapter } from "@pont-bj/adapter-cinetpay";
 ```
 
 Voir la documentation pour des exemples complets.
 
 ## Documentation
 
-- Guide d'auto-hébergement : [docs/self-host](https://github.com/aboudou-cto-bloko/pont/tree/main/docs/self-host)
-- Dépôt : https://github.com/aboudou-cto-bloko/pont
+- Guide d'auto-hébergement : [docs/self-host](https://github.com/pont-bj/pont/tree/main/docs/self-host)
+- Dépôt : https://github.com/pont-bj/pont
 
 ## Licence
 

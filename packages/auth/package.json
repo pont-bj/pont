@@ -1,5 +1,5 @@
 {
-  "name": "@pont/auth",
+  "name": "@pont-bj/auth",
   "version": "0.1.0",
   "description": "Rôles et permissions d'une fintech : le développeur définit ses rôles, Pont les applique.",
   "type": "module",
@@ -19,12 +19,12 @@
   "author": "François Mawutô Aboudou ZINSOU <pro@aboudouzinsou.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aboudou-cto-bloko/pont.git",
+    "url": "git+https://github.com/pont-bj/pont.git",
     "directory": "packages/auth"
   },
-  "homepage": "https://github.com/aboudou-cto-bloko/pont#readme",
+  "homepage": "https://github.com/pont-bj/pont#readme",
   "bugs": {
-    "url": "https://github.com/aboudou-cto-bloko/pont/issues"
+    "url": "https://github.com/pont-bj/pont/issues"
   },
   "keywords": [
     "payments",

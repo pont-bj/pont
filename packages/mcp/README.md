@@ -1,4 +1,4 @@
-# @pont/mcp
+# @pont-bj/mcp
 
 Serveur MCP qui permet à un agent IA (Claude Code, Cursor, Windsurf) d'intégrer les paiements Pont dans un projet.
 **Sandbox uniquement** : aucun outil n'effectue d'opération financière réelle.
@@ -7,10 +7,10 @@ Serveur MCP qui permet à un agent IA (Claude Code, Cursor, Windsurf) d'intégre
 
 ```bash
 # Claude Code
-claude mcp add pont -- npx -y @pont/mcp
+claude mcp add pont -- npx -y @pont-bj/mcp
 
 # Cursor / Windsurf (mcp.json)
-{ "mcpServers": { "pont": { "command": "npx", "args": ["-y", "@pont/mcp"] } } }
+{ "mcpServers": { "pont": { "command": "npx", "args": ["-y", "@pont-bj/mcp"] } } }
 ```
 
 Puis demandez à l'agent : *« Ajoute le paiement mobile money au checkout »*.

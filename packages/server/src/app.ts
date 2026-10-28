@@ -1,7 +1,7 @@
-import { isPontError, safeEqual, type PontError } from "@pont/core";
-import type { DeliveryStore, PaymentStore, PayoutStore, PontEngine, RefundStore } from "@pont/engine";
+import { isPontError, safeEqual, type PontError } from "@pont-bj/core";
+import type { DeliveryStore, PaymentStore, PayoutStore, PontEngine, RefundStore } from "@pont-bj/engine";
 import { coverageOf, healthOf, timelineOf } from "./dashboard.js";
-import { handleProviderRequest } from "@pont/node";
+import { handleProviderRequest } from "@pont-bj/node";
 import { ledgerUnavailable, walletAdmin, walletError, walletV1, type WalletKit } from "./wallet.js";
 
 export interface AppOptions {

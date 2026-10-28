@@ -28,7 +28,7 @@ import {
   type VerifiedState,
   type WebhookCheck,
   type WebhookContext,
-} from "@pont/core";
+} from "@pont-bj/core";
 
 // Doc : docs/providers/pawapay/llms-full.txt — fiche : docs/metier/agregateurs/pawapay.md
 const BASE_URLS: Record<Mode, string> = {

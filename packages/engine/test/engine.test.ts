@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { PontError } from "@pont/core";
-import { SandboxAdapter } from "@pont/sandbox";
-import { KkiapayAdapter } from "@pont/adapter-kkiapay";
-import { FedaPayAdapter } from "@pont/adapter-fedapay";
+import { PontError } from "@pont-bj/core";
+import { SandboxAdapter } from "@pont-bj/sandbox";
+import { KkiapayAdapter } from "@pont-bj/adapter-kkiapay";
+import { FedaPayAdapter } from "@pont-bj/adapter-fedapay";
 import { MemoryIdempotencyStore, MemoryPaymentStore, PontEngine, buildWebhookDelivery, type PontEvent } from "../src/index.js";
-import { verifyPontWebhook } from "@pont/core";
+import { verifyPontWebhook } from "@pont-bj/core";
 import { FakeAdapter, baseInput } from "./helpers.js";
 
 function makeEngine(adapters: ConstructorParameters<typeof PontEngine>[0]["adapters"], options: { failover?: boolean } = {}) {

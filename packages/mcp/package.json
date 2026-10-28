@@ -1,5 +1,5 @@
 {
-  "name": "@pont/mcp",
+  "name": "@pont-bj/mcp",
   "version": "0.1.0",
   "description": "Serveur MCP d'intégration de Pont, pour brancher un assistant IA sur le sandbox.",
   "type": "module",
@@ -17,17 +17,17 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.32.2",
-    "@pont/adapter-cinetpay": "workspace:*",
-    "@pont/adapter-fedapay": "workspace:*",
-    "@pont/adapter-kkiapay": "workspace:*",
-    "@pont/adapter-pawapay": "workspace:*",
-    "@pont/adapter-paydunya": "workspace:*",
-    "@pont/cli": "workspace:*",
-    "@pont/core": "workspace:*",
-    "@pont/node": "workspace:*",
-    "@pont/sandbox": "workspace:*",
+    "@pont-bj/adapter-cinetpay": "workspace:*",
+    "@pont-bj/adapter-fedapay": "workspace:*",
+    "@pont-bj/adapter-kkiapay": "workspace:*",
+    "@pont-bj/adapter-pawapay": "workspace:*",
+    "@pont-bj/adapter-paydunya": "workspace:*",
+    "@pont-bj/cli": "workspace:*",
+    "@pont-bj/core": "workspace:*",
+    "@pont-bj/node": "workspace:*",
+    "@pont-bj/sandbox": "workspace:*",
     "zod": "3.25.76",
-    "@pont/engine": "workspace:*"
+    "@pont-bj/engine": "workspace:*"
   },
   "license": "BUSL-1.1",
   "files": [
@@ -54,12 +54,12 @@
   "author": "François Mawutô Aboudou ZINSOU <pro@aboudouzinsou.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aboudou-cto-bloko/pont.git",
+    "url": "git+https://github.com/pont-bj/pont.git",
     "directory": "packages/mcp"
   },
-  "homepage": "https://github.com/aboudou-cto-bloko/pont#readme",
+  "homepage": "https://github.com/pont-bj/pont#readme",
   "bugs": {
-    "url": "https://github.com/aboudou-cto-bloko/pont/issues"
+    "url": "https://github.com/pont-bj/pont/issues"
   },
   "keywords": [
     "payments",

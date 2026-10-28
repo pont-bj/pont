@@ -98,7 +98,7 @@ const GARANTIES = [
 
 const TECHNOS = {
   officiel: [
-    ["TypeScript et Node.js", "SDK `@pont/node`", true, "typescript", ""],
+    ["TypeScript et Node.js", "SDK `@pont-bj/node`", true, "typescript", ""],
     ["Next.js", "Routes et webhooks générés par `pont init`", true, "nextdotjs", ""],
     ["Convex", "Modèle d'intégration prêt à l'emploi", true, "", "Cx"],
     ["React", "Composants de paiement", false, "react", ""],

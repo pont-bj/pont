@@ -18,7 +18,7 @@ import {
   type WebhookCheck,
   type RefundRequest,
   type TransferAccepted,
-} from "@pont/core";
+} from "@pont-bj/core";
 
 // Doc : docs/providers/kkiapay/ — fiche : docs/metier/agregateurs/kkiapay.md
 // CGU Art. 18 : Kkiapay doit être le seul agrégateur du marchand (R-011, contrôlé par le moteur).

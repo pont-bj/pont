@@ -2,7 +2,7 @@ import { readdir, readFile, stat } from "node:fs/promises";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { z } from "zod";
-import { CUSTOM_PROVIDER_ID, PontError, type FetchLike, type Mode, type ProviderAdapter } from "@pont/core";
+import { CUSTOM_PROVIDER_ID, PontError, type FetchLike, type Mode, type ProviderAdapter } from "@pont-bj/core";
 
 /** Agrégateurs intégrés : un plugin ne peut pas prendre leur identifiant. */
 const BUILT_IN = new Set(["fedapay", "paydunya", "cinetpay", "kkiapay", "pawapay", "sandbox"]);

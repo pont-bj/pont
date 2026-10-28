@@ -26,7 +26,7 @@ Avec un agent IA, le parcours devient : « Je crée une tontine digitale au Bén
 
 | Module | Rôle | État |
 |---|---|---|
-| `payments` | Encaissement multi-agrégateurs, idempotence, failover, réconciliation | ✅ existe (`@pont/engine`) |
+| `payments` | Encaissement multi-agrégateurs, idempotence, failover, réconciliation | ✅ existe (`@pont-bj/engine`) |
 | `payouts` | Retraits vers mobile money | ✅ existe |
 | `refunds` | Remboursements | ✅ existe |
 | `ledger` | Registre en partie double (ADR-002) | à construire |
@@ -57,7 +57,7 @@ Chaque recette = un manifeste (modules, workflows, configuration par défaut, ga
 - **Valeur bien plus forte** : on ne vend plus « un raccourci d'intégration » mais « le socle financier de votre fintech ». Les fintechs reconstruisent toutes ce socle, souvent sans partie double ni idempotence.
 - **Cohérent avec l'ADR-001** : le framework s'exécute dans l'infrastructure de la fintech, avec ses clés et ses comptes. Pont reste un éditeur de logiciel, ni détenteur de fonds ni de clés.
 - **Fait pour l'agentique** : des modules aux contrats stricts et des recettes déclaratives sont exactement ce qu'un agent sait assembler sans erreur. Le MCP devient le point d'entrée principal.
-- **Le code actuel est réutilisable** : `@pont/engine` devient le module `payments`, les adaptateurs deviennent des fournisseurs, `@pont/store-convex` le premier fournisseur de stockage.
+- **Le code actuel est réutilisable** : `@pont-bj/engine` devient le module `payments`, les adaptateurs deviennent des fournisseurs, `@pont-bj/store-convex` le premier fournisseur de stockage.
 
 ## Risques
 
@@ -78,7 +78,7 @@ Chaque recette = un manifeste (modules, workflows, configuration par défaut, ga
 1. **Open core.** Quelques modules en open source, le reste propriétaire.
    - Proposition à valider : open source = `core`, `payments`, fournisseurs d'agrégateurs, CLI, MCP (ce qui fait l'adoption) ; propriétaire = `ledger`, `wallets`, `limits`, `escrow`, `schedules`, recettes avancées, Pont Cloud (ce qui fait la valeur d'une fintech).
 2. **Gratuit au démarrage.** Phase early stage : tout est gratuit pour valider la demande ; la tarification vient ensuite (Pont Cloud, modules propriétaires, accompagnement).
-3. **Stockage : Convex et Postgres.** Ajout d'un fournisseur `@pont/store-prisma` (Prisma Postgres), conformément à la règle « pas de SQL brut, Prisma uniquement ».
+3. **Stockage : Convex et Postgres.** Ajout d'un fournisseur `@pont-bj/store-prisma` (Prisma Postgres), conformément à la règle « pas de SQL brut, Prisma uniquement ».
 4. **Première recette : Portefeuille mobile** (proposition retenue faute d'avis contraire ; modifiable).
 
 ## Questions encore ouvertes

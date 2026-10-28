@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PontError, hmacSha256Hex } from "@pont/core";
+import { PontError, hmacSha256Hex } from "@pont-bj/core";
 import { createCronRoute, createPontFromEnv, createWebhookRoute, handleProviderRequest } from "../src/index.js";
 
 describe("createCronRoute", () => {

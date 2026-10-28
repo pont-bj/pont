@@ -32,7 +32,7 @@ import {
   type TransferVerified,
   type VerifiedState,
   type WebhookCheck,
-} from "@pont/core";
+} from "@pont-bj/core";
 
 type Template = string | number | boolean | { [key: string]: Template } | Template[];
 

@@ -1,11 +1,11 @@
 import { z } from "zod";
-import { PontError, type ProviderAdapter, type ProviderId } from "@pont/core";
-import { SandboxAdapter } from "@pont/sandbox";
-import { FedaPayAdapter } from "@pont/adapter-fedapay";
-import { PawaPayAdapter } from "@pont/adapter-pawapay";
-import { PayDunyaAdapter } from "@pont/adapter-paydunya";
-import { KkiapayAdapter } from "@pont/adapter-kkiapay";
-import { CinetPayAdapter } from "@pont/adapter-cinetpay";
+import { PontError, type ProviderAdapter, type ProviderId } from "@pont-bj/core";
+import { SandboxAdapter } from "@pont-bj/sandbox";
+import { FedaPayAdapter } from "@pont-bj/adapter-fedapay";
+import { PawaPayAdapter } from "@pont-bj/adapter-pawapay";
+import { PayDunyaAdapter } from "@pont-bj/adapter-paydunya";
+import { KkiapayAdapter } from "@pont-bj/adapter-kkiapay";
+import { CinetPayAdapter } from "@pont-bj/adapter-cinetpay";
 
 /**
  * Variables d'environnement lues par `createPontFromEnv`. Les clés restent chez le marchand (ADR-001, option B).

@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { ACTION_LABELS, RESOURCES, RESOURCE_NAMES, type RoleDefinition } from "@pont/auth";
+import { ACTION_LABELS, RESOURCES, RESOURCE_NAMES, type RoleDefinition } from "@pont-bj/auth";
 import type { FormState } from "@/app/actions";
 
 const input = "rounded-lg border border-bordure bg-white px-3 py-2 text-sm outline-none transition focus:border-indigo focus:ring-4 focus:ring-indigo-100";

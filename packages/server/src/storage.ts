@@ -12,10 +12,10 @@ import {
   type PayoutStore,
   type RefundStore,
   type SecretStore,
-} from "@pont/engine";
-import { MemoryLedgerStore, MemoryCustomerProfileStore, type LedgerStore, type ManagedProfileStore } from "@pont/ledger";
-import { MemoryWorkflowRunStore, type WorkflowRunStore } from "@pont/framework";
-import { createConvexStores, type ConvexRunner } from "@pont/store-convex";
+} from "@pont-bj/engine";
+import { MemoryLedgerStore, MemoryCustomerProfileStore, type LedgerStore, type ManagedProfileStore } from "@pont-bj/ledger";
+import { MemoryWorkflowRunStore, type WorkflowRunStore } from "@pont-bj/framework";
+import { createConvexStores, type ConvexRunner } from "@pont-bj/store-convex";
 import type { ServerEnv } from "./config.js";
 
 /**
@@ -61,7 +61,7 @@ export const convexStorage: StorageFactory = (env) => ({
 
 /** Chargé à la demande : le client Prisma n'est généré et importé que si PostgreSQL est choisi. */
 export const postgresStorage: StorageFactory = async (env) => {
-  const { connectPostgres } = await import("@pont/store-prisma/postgres");
+  const { connectPostgres } = await import("@pont-bj/store-prisma/postgres");
   const { stores, ledger, profiles, disconnect } = connectPostgres(env.DATABASE_URL!);
   const { workflowRuns, ...records } = stores;
   return { ...records, workflowRuns, ledger: { store: ledger, profiles }, durable: true, close: disconnect };

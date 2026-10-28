@@ -5,8 +5,8 @@ Le serveur Pont ne sait pas où sont stockées les données : il parle à des **
 | Adaptateur | `PONT_STORE` | Durable | Où |
 |---|---|---|---|
 | Mémoire | `memory` | non | `memoryStorage` : tests uniquement |
-| Convex | `convex` | oui | `@pont/store-convex` (Convex self-hosted ou cloud) |
-| PostgreSQL | `postgres` | oui | `@pont/store-prisma` (via Prisma) |
+| Convex | `convex` | oui | `@pont-bj/store-convex` (Convex self-hosted ou cloud) |
+| PostgreSQL | `postgres` | oui | `@pont-bj/store-prisma` (via Prisma) |
 
 En mode `live`, un adaptateur non durable est refusé au démarrage.
 
@@ -30,16 +30,16 @@ Sans Docker :
 
 ```bash
 export DATABASE_URL=postgresql://…
-pnpm --filter @pont/store-prisma exec prisma db push
-PONT_STORE=postgres pnpm --filter @pont/server start
+pnpm --filter @pont-bj/store-prisma exec prisma db push
+PONT_STORE=postgres pnpm --filter @pont-bj/server start
 ```
 
 ## Écrire votre propre adaptateur
 
-Pour MySQL, MongoDB, DynamoDB ou toute autre base, implémentez les cinq interfaces du moteur (`@pont/engine`) et retournez-les dans un `StorageAdapter`. Le serveur s'utilise alors comme une bibliothèque :
+Pour MySQL, MongoDB, DynamoDB ou toute autre base, implémentez les cinq interfaces du moteur (`@pont-bj/engine`) et retournez-les dans un `StorageAdapter`. Le serveur s'utilise alors comme une bibliothèque :
 
 ```ts
-import { createRuntime, type StorageFactory } from "@pont/server";
+import { createRuntime, type StorageFactory } from "@pont-bj/server";
 
 const monStockage: StorageFactory = async (env) => ({
   payments: new MonPaymentStore(/* … */),
@@ -87,4 +87,4 @@ Il n'y a pas encore de suite de tests de conformité réutilisable : copiez et a
 
 ## Ce qui n'est pas dans l'adaptateur
 
-Les comptes du dashboard (Better Auth) ont leur propre base SQLite. Le portefeuille et le registre (`@pont/ledger`) auront leur propre adaptateur lorsqu'ils seront branchés au serveur.
+Les comptes du dashboard (Better Auth) ont leur propre base SQLite. Le portefeuille et le registre (`@pont-bj/ledger`) auront leur propre adaptateur lorsqu'ils seront branchés au serveur.

@@ -1,5 +1,5 @@
 {
-  "name": "@pont/sandbox",
+  "name": "@pont-bj/sandbox",
   "version": "0.1.0",
   "description": "Simulateur de Pont à numéros magiques, pour tester sans toucher à un vrai agrégateur.",
   "type": "module",
@@ -12,7 +12,7 @@
     "build": "tsup src/index.ts --format esm --dts --clean --target node20"
   },
   "dependencies": {
-    "@pont/core": "workspace:*"
+    "@pont-bj/core": "workspace:*"
   },
   "license": "BUSL-1.1",
   "files": [
@@ -36,12 +36,12 @@
   "author": "François Mawutô Aboudou ZINSOU <pro@aboudouzinsou.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aboudou-cto-bloko/pont.git",
+    "url": "git+https://github.com/pont-bj/pont.git",
     "directory": "packages/sandbox"
   },
-  "homepage": "https://github.com/aboudou-cto-bloko/pont#readme",
+  "homepage": "https://github.com/pont-bj/pont#readme",
   "bugs": {
-    "url": "https://github.com/aboudou-cto-bloko/pont/issues"
+    "url": "https://github.com/pont-bj/pont/issues"
   },
   "keywords": [
     "payments",

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { RESOURCE_NAMES, type Resource } from "@pont/auth";
+import { RESOURCE_NAMES, type Resource } from "@pont-bj/auth";
 import { getAuth } from "@/lib/auth";
 import { env } from "@/lib/env";
 import { loadRoles } from "@/lib/roles";

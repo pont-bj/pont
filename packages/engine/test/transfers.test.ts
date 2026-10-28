@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PontError, verifyPontWebhook } from "@pont/core";
+import { PontError, verifyPontWebhook } from "@pont-bj/core";
 import {
   MemoryDeliveryStore,
   MemoryIdempotencyStore,

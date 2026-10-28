@@ -1,4 +1,4 @@
-# @pont/ledger
+# @pont-bj/ledger
 
 Registre en partie double, portefeuilles et plafonds KYC pour Pont.
 
@@ -7,7 +7,7 @@ Registre en partie double, portefeuilles et plafonds KYC pour Pont.
 ## Installation
 
 ```bash
-pnpm add @pont/ledger
+pnpm add @pont-bj/ledger
 ```
 
 ## Utilisation
@@ -16,8 +16,8 @@ Ce paquet est surtout destiné à être utilisé via les autres paquets Pont. Vo
 
 ## Documentation
 
-- Guide d'auto-hébergement : [docs/self-host](https://github.com/aboudou-cto-bloko/pont/tree/main/docs/self-host)
-- Dépôt : https://github.com/aboudou-cto-bloko/pont
+- Guide d'auto-hébergement : [docs/self-host](https://github.com/pont-bj/pont/tree/main/docs/self-host)
+- Dépôt : https://github.com/pont-bj/pont
 
 ## Licence
 

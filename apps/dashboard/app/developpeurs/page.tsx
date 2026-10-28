@@ -44,7 +44,7 @@ export default async function Integration() {
       <Section id="commandes">
       <div className="grid gap-4 lg:grid-cols-2">
         <Commande titre="Intégrer en une commande" texte="Détecte votre projet (Next.js, Express), génère les routes et lance un paiement de test." commande="npx pont init" note="Puis : npx pont doctor pour vérifier la sécurité." />
-        <Commande titre="Ou laissez votre agent IA intégrer" texte="Claude Code, Cursor ou Windsurf : ajoutez le serveur MCP, puis décrivez votre besoin." commande="claude mcp add pont -- npx -y @pont/mcp" note="Exemple : « Ajoute le paiement mobile money au checkout. »" />
+        <Commande titre="Ou laissez votre agent IA intégrer" texte="Claude Code, Cursor ou Windsurf : ajoutez le serveur MCP, puis décrivez votre besoin." commande="claude mcp add pont -- npx -y @pont-bj/mcp" note="Exemple : « Ajoute le paiement mobile money au checkout. »" />
       </div>
       </Section>
 

@@ -1,5 +1,5 @@
-import { verifyInstruction, type Instruction, type SignedInstruction, type SignedInstructionPayload } from "@pont/core";
-import type { IdempotencyStore, PontEngine, WebhookRelay } from "@pont/engine";
+import { verifyInstruction, type Instruction, type SignedInstruction, type SignedInstructionPayload } from "@pont-bj/core";
+import type { IdempotencyStore, PontEngine, WebhookRelay } from "@pont-bj/engine";
 
 export interface InstructionPolicy {
   /** Types d'instruction acceptés. Par défaut : aucun (le marchand doit les autoriser explicitement). */

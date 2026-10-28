@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { MemorySecretStore } from "@pont/engine";
+import { MemorySecretStore } from "@pont-bj/engine";
 import { createRuntime } from "../src/runtime.js";
 import { memoryStorage } from "../src/storage.js";
 import { Vault } from "../src/vault.js";

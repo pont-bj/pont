@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
-import type { DeliveryStore, PaymentStore, PayoutStore } from "@pont/engine";
+import type { DeliveryStore, PaymentStore, PayoutStore } from "@pont-bj/engine";
 import type { EmailService } from "./email.js";
 import type { WalletKit } from "./wallet.js";
 import type { Vault } from "./vault.js";

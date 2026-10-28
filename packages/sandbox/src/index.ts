@@ -13,7 +13,7 @@ import {
   type TransferVerified,
   type VerifiedState,
   type WebhookCheck,
-} from "@pont/core";
+} from "@pont-bj/core";
 
 /**
  * Scénarios pilotés par les 7 derniers chiffres du numéro. Cahier des charges §6 F3.

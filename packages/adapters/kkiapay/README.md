@@ -1,4 +1,4 @@
-# @pont/adapter-kkiapay
+# @pont-bj/adapter-kkiapay
 
 Adaptateur Kkiapay pour Pont (implémente ProviderAdapter).
 
@@ -7,21 +7,21 @@ Adaptateur Kkiapay pour Pont (implémente ProviderAdapter).
 ## Installation
 
 ```bash
-pnpm add @pont/adapter-kkiapay
+pnpm add @pont-bj/adapter-kkiapay
 ```
 
 ## Utilisation
 
 ```ts
-import { KkiapayAdapter } from "@pont/adapter-kkiapay";
+import { KkiapayAdapter } from "@pont-bj/adapter-kkiapay";
 ```
 
 Voir la documentation pour des exemples complets.
 
 ## Documentation
 
-- Guide d'auto-hébergement : [docs/self-host](https://github.com/aboudou-cto-bloko/pont/tree/main/docs/self-host)
-- Dépôt : https://github.com/aboudou-cto-bloko/pont
+- Guide d'auto-hébergement : [docs/self-host](https://github.com/pont-bj/pont/tree/main/docs/self-host)
+- Dépôt : https://github.com/pont-bj/pont
 
 ## Licence
 

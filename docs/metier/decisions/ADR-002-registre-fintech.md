@@ -37,7 +37,7 @@ Pont devient **l'infrastructure de paiement des fintechs africaines** en ajoutan
 ## Conséquences
 
 - Nouvelles règles métier à écrire au démarrage du module : R-030 (écriture équilibrée, immuable), R-031 (solde jamais négatif), R-032 (dépôt crédité seulement après vérification agrégateur), R-033 (retrait : fonds bloqués avant l'envoi, restitués en cas d'échec), R-034 (réconciliation registre ↔ soldes agrégateurs).
-- Architecture : nouveau paquet `@pont/ledger`, stockage transactionnel (Convex pour commencer : mutations sérialisables ; Postgres envisagé si le volume l'exige).
+- Architecture : nouveau paquet `@pont-bj/ledger`, stockage transactionnel (Convex pour commencer : mutations sérialisables ; Postgres envisagé si le volume l'exige).
 - Dashboard : nouvelles entrées « Comptes » et « Registre » lorsque le module est activé.
 - Positionnement commercial : « l'infrastructure de paiement des fintechs africaines ». L'orchestrateur reste l'offre d'entrée ; le registre se vend à part (plan Scale / Fintech).
 - Le MVP actuel ne change pas : le registre démarre après la mise en production de l'orchestrateur.

@@ -3,19 +3,19 @@ title: "Serveur MCP"
 description: "Les outils que Claude Code, Cursor ou Windsurf utilisent pour intégrer Pont. Sandbox uniquement."
 ---
 
-Le serveur MCP `@pont/mcp` permet à un agent d'intégrer les paiements Pont dans un projet. **Sandbox uniquement** : aucun outil n'effectue d'opération financière réelle.
+Le serveur MCP `@pont-bj/mcp` permet à un agent d'intégrer les paiements Pont dans un projet. **Sandbox uniquement** : aucun outil n'effectue d'opération financière réelle.
 
 ## Installation
 
 ```bash
 # Claude Code
-claude mcp add pont -- npx -y @pont/mcp
+claude mcp add pont -- npx -y @pont-bj/mcp
 ```
 
 Cursor ou Windsurf (`mcp.json`) :
 
 ```json
-{ "mcpServers": { "pont": { "command": "npx", "args": ["-y", "@pont/mcp"] } } }
+{ "mcpServers": { "pont": { "command": "npx", "args": ["-y", "@pont-bj/mcp"] } } }
 ```
 
 ## Outils

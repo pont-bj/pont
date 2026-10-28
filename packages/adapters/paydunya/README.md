@@ -1,4 +1,4 @@
-# @pont/adapter-paydunya
+# @pont-bj/adapter-paydunya
 
 Adaptateur PayDunya pour Pont (implémente ProviderAdapter).
 
@@ -7,21 +7,21 @@ Adaptateur PayDunya pour Pont (implémente ProviderAdapter).
 ## Installation
 
 ```bash
-pnpm add @pont/adapter-paydunya
+pnpm add @pont-bj/adapter-paydunya
 ```
 
 ## Utilisation
 
 ```ts
-import { PayDunyaAdapter } from "@pont/adapter-paydunya";
+import { PayDunyaAdapter } from "@pont-bj/adapter-paydunya";
 ```
 
 Voir la documentation pour des exemples complets.
 
 ## Documentation
 
-- Guide d'auto-hébergement : [docs/self-host](https://github.com/aboudou-cto-bloko/pont/tree/main/docs/self-host)
-- Dépôt : https://github.com/aboudou-cto-bloko/pont
+- Guide d'auto-hébergement : [docs/self-host](https://github.com/pont-bj/pont/tree/main/docs/self-host)
+- Dépôt : https://github.com/pont-bj/pont
 
 ## Licence
 

@@ -10,11 +10,11 @@ Document honnête, établi d'après le code réel du dépôt au 28 octobre 2026.
 | Adaptateurs FedaPay, PawaPay, PayDunya, Kkiapay, CinetPay (dépôts, vérifications, webhooks) | disponible, **non éprouvé avec de vrais comptes agrégateurs** ; CinetPay : documentation injoignable lors de la collecte |
 | Retraits (FedaPay, PawaPay, PayDunya), remboursements (PawaPay, Kkiapay) | disponible |
 | Sandbox à numéros magiques | disponible |
-| SDK TypeScript / Node.js (`@pont/node`), CLI `pont`, serveur MCP en sandbox | disponible, version `0.x` |
+| SDK TypeScript / Node.js (`@pont-bj/node`), CLI `pont`, serveur MCP en sandbox | disponible, version `0.x` |
 | Serveur autonome (API `/v1`, `/admin`, `/hooks`), coffre de clés chiffré, planificateur | disponible |
 | Stockage PostgreSQL (Prisma) et Convex | disponible |
 | Registre en partie double, portefeuilles, plafonds KYC | disponible (PostgreSQL uniquement) |
-| Rôles et permissions (`@pont/auth`), dashboard minimal | disponible |
+| Rôles et permissions (`@pont-bj/auth`), dashboard minimal | disponible |
 | Self-host en un `./setup.sh` (Docker) | disponible |
 
 ## Bientôt

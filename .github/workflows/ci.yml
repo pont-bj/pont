@@ -35,5 +35,5 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm -r typecheck
       - name: Créer le schéma de test (pas de migrations dans le dépôt)
-        run: pnpm --filter @pont/store-prisma exec prisma db push --accept-data-loss
+        run: pnpm --filter @pont-bj/store-prisma exec prisma db push --accept-data-loss
       - run: pnpm -r test

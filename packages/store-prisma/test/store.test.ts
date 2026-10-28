@@ -1,8 +1,8 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PontEngine } from "@pont/engine";
-import { SandboxAdapter } from "@pont/sandbox";
-import { createWorkflow } from "@pont/framework";
+import { PontEngine } from "@pont-bj/engine";
+import { SandboxAdapter } from "@pont-bj/sandbox";
+import { createWorkflow } from "@pont-bj/framework";
 import { PrismaClient } from "../src/generated/prisma/client.js";
 import { createPrismaStores, type PontPrismaClient } from "../src/index.js";
 

@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { matchRecipes, type Recipe } from "@pont/framework";
-import { RECIPES } from "@pont/recipes";
+import { matchRecipes, type Recipe } from "@pont-bj/framework";
+import { RECIPES } from "@pont-bj/recipes";
 import { detectProject, installCommand, type ProjectInfo } from "../project.js";
 
 export interface RecipeSummary {
@@ -25,13 +25,13 @@ export function listRecipes(description?: string): RecipeSummary[] {
 
 function walletTemplate(project: ProjectInfo): string {
   const pontImport = "./pont";
-  return `import { Ledger, Limits, MemoryCustomerProfileStore, MemoryLedgerStore, Wallets } from "@pont/ledger";
-import { WalletService, walletRecipe } from "@pont/recipes";
-import type { PontEvent } from "@pont/node";
+  return `import { Ledger, Limits, MemoryCustomerProfileStore, MemoryLedgerStore, Wallets } from "@pont-bj/ledger";
+import { WalletService, walletRecipe } from "@pont-bj/recipes";
+import type { PontEvent } from "@pont-bj/node";
 import { pont } from "${pontImport}";
 
 // Recette « Portefeuille mobile » générée par \`pont add recipe wallet\`.
-// Stockage en mémoire pour démarrer. En production : PrismaLedgerStore (@pont/store-prisma),
+// Stockage en mémoire pour démarrer. En production : PrismaLedgerStore (@pont-bj/store-prisma),
 // pour que les soldes survivent aux redémarrages et restent exacts sous concurrence.
 const ledger = new Ledger(new MemoryLedgerStore());
 export const wallets = new Wallets(ledger);
@@ -97,7 +97,7 @@ export function addRecipe(options: { cwd: string; recipeId: string; dryRun: bool
     options.log(`+ ${path}`);
   }
 
-  result.installCommand = installCommand(project.packageManager, ["@pont/ledger", "@pont/recipes"]);
+  result.installCommand = installCommand(project.packageManager, ["@pont-bj/ledger", "@pont-bj/recipes"]);
   result.manualSteps.push(
     "Dans lib/pont : onEvent: async (event) => { const { handleWalletEvent } = await import(\"./pont-wallet\"); await handleWalletEvent(event); }",
     "Ouvrez un portefeuille à l'inscription : await wallets.open(userId, \"XOF\") puis profiles.setTier(userId, \"basique\").",

@@ -1,5 +1,5 @@
-import type { Capability, Country, Operator, Payment, ProviderAdapter } from "@pont/core";
-import type { Delivery, RefundStore } from "@pont/engine";
+import type { Capability, Country, Operator, Payment, ProviderAdapter } from "@pont-bj/core";
+import type { Delivery, RefundStore } from "@pont-bj/engine";
 
 const COUNTRIES: Country[] = ["BJ", "TG", "CI", "SN", "BF", "ML", "NE", "GN", "CM", "CG", "CD", "GA"];
 const OPERATORS: Operator[] = [

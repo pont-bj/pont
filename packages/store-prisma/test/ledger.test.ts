@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { InsufficientFundsError, Ledger, Wallets } from "@pont/ledger";
+import { InsufficientFundsError, Ledger, Wallets } from "@pont-bj/ledger";
 import { PrismaClient } from "../src/generated/prisma/client.js";
 import { PrismaCustomerProfileStore, PrismaLedgerStore, type PontPrismaLedgerClient, type PontPrismaProfileClient } from "../src/ledger.js";
 

@@ -1,10 +1,10 @@
 import { createHash, createSign, generateKeyPairSync } from "node:crypto";
 import { describe, expect, it } from "vitest";
-import { normalizePhone, sha512Hex, type PayoutRequest, type RefundRequest } from "@pont/core";
-import { FedaPayAdapter } from "@pont/adapter-fedapay";
-import { PawaPayAdapter } from "@pont/adapter-pawapay";
-import { PayDunyaAdapter } from "@pont/adapter-paydunya";
-import { KkiapayAdapter } from "@pont/adapter-kkiapay";
+import { normalizePhone, sha512Hex, type PayoutRequest, type RefundRequest } from "@pont-bj/core";
+import { FedaPayAdapter } from "@pont-bj/adapter-fedapay";
+import { PawaPayAdapter } from "@pont-bj/adapter-pawapay";
+import { PayDunyaAdapter } from "@pont-bj/adapter-paydunya";
+import { KkiapayAdapter } from "@pont-bj/adapter-kkiapay";
 import { mockFetch, networkError } from "./helpers.js";
 
 const payoutRequest = (overrides: Partial<PayoutRequest["input"]> = {}): PayoutRequest => ({

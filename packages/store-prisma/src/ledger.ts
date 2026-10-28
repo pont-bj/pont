@@ -1,5 +1,5 @@
-import type { Account, AccountWithBalance, Entry, LedgerStore, ManagedProfileStore, Movement, PostResult } from "@pont/ledger";
-import type { Currency } from "@pont/core";
+import type { Account, AccountWithBalance, Entry, LedgerStore, ManagedProfileStore, Movement, PostResult } from "@pont-bj/ledger";
+import type { Currency } from "@pont-bj/core";
 
 interface LedgerDelegate {
   findUnique(args: { where: Record<string, unknown> }): Promise<unknown>;

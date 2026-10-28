@@ -67,7 +67,7 @@ import {
   type TransferVerified,
   type VerifiedState,
   type WebhookCheck,
-} from "@pont/core";
+} from "@pont-bj/core";
 
 type Template = string | number | boolean | { [key: string]: Template } | Template[];
 
@@ -584,7 +584,7 @@ function packageJson(spec: ProviderSpec): string {
     type: "module",
     main: "./src/index.ts",
     scripts: { typecheck: "tsc --noEmit -p .", test: "vitest run" },
-    dependencies: { "@pont/core": "*" },
+    dependencies: { "@pont-bj/core": "*" },
     devDependencies: { "@types/node": "^22.0.0", typescript: "^5.6.0", vitest: "^2.1.8" },
   })}\n`;
 }

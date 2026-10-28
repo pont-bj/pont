@@ -1,4 +1,4 @@
-import type { Resource } from "@pont/auth";
+import type { Resource } from "@pont-bj/auth";
 
 export interface LienNav {
   href: string;
