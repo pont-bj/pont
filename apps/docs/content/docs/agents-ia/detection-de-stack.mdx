@@ -1,0 +1,31 @@
+---
+title: "Détection de la stack"
+description: "Comment pont init reconnaît votre projet et génère l'intégration adaptée."
+---
+
+`pont init` (et l'outil MCP `detect_stack`) lit votre projet avant d'écrire quoi que ce soit.
+
+| Signal | Résultat |
+|---|---|
+| `next` dans les dépendances et un dossier `app` ou `src/app` | Next.js App Router |
+| `next` et un dossier `pages` | Next.js Pages Router |
+| `express` | Express |
+| `composer.json` avec `laravel/framework` | Laravel |
+| `composer.json` sans Laravel | PHP |
+| Aucun de ces signaux | Inconnu : rien n'est généré |
+
+Sont aussi détectés : le gestionnaire de paquets (`pnpm`, `yarn`, `bun`, `npm`), TypeScript, le dossier `src`, et Convex.
+
+## Ce qui est généré
+
+- Next.js App Router et Express : fichiers d'intégration ; avec `--stores convex`, les tables Pont et le fichier de stockage Convex.
+- Une section `AGENTS.md` et la configuration MCP avec `--agent`.
+- Jamais d'écrasement : un fichier existant est signalé, pas remplacé. `--dry-run` montre le plan sans rien écrire.
+
+```bash
+npx pont init --agent --dry-run
+```
+
+<Callout type="warn">
+Pas encore couverts : templates Prisma et Express complets, génération pour Laravel et PHP (utilisez les SDK `sdks/php` et `sdks/laravel`). Les skills propres à chaque stack sont à construire.
+</Callout>

@@ -1,0 +1,15 @@
+{
+  "title": "API",
+  "pages": [
+    "index",
+    "paiements",
+    "retraits",
+    "portefeuilles",
+    "webhooks-sortants",
+    "webhooks-entrants",
+    "sante",
+    "administration",
+    "cles",
+    "email-et-alertes"
+  ]
+}

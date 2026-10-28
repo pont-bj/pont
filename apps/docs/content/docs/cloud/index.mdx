@@ -1,0 +1,33 @@
+---
+title: "Pont Cloud"
+description: "La version hébergée et payante de Pont : ce qui est décidé, ce qui reste à construire."
+---
+
+<Callout type="warn">
+**Pont Cloud n'existe pas encore.** Cette page décrit les décisions prises, pas un produit disponible. Rien ici n'est vendu ni garanti.
+</Callout>
+
+## Décidé
+
+- Le self-host reste **gratuit à vie** ; le Cloud est payant.
+- Sur le Cloud, **Pont conserve les clés des agrégateurs**, chiffrées. Elles ne sont jamais en clair, ni dans les logs, ni dans les réponses.
+- Le chiffrement par client est recommandé.
+
+## Conception prévue du coffre
+
+Chiffrement par enveloppe :
+
+- une clé maître (KMS ou secret d'infrastructure, jamais en base) ;
+- une clé de données par client, chiffrée par la clé maître ;
+- les clés d'agrégateurs chiffrées en AES-256-GCM avec la clé du client ;
+- déchiffrement en mémoire uniquement, au moment de l'appel à l'agrégateur ;
+- rotation par client, journal d'audit de chaque accès.
+
+Le self-host utilise déjà le chiffrement AES-256-GCM avec **une seule clé maître** : voir [Clés et webhooks](/guides/cles-et-webhooks). Les clés par client et le journal d'audit sont à construire.
+
+## À construire
+
+- Coffre par client en enveloppe et journal d'audit.
+- Facturation (offres, quotas).
+- Réception des webhooks par Pont et relais vers l'application du client.
+- Hébergement, sauvegardes et supervision (le Cloud devient une infrastructure critique).

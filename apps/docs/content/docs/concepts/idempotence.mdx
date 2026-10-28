@@ -1,0 +1,33 @@
+---
+title: "Idempotence"
+description: "Rejouer une requête ne crée jamais deux paiements."
+---
+
+Une requête réseau peut être envoyée deux fois (coupure, nouvel essai, double clic). Pont garantit que **le même ordre ne produit qu'une seule opération**.
+
+## Comment Pont identifie « le même ordre »
+
+1. L'en-tête `Idempotency-Key`, s'il est présent (8 à 255 caractères).
+2. Sinon, la `reference` de votre commande : Pont en dérive la clé tout seul.
+3. Sans les deux : `400`, car Pont ne peut pas protéger l'opération.
+
+```bash
+curl -X POST http://localhost:8787/v1/payments \
+  -H "authorization: Bearer $PONT_API_KEY" \
+  -d '{"amount":5000,"currency":"XOF","country":"BJ","customer":{"phone":"+2290100000001"},"reference":"commande-42"}'
+```
+
+Envoyer cette requête deux fois renvoie **le même paiement**.
+
+## Conflits
+
+- Même clé avec un contenu différent : `409 idempotency_conflict`.
+- Pour retenter un paiement échoué : nouvelle `reference` (`commande-42-2`) ou autre `Idempotency-Key`.
+
+## Sous concurrence
+
+L'enregistrement de la clé est **atomique** (contrainte d'unicité en base). Testé sur PostgreSQL : 20 créations simultanées avec la même clé produisent un seul paiement.
+
+## Côté portefeuille
+
+Les écritures du registre sont aussi idempotentes : un paiement n'est crédité qu'une fois, même si son webhook arrive deux fois. Voir [portefeuille et registre](/guides/portefeuille-et-registre).

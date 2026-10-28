@@ -1,0 +1,5432 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "API Pont",
+    "version": "1.0.0",
+    "summary": "Orchestrateur de paiement BYOK pour l'Afrique francophone.",
+    "description": "Trois familles de routes : `/v1` (votre application, clé API), `/admin` (dashboard, jeton administrateur) et `/hooks` (agrégateurs, signature vérifiée).\n\n**Montants** : entiers, en unités de la devise (XOF et XAF n'ont pas de décimales).\n\n**Idempotence** : en-tête `Idempotency-Key`, sinon `auto:<type>:<reference>`. Une même clé avec un contenu différent renvoie `409 idempotency_conflict`.\n\n**Erreurs** : toujours `{ \"error\": { \"code\", \"message\", \"fix\"? } }`.\n\n**Ambigu** : quand l'état réel chez l'agrégateur est inconnu, le paiement garde son statut et porte `needsReconciliation: true`. Pont vérifie, sans jamais réessayer ailleurs.\n\n**Sandbox** : les 7 derniers chiffres du numéro choisissent le scénario (`0000001` succès, `0000002` solde insuffisant, `0000003` jamais confirmé, `0000004` webhook en double, `0000005` webhook tardif, `0000006` agrégateur en panne, `0000007` ambigu, `0000008` refusé)."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8787",
+      "description": "Self-host local"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Santé",
+      "description": "Sonde de disponibilité."
+    },
+    {
+      "name": "Webhooks entrants",
+      "description": "Réception des webhooks des agrégateurs."
+    },
+    {
+      "name": "Paiements",
+      "description": "Encaisser un client et le rembourser."
+    },
+    {
+      "name": "Retraits",
+      "description": "Envoyer de l'argent vers Mobile Money."
+    },
+    {
+      "name": "Portefeuilles",
+      "description": "Soldes, dépôts, retraits et transferts (PostgreSQL uniquement)."
+    },
+    {
+      "name": "Administration",
+      "description": "Routes du dashboard."
+    },
+    {
+      "name": "Clés et agrégateurs",
+      "description": "Coffre de clés chiffrées."
+    },
+    {
+      "name": "Webhooks sortants",
+      "description": "Événements envoyés à votre application."
+    },
+    {
+      "name": "E-mail et alertes",
+      "description": "SMTP et alertes configurables."
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "ApiKey": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "`PONT_API_KEY`, pour les routes `/v1`."
+      },
+      "AdminToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "`PONT_ADMIN_TOKEN`, pour les routes `/admin`."
+      }
+    },
+    "schemas": {
+      "Currency": {
+        "type": "string",
+        "description": "Devise : le XOF et le XAF n'ont pas de décimales, les montants sont des entiers.",
+        "enum": [
+          "XOF",
+          "XAF"
+        ]
+      },
+      "Country": {
+        "type": "string",
+        "description": "Pays (ISO 3166-1 alpha-2).",
+        "enum": [
+          "BJ",
+          "TG",
+          "CI",
+          "SN",
+          "BF",
+          "ML",
+          "NE",
+          "GN",
+          "CM",
+          "CG",
+          "CD",
+          "GA"
+        ]
+      },
+      "Operator": {
+        "type": "string",
+        "description": "Opérateur Mobile Money (`<opérateur>_<pays>`), indépendant des codes des agrégateurs.",
+        "enum": [
+          "mtn_bj",
+          "moov_bj",
+          "celtiis_bj",
+          "moov_tg",
+          "tmoney_tg",
+          "mtn_ci",
+          "orange_ci",
+          "moov_ci",
+          "wave_ci",
+          "orange_sn",
+          "free_sn",
+          "wave_sn",
+          "expresso_sn",
+          "wizall_sn",
+          "orange_bf",
+          "moov_bf",
+          "orange_ml",
+          "moov_ml",
+          "mtn_cm",
+          "orange_cm",
+          "mtn_cg",
+          "airtel_cg",
+          "airtel_ga"
+        ]
+      },
+      "PaymentStatus": {
+        "type": "string",
+        "description": "Statut normalisé d'un paiement. Seul `succeeded` est vérifié auprès de l'agrégateur.",
+        "enum": [
+          "created",
+          "pending",
+          "processing",
+          "succeeded",
+          "failed",
+          "expired",
+          "cancelled",
+          "refunded",
+          "partially_refunded"
+        ]
+      },
+      "TransferStatus": {
+        "type": "string",
+        "description": "Statut d'un retrait ou d'un remboursement.",
+        "enum": [
+          "pending",
+          "processing",
+          "succeeded",
+          "failed",
+          "cancelled"
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "Code stable à tester côté application.",
+                "examples": [
+                  "invalid_request"
+                ]
+              },
+              "message": {
+                "type": "string",
+                "description": "Message en français, destiné à un humain."
+              },
+              "fix": {
+                "type": "string",
+                "description": "Piste de correction, quand elle existe."
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "LimitError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "limit_exceeded"
+                ]
+              },
+              "limit": {
+                "type": "string",
+                "description": "Plafond atteint.",
+                "enum": [
+                  "frozen",
+                  "max_single",
+                  "max_balance",
+                  "max_daily_out",
+                  "max_monthly_out",
+                  "unknown_tier"
+                ]
+              },
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "limit",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "InsufficientFundsError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "insufficient_funds"
+                ]
+              },
+              "available": {
+                "type": "integer",
+                "description": "Solde disponible."
+              },
+              "required": {
+                "type": "integer",
+                "description": "Montant demandé, frais compris."
+              },
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "available",
+              "required",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "CreatePaymentRequest": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "integer",
+            "description": "Montant en unités entières de la devise.",
+            "minimum": 1,
+            "examples": [
+              5000
+            ]
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "country": {
+            "$ref": "#/components/schemas/Country"
+          },
+          "customer": {
+            "type": "object",
+            "properties": {
+              "phone": {
+                "type": "string",
+                "description": "Numéro du client au format international (E.164), 6 à 20 caractères.",
+                "minLength": 6,
+                "maxLength": 20,
+                "examples": [
+                  "+2290100000001"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "description": "Nom du client.",
+                "maxLength": 120,
+                "examples": [
+                  "Awa Kpossou"
+                ]
+              },
+              "email": {
+                "type": "string",
+                "description": "Adresse e-mail du client.",
+                "format": "email",
+                "examples": [
+                  "awa@exemple.bj"
+                ]
+              }
+            },
+            "required": [
+              "phone"
+            ]
+          },
+          "reference": {
+            "type": "string",
+            "description": "Votre référence (commande, facture), 1 à 64 caractères. Sert aussi de clé d'idempotence par défaut.",
+            "minLength": 1,
+            "maxLength": 64,
+            "examples": [
+              "commande-42"
+            ]
+          },
+          "method": {
+            "type": "string",
+            "description": "Moyen de paiement.",
+            "enum": [
+              "mobile_money",
+              "card"
+            ]
+          },
+          "operator": {
+            "$ref": "#/components/schemas/Operator"
+          },
+          "description": {
+            "type": "string",
+            "description": "Libellé affiché au client, 255 caractères au plus.",
+            "maxLength": 255,
+            "examples": [
+              "Commande 42"
+            ]
+          },
+          "returnUrl": {
+            "type": "string",
+            "description": "Adresse où ramener le client après un paiement hébergé.",
+            "format": "uri"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 500
+            },
+            "description": "Métadonnées libres, renvoyées dans les réponses et les webhooks."
+          },
+          "preAuthorisationCode": {
+            "type": "string",
+            "description": "Code à usage unique généré avant le paiement (Orange Burkina via PawaPay) : 1 à 36 caractères alphanumériques.",
+            "pattern": "^[A-Za-z0-9]{1,36}$"
+          }
+        },
+        "required": [
+          "amount",
+          "currency",
+          "country",
+          "customer",
+          "reference"
+        ],
+        "additionalProperties": false
+      },
+      "NextAction": {
+        "description": "Ce que votre application doit faire ensuite, selon l'agrégateur.",
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "redirect"
+                ]
+              },
+              "url": {
+                "type": "string",
+                "description": "Page de paiement hébergée.",
+                "format": "uri"
+              }
+            },
+            "required": [
+              "type",
+              "url"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "await_customer"
+                ]
+              },
+              "message": {
+                "type": "string",
+                "description": "Le client valide la demande reçue sur son téléphone (push USSD)."
+              }
+            },
+            "required": [
+              "type",
+              "message"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "preauth_code_required"
+                ]
+              },
+              "instructions": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "instructions"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "client_widget"
+                ]
+              },
+              "provider": {
+                "type": "string"
+              },
+              "publicKey": {
+                "type": "string"
+              },
+              "sandbox": {
+                "type": "boolean"
+              },
+              "amount": {
+                "type": "integer"
+              },
+              "partnerId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "provider",
+              "publicKey",
+              "sandbox",
+              "amount",
+              "partnerId"
+            ]
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type"
+        }
+      },
+      "Payment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identifiant Pont.",
+            "examples": [
+              "pay_84a49a19050240ebb01077bdb806c672"
+            ]
+          },
+          "mode": {
+            "type": "string",
+            "description": "Mode du serveur au moment de la création.",
+            "enum": [
+              "test",
+              "live"
+            ]
+          },
+          "country": {
+            "type": "string",
+            "description": "Pays (ISO 3166-1 alpha-2).",
+            "enum": [
+              "BJ",
+              "TG",
+              "CI",
+              "SN",
+              "BF",
+              "ML",
+              "NE",
+              "GN",
+              "CM",
+              "CG",
+              "CD",
+              "GA"
+            ]
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "provider": {
+            "type": "string",
+            "description": "Agrégateur choisi par Pont (`fedapay`, `pawapay`, `paydunya`, `kkiapay`, `sandbox` ou un agrégateur personnalisé).",
+            "examples": [
+              "fedapay"
+            ]
+          },
+          "attemptId": {
+            "type": "string",
+            "description": "Identifiant unique de la tentative, transmis à l'agrégateur quand il l'accepte."
+          },
+          "providerRef": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Référence de l'opération chez l'agrégateur."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "failureCode": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Code d'échec normalisé, `null` tant qu'il n'y a pas d'échec."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "needsReconciliation": {
+            "type": "boolean",
+            "description": "`true` quand l'état réel chez l'agrégateur est inconnu : Pont vérifie à chaque cycle, ne réessaie jamais ailleurs."
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 500
+            },
+            "description": "Vos métadonnées libres (valeurs de 500 caractères au plus)."
+          },
+          "createdAt": {
+            "type": "integer",
+            "description": "Date de création, en millisecondes Unix."
+          },
+          "updatedAt": {
+            "type": "integer",
+            "description": "Dernière mise à jour, en millisecondes Unix."
+          },
+          "status": {
+            "$ref": "#/components/schemas/PaymentStatus"
+          },
+          "amount": {
+            "type": "integer",
+            "description": "Montant en unités entières."
+          },
+          "operator": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Operator"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reference": {
+            "type": "string",
+            "description": "Votre référence."
+          },
+          "nextAction": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/NextAction"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "mode",
+          "status",
+          "amount",
+          "currency",
+          "country",
+          "provider",
+          "attemptId",
+          "providerRef",
+          "operator",
+          "reference",
+          "nextAction",
+          "failureCode",
+          "needsReconciliation",
+          "metadata",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CreatePayoutRequest": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "integer",
+            "description": "Montant en unités entières de la devise.",
+            "minimum": 1,
+            "examples": [
+              5000
+            ]
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "country": {
+            "$ref": "#/components/schemas/Country"
+          },
+          "operator": {
+            "$ref": "#/components/schemas/Operator"
+          },
+          "recipient": {
+            "type": "object",
+            "properties": {
+              "phone": {
+                "type": "string",
+                "description": "Numéro du bénéficiaire au format international (E.164), 6 à 20 caractères.",
+                "minLength": 6,
+                "maxLength": 20,
+                "examples": [
+                  "+2290100000001"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "description": "Nom du bénéficiaire.",
+                "maxLength": 120,
+                "examples": [
+                  "Awa Kpossou"
+                ]
+              },
+              "email": {
+                "type": "string",
+                "description": "Adresse e-mail du bénéficiaire.",
+                "format": "email",
+                "examples": [
+                  "awa@exemple.bj"
+                ]
+              }
+            },
+            "required": [
+              "phone"
+            ]
+          },
+          "reference": {
+            "type": "string",
+            "description": "Votre référence, 1 à 64 caractères. Sert aussi de clé d'idempotence par défaut.",
+            "minLength": 1,
+            "maxLength": 64,
+            "examples": [
+              "salaire-oct-12"
+            ]
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 500
+            }
+          }
+        },
+        "required": [
+          "amount",
+          "currency",
+          "country",
+          "operator",
+          "recipient",
+          "reference"
+        ],
+        "additionalProperties": false
+      },
+      "Payout": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "po_f6be299eb1f44d63a8d4a588965ce39e"
+            ]
+          },
+          "mode": {
+            "type": "string",
+            "description": "Mode du serveur au moment de la création.",
+            "enum": [
+              "test",
+              "live"
+            ]
+          },
+          "country": {
+            "type": "string",
+            "description": "Pays (ISO 3166-1 alpha-2).",
+            "enum": [
+              "BJ",
+              "TG",
+              "CI",
+              "SN",
+              "BF",
+              "ML",
+              "NE",
+              "GN",
+              "CM",
+              "CG",
+              "CD",
+              "GA"
+            ]
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "provider": {
+            "type": "string",
+            "description": "Agrégateur choisi par Pont (`fedapay`, `pawapay`, `paydunya`, `kkiapay`, `sandbox` ou un agrégateur personnalisé).",
+            "examples": [
+              "fedapay"
+            ]
+          },
+          "attemptId": {
+            "type": "string",
+            "description": "Identifiant unique de la tentative, transmis à l'agrégateur quand il l'accepte."
+          },
+          "providerRef": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Référence de l'opération chez l'agrégateur."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "failureCode": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Code d'échec normalisé, `null` tant qu'il n'y a pas d'échec."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "needsReconciliation": {
+            "type": "boolean",
+            "description": "`true` quand l'état réel chez l'agrégateur est inconnu : Pont vérifie à chaque cycle, ne réessaie jamais ailleurs."
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 500
+            },
+            "description": "Vos métadonnées libres (valeurs de 500 caractères au plus)."
+          },
+          "createdAt": {
+            "type": "integer",
+            "description": "Date de création, en millisecondes Unix."
+          },
+          "updatedAt": {
+            "type": "integer",
+            "description": "Dernière mise à jour, en millisecondes Unix."
+          },
+          "status": {
+            "$ref": "#/components/schemas/TransferStatus"
+          },
+          "amount": {
+            "type": "integer"
+          },
+          "operator": {
+            "$ref": "#/components/schemas/Operator"
+          },
+          "recipientPhone": {
+            "type": "string",
+            "description": "Numéro du bénéficiaire."
+          },
+          "reference": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "mode",
+          "status",
+          "amount",
+          "currency",
+          "country",
+          "operator",
+          "provider",
+          "attemptId",
+          "providerRef",
+          "recipientPhone",
+          "reference",
+          "failureCode",
+          "needsReconciliation",
+          "metadata",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CreateRefundRequest": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "integer",
+            "description": "Montant à rembourser. Sans montant : remboursement du restant.",
+            "minimum": 1,
+            "examples": [
+              2000
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "Refund": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "re_3c1f0a9e2b7d4e56a8f1c0d2e4b69a77"
+            ]
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "test",
+              "live"
+            ]
+          },
+          "paymentId": {
+            "type": "string",
+            "description": "Paiement remboursé."
+          },
+          "status": {
+            "$ref": "#/components/schemas/TransferStatus"
+          },
+          "amount": {
+            "type": "integer"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "provider": {
+            "type": "string"
+          },
+          "attemptId": {
+            "type": "string"
+          },
+          "providerRef": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "failureCode": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "needsReconciliation": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "integer"
+          },
+          "updatedAt": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "mode",
+          "paymentId",
+          "status",
+          "amount",
+          "currency",
+          "provider",
+          "attemptId",
+          "providerRef",
+          "failureCode",
+          "needsReconciliation",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "Wallet": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "Identifiant de l'utilisateur dans votre application.",
+            "pattern": "^[A-Za-z0-9_-]{1,64}$",
+            "examples": [
+              "awa"
+            ]
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "available": {
+            "type": "integer",
+            "description": "Solde disponible."
+          },
+          "held": {
+            "type": "integer",
+            "description": "Montant bloqué (retraits en cours)."
+          },
+          "tier": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Palier KYC (`basique`, `complet` par défaut)."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "frozen": {
+            "type": "boolean",
+            "description": "Un compte gelé ne peut plus rien sortir."
+          }
+        },
+        "required": [
+          "userId",
+          "currency",
+          "available",
+          "held",
+          "tier",
+          "frozen"
+        ]
+      },
+      "WalletProfileRequest": {
+        "type": "object",
+        "properties": {
+          "tier": {
+            "type": "string",
+            "description": "Palier KYC, 1 à 32 caractères.",
+            "minLength": 1,
+            "maxLength": 32,
+            "examples": [
+              "complet"
+            ]
+          },
+          "frozen": {
+            "type": "boolean",
+            "description": "Gèle ou dégèle le compte."
+          }
+        },
+        "additionalProperties": false
+      },
+      "Movement": {
+        "type": "object",
+        "properties": {
+          "entryId": {
+            "type": "string",
+            "description": "Écriture du registre."
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "direction": {
+            "type": "string",
+            "description": "`credit` augmente le solde disponible, `debit` le diminue.",
+            "enum": [
+              "debit",
+              "credit"
+            ]
+          },
+          "amount": {
+            "type": "integer"
+          },
+          "createdAt": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "entryId",
+          "accountId",
+          "direction",
+          "amount",
+          "createdAt"
+        ]
+      },
+      "DepositRequest": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "integer",
+            "description": "Montant à encaisser.",
+            "minimum": 1,
+            "examples": [
+              5000
+            ]
+          },
+          "country": {
+            "$ref": "#/components/schemas/Country"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Numéro du payeur (E.164).",
+            "minLength": 6,
+            "maxLength": 20,
+            "examples": [
+              "+2290100000001"
+            ]
+          },
+          "operator": {
+            "$ref": "#/components/schemas/Operator"
+          },
+          "reference": {
+            "type": "string",
+            "description": "Votre référence, 1 à 64 caractères.",
+            "minLength": 1,
+            "maxLength": 64,
+            "examples": [
+              "depot-1"
+            ]
+          }
+        },
+        "required": [
+          "amount",
+          "country",
+          "phone",
+          "reference"
+        ],
+        "additionalProperties": false
+      },
+      "WithdrawalRequest": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "integer",
+            "description": "Montant reçu par le bénéficiaire (les frais s'ajoutent au débit).",
+            "minimum": 1,
+            "examples": [
+              5000
+            ]
+          },
+          "country": {
+            "$ref": "#/components/schemas/Country"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Numéro du bénéficiaire (E.164).",
+            "minLength": 6,
+            "maxLength": 20,
+            "examples": [
+              "+2290100000001"
+            ]
+          },
+          "operator": {
+            "$ref": "#/components/schemas/Operator"
+          },
+          "reference": {
+            "type": "string",
+            "description": "Votre référence, 1 à 64 caractères.",
+            "minLength": 1,
+            "maxLength": 64,
+            "examples": [
+              "retrait-1"
+            ]
+          }
+        },
+        "required": [
+          "amount",
+          "country",
+          "phone",
+          "operator",
+          "reference"
+        ],
+        "additionalProperties": false
+      },
+      "WithdrawalResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Exécution du workflow `wallet.withdraw`.",
+            "examples": [
+              "wfr_93b8690f49654ceb9f594af721302033"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "succeeded"
+            ]
+          },
+          "payoutId": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Retrait envoyé à l'agrégateur."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "amount": {
+            "type": "integer"
+          },
+          "fee": {
+            "type": "integer",
+            "description": "Frais prélevés (`PONT_WITHDRAWAL_FEE_BPS`)."
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "payoutId",
+          "amount",
+          "fee"
+        ]
+      },
+      "TransferRequest": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "description": "Utilisateur débité.",
+            "pattern": "^[A-Za-z0-9_-]{1,64}$",
+            "examples": [
+              "awa"
+            ]
+          },
+          "to": {
+            "type": "string",
+            "description": "Utilisateur crédité.",
+            "pattern": "^[A-Za-z0-9_-]{1,64}$",
+            "examples": [
+              "koffi"
+            ]
+          },
+          "amount": {
+            "type": "integer",
+            "description": "Montant transféré.",
+            "minimum": 1,
+            "examples": [
+              5000
+            ]
+          },
+          "fee": {
+            "type": "integer",
+            "description": "Frais à la charge de l'expéditeur.",
+            "minimum": 0
+          },
+          "reference": {
+            "type": "string",
+            "description": "Votre référence, 1 à 64 caractères. Sert aussi de clé d'idempotence.",
+            "minLength": 1,
+            "maxLength": 64,
+            "examples": [
+              "transfert-1"
+            ]
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "amount",
+          "reference"
+        ],
+        "additionalProperties": false
+      },
+      "TransferResult": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "$ref": "#/components/schemas/Wallet"
+          },
+          "to": {
+            "$ref": "#/components/schemas/Wallet"
+          }
+        },
+        "required": [
+          "from",
+          "to"
+        ]
+      },
+      "LedgerLine": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "string",
+            "description": "Code du compte, par exemple `wallet:awa:XOF:available`."
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "debit",
+              "credit"
+            ]
+          },
+          "amount": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "account",
+          "direction",
+          "amount"
+        ]
+      },
+      "LedgerEntry": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "integer"
+          },
+          "reverses": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Écriture annulée par celle-ci."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LedgerLine"
+            },
+            "description": "Lignes équilibrées : total des débits = total des crédits."
+          }
+        },
+        "required": [
+          "id",
+          "description",
+          "createdAt",
+          "reverses",
+          "lines"
+        ]
+      },
+      "Ledger": {
+        "type": "object",
+        "properties": {
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "system": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "`system:transit:<agrégateur>:<devise>` ou `system:fees:<devise>`."
+                },
+                "balance": {
+                  "type": "integer"
+                },
+                "currency": {
+                  "$ref": "#/components/schemas/Currency"
+                }
+              },
+              "required": [
+                "code",
+                "balance",
+                "currency"
+              ]
+            },
+            "description": "Comptes système."
+          },
+          "entries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LedgerEntry"
+            },
+            "description": "Dernières écritures, la plus récente d'abord."
+          }
+        },
+        "required": [
+          "currency",
+          "system",
+          "entries"
+        ]
+      },
+      "Overview": {
+        "type": "object",
+        "properties": {
+          "sandbox": {
+            "type": "boolean",
+            "description": "Le sandbox est actif : aucun agrégateur n'est contacté."
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "test",
+              "live"
+            ]
+          },
+          "features": {
+            "type": "object",
+            "properties": {
+              "wallet": {
+                "type": "boolean",
+                "description": "Portefeuilles et registre disponibles (stockage PostgreSQL)."
+              }
+            },
+            "required": [
+              "wallet"
+            ]
+          },
+          "payments": {
+            "type": "object",
+            "properties": {
+              "recent": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Payment"
+                }
+              },
+              "count": {
+                "type": "integer",
+                "description": "Paiements parmi les 200 derniers."
+              },
+              "succeeded": {
+                "type": "integer"
+              },
+              "volume": {
+                "type": "integer",
+                "description": "Montant des paiements réussis parmi les 200 derniers."
+              }
+            },
+            "required": [
+              "recent",
+              "count",
+              "succeeded",
+              "volume"
+            ]
+          },
+          "payouts": {
+            "type": "object",
+            "properties": {
+              "recent": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Payout"
+                }
+              },
+              "count": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "recent",
+              "count"
+            ]
+          }
+        },
+        "required": [
+          "sandbox",
+          "mode",
+          "features",
+          "payments",
+          "payouts"
+        ]
+      },
+      "TimelineStep": {
+        "type": "object",
+        "properties": {
+          "at": {
+            "type": "integer"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "created",
+              "status",
+              "refund",
+              "webhook"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "tone": {
+            "type": "string",
+            "enum": [
+              "neutral",
+              "success",
+              "danger",
+              "info"
+            ]
+          }
+        },
+        "required": [
+          "at",
+          "kind",
+          "title",
+          "detail",
+          "tone"
+        ]
+      },
+      "PaymentDetail": {
+        "type": "object",
+        "properties": {
+          "payment": {
+            "$ref": "#/components/schemas/Payment"
+          },
+          "refunds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Refund"
+            }
+          },
+          "timeline": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TimelineStep"
+            },
+            "description": "Chronologie construite uniquement à partir de ce que Pont a enregistré."
+          }
+        },
+        "required": [
+          "payment",
+          "refunds",
+          "timeline"
+        ]
+      },
+      "CoverageCountry": {
+        "type": "object",
+        "properties": {
+          "country": {
+            "$ref": "#/components/schemas/Country"
+          },
+          "operators": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Operator"
+            }
+          },
+          "deposit": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Agrégateurs qui encaissent dans ce pays."
+          },
+          "payout": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "refund": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "country",
+          "operators",
+          "deposit",
+          "payout",
+          "refund"
+        ]
+      },
+      "ProviderHealth": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string"
+          },
+          "capabilities": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "deposit",
+                "payout",
+                "refund"
+              ]
+            }
+          },
+          "countries": {
+            "type": "integer"
+          },
+          "lastHour": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "settled": {
+                    "type": "integer"
+                  },
+                  "succeeded": {
+                    "type": "integer"
+                  },
+                  "rate": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                },
+                "required": [
+                  "settled",
+                  "succeeded",
+                  "rate"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "needsReconciliation": {
+            "type": "integer",
+            "description": "Paiements à réconcilier."
+          }
+        },
+        "required": [
+          "provider",
+          "capabilities",
+          "countries",
+          "lastHour",
+          "needsReconciliation"
+        ]
+      },
+      "ProviderField": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nom du champ à envoyer à `PUT /admin/providers/{id}`."
+          },
+          "label": {
+            "type": "string"
+          },
+          "secret": {
+            "type": "boolean",
+            "description": "Un secret n'est jamais renvoyé en entier."
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "set": {
+            "type": "boolean"
+          },
+          "value": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Secret masqué (`••••1234`) ou valeur en clair pour un champ non secret."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "label",
+          "secret",
+          "required",
+          "set",
+          "value"
+        ]
+      },
+      "ProviderView": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "fedapay"
+            ]
+          },
+          "custom": {
+            "type": "boolean",
+            "description": "`true` pour un agrégateur personnalisé chargé depuis `PONT_PLUGINS_DIR`."
+          },
+          "label": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string",
+            "description": "`vault` : saisi dans le dashboard ; `env` : variables d'environnement ; `none` : non configuré.",
+            "enum": [
+              "vault",
+              "env",
+              "none"
+            ]
+          },
+          "configured": {
+            "type": "boolean"
+          },
+          "webhookUrl": {
+            "type": "string",
+            "description": "URL à déclarer chez l'agrégateur.",
+            "format": "uri"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProviderField"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "source",
+          "configured",
+          "webhookUrl",
+          "fields"
+        ]
+      },
+      "ProvidersList": {
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "boolean",
+            "description": "Le coffre est actif (`PONT_ENCRYPTION_KEY` défini)."
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProviderView"
+            }
+          },
+          "pluginErrors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "dir": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "dir",
+                "message"
+              ]
+            },
+            "description": "Plugins qui n'ont pas pu être chargés."
+          }
+        },
+        "required": [
+          "vault",
+          "data",
+          "pluginErrors"
+        ]
+      },
+      "Delivery": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "whd_5bbd65568c4a446fb538f9a11d10e3a4"
+            ]
+          },
+          "endpointId": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "delivered",
+              "failed"
+            ]
+          },
+          "attempts": {
+            "type": "integer",
+            "description": "Nombre de tentatives."
+          },
+          "lastError": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "lastHttpStatus": {
+            "oneOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "eventType": {
+            "oneOf": [
+              {
+                "type": "string",
+                "examples": [
+                  "payment.succeeded"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "integer"
+          },
+          "nextAttemptAt": {
+            "oneOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "endpointId",
+          "url",
+          "status",
+          "attempts",
+          "lastError",
+          "lastHttpStatus",
+          "eventType",
+          "createdAt",
+          "nextAttemptAt"
+        ]
+      },
+      "WebhooksView": {
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "boolean"
+          },
+          "inbound": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "provider": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              },
+              "required": [
+                "provider",
+                "url"
+              ]
+            },
+            "description": "URL à déclarer chez les agrégateurs."
+          },
+          "endpoints": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "source": {
+                  "type": "string",
+                  "enum": [
+                    "env",
+                    "vault"
+                  ]
+                },
+                "createdAt": {
+                  "oneOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "url",
+                "source",
+                "createdAt"
+              ]
+            },
+            "description": "Destinataires de vos événements."
+          },
+          "deliveries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Delivery"
+            },
+            "description": "50 dernières livraisons."
+          }
+        },
+        "required": [
+          "vault",
+          "inbound",
+          "endpoints",
+          "deliveries"
+        ]
+      },
+      "EndpointCreated": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "ep_758013f8ac09"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "secret": {
+            "type": "string",
+            "description": "Secret de signature `whsec_…`, affiché une seule fois."
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "secret"
+        ]
+      },
+      "PontEvent": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identifiant unique de l'événement (aussi dans l'en-tête `Pont-Event-Id`) : dédoublonnez dessus.",
+            "examples": [
+              "evt_5d0c6f4e8a2b4b1f9a3c7e1d0b2a6f48"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "description": "Type d'événement.",
+            "enum": [
+              "payment.pending",
+              "payment.processing",
+              "payment.succeeded",
+              "payment.failed",
+              "payment.expired",
+              "payment.cancelled",
+              "payment.refunded",
+              "payment.partially_refunded",
+              "payment.needs_reconciliation",
+              "payout.pending",
+              "payout.processing",
+              "payout.succeeded",
+              "payout.failed",
+              "payout.cancelled",
+              "payout.needs_reconciliation",
+              "refund.pending",
+              "refund.processing",
+              "refund.succeeded",
+              "refund.failed",
+              "refund.cancelled",
+              "refund.needs_reconciliation"
+            ]
+          },
+          "object": {
+            "type": "string",
+            "description": "Nature de l'objet dans `data`.",
+            "enum": [
+              "payment",
+              "payout",
+              "refund"
+            ]
+          },
+          "created_at": {
+            "type": "integer",
+            "description": "Date de l'événement, en millisecondes Unix."
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "amount": {
+                "type": "integer"
+              },
+              "currency": {
+                "$ref": "#/components/schemas/Currency"
+              },
+              "country": {
+                "$ref": "#/components/schemas/Country"
+              },
+              "provider": {
+                "type": "string"
+              },
+              "operator": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reference": {
+                "type": "string"
+              },
+              "failure_code": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "needs_reconciliation": {
+                "type": "boolean"
+              },
+              "metadata": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "id",
+              "status"
+            ],
+            "description": "L'objet concerné, sans identifiant interne de tentative ni action client. Un remboursement porte `payment_id` à la place de `reference` et `country`."
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "object",
+          "created_at",
+          "data"
+        ]
+      },
+      "EmailConfigRequest": {
+        "type": "object",
+        "properties": {
+          "host": {
+            "type": "string",
+            "description": "Serveur SMTP.",
+            "minLength": 1,
+            "maxLength": 255,
+            "examples": [
+              "smtp.exemple.bj"
+            ]
+          },
+          "port": {
+            "type": "integer",
+            "description": "Port SMTP.",
+            "minimum": 1,
+            "maximum": 65535,
+            "examples": [
+              587
+            ]
+          },
+          "security": {
+            "type": "string",
+            "description": "`none` : sans chiffrement (réseau local) ; `starttls` : port 587 ; `tls` : port 465.",
+            "enum": [
+              "none",
+              "starttls",
+              "tls"
+            ]
+          },
+          "user": {
+            "type": "string",
+            "description": "Identifiant SMTP.",
+            "maxLength": 255
+          },
+          "password": {
+            "type": "string",
+            "description": "Mot de passe SMTP. Omis ou vide : l'ancien est conservé.",
+            "maxLength": 1000
+          },
+          "from": {
+            "type": "string",
+            "description": "Adresse d'expédition : `contact@exemple.bj` ou `Pont <contact@exemple.bj>`.",
+            "minLength": 3,
+            "maxLength": 255,
+            "examples": [
+              "Pont <contact@exemple.bj>"
+            ]
+          }
+        },
+        "required": [
+          "host",
+          "port",
+          "security",
+          "from"
+        ]
+      },
+      "EmailView": {
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "boolean"
+          },
+          "configured": {
+            "type": "boolean"
+          },
+          "host": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "port": {
+            "oneOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "security": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "starttls",
+                  "tls"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "user": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "from": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "passwordSet": {
+            "type": "boolean",
+            "description": "Le mot de passe n'est jamais renvoyé : seulement s'il existe."
+          }
+        },
+        "required": [
+          "configured",
+          "host",
+          "port",
+          "security",
+          "user",
+          "from",
+          "passwordSet"
+        ]
+      },
+      "AlertRule": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "payment_failed",
+              "webhook_failed",
+              "payout_stuck",
+              "low_balance",
+              "admin_login"
+            ]
+          },
+          "label": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "description",
+          "enabled"
+        ]
+      },
+      "AlertsConfigRequest": {
+        "type": "object",
+        "properties": {
+          "rules": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "boolean"
+            },
+            "description": "Règle activée ou non, par identifiant (`payment_failed`, `webhook_failed`, `payout_stuck`, `low_balance`, `admin_login`)."
+          },
+          "recipients": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "email"
+            },
+            "description": "Destinataires, 20 au plus."
+          },
+          "lowBalanceThreshold": {
+            "type": "integer",
+            "description": "Seuil du compte de transit pour la règle `low_balance`."
+          }
+        }
+      },
+      "AlertsView": {
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "boolean"
+          },
+          "emailConfigured": {
+            "type": "boolean"
+          },
+          "rules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AlertRule"
+            }
+          },
+          "recipients": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "email"
+            }
+          },
+          "lowBalanceThreshold": {
+            "type": "integer"
+          },
+          "history": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "rule": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "detail": {
+                  "type": "string"
+                },
+                "at": {
+                  "type": "integer"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "sent",
+                    "failed"
+                  ]
+                },
+                "error": {
+                  "type": "string",
+                  "description": "Présent si l'envoi a échoué."
+                }
+              },
+              "required": [
+                "id",
+                "rule",
+                "title",
+                "detail",
+                "at",
+                "status"
+              ]
+            },
+            "description": "50 dernières alertes."
+          }
+        },
+        "required": [
+          "vault",
+          "emailConfigured",
+          "rules",
+          "recipients",
+          "lowBalanceThreshold",
+          "history"
+        ]
+      }
+    }
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "Santé"
+        ],
+        "summary": "Vérifier que le serveur répond",
+        "description": "Sans authentification. Utile pour les sondes Docker ou de supervision.",
+        "operationId": "getHealth",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Le serveur répond.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ok"
+                      ]
+                    }
+                  }
+                },
+                "example": {
+                  "status": "ok"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hooks/{provider}": {
+      "post": {
+        "tags": [
+          "Webhooks entrants"
+        ],
+        "summary": "Recevoir le webhook d'un agrégateur",
+        "description": "À déclarer chez l'agrégateur (`<PONT_PUBLIC_URL>/hooks/<agrégateur>`). Pont vérifie la signature, puis **interroge l'agrégateur** avant de passer un paiement à `succeeded` : le corps du webhook seul ne suffit jamais.",
+        "operationId": "receiveProviderWebhook",
+        "security": [],
+        "parameters": [
+          {
+            "name": "provider",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant de l'agrégateur : `fedapay`, `pawapay`, `paydunya`, `kkiapay` ou un agrégateur personnalisé.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Corps brut envoyé par l'agrégateur, dans son format.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook accepté.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "received": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "received": true,
+                  "status": "succeeded"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Signature invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Agrégateur inconnu ou non configuré.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erreur interne.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/payments": {
+      "post": {
+        "tags": [
+          "Paiements"
+        ],
+        "summary": "Créer un paiement",
+        "description": "Encaisse un client. La `reference` sert d'idempotence : la même référence avec le même contenu renvoie le même paiement, sans double débit ; avec un contenu différent, `409`. Montants **entiers** (XOF/XAF n'ont pas de décimales).",
+        "operationId": "createPayment",
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "description": "Clé d'idempotence (8 à 255 caractères). Sans elle, Pont utilise `auto:<type>:<reference>`.",
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 255
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePaymentRequest"
+              },
+              "example": {
+                "amount": 5000,
+                "currency": "XOF",
+                "country": "BJ",
+                "customer": {
+                  "phone": "+2290100000001"
+                },
+                "reference": "commande-42"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Paiement créé.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Payment"
+                },
+                "example": {
+                  "id": "pay_84a49a19050240ebb01077bdb806c672",
+                  "mode": "test",
+                  "status": "pending",
+                  "amount": 5000,
+                  "currency": "XOF",
+                  "country": "BJ",
+                  "provider": "sandbox",
+                  "attemptId": "466a0f26-3cde-4876-938e-1e97db9e4c17",
+                  "providerRef": "sbx_466a0f26-3cde-4876-938e-1e97db9e4c17",
+                  "operator": null,
+                  "reference": "commande-42",
+                  "nextAction": {
+                    "type": "await_customer",
+                    "message": "Validez le paiement sur votre téléphone (simulation)."
+                  },
+                  "failureCode": null,
+                  "needsReconciliation": false,
+                  "metadata": {},
+                  "createdAt": 1792000000000,
+                  "updatedAt": 1792000000000
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requête invalide ou `reference` absente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Clé absente ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Même référence avec un contenu différent (`idempotency_conflict`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Montant refusé, numéro invalide ou aucun agrégateur disponible.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "L'agrégateur a refusé la demande.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/payments/{id}": {
+      "get": {
+        "tags": [
+          "Paiements"
+        ],
+        "summary": "Lire un paiement",
+        "description": "Renvoie l'état connu par Pont, sans appeler l'agrégateur. Utilisez `refresh` pour le vérifier.",
+        "operationId": "getPayment",
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant Pont du paiement (`pay_…`).",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Le paiement.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Payment"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Clé absente ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Paiement introuvable (`payment_not_found`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/payments/{id}/refresh": {
+      "post": {
+        "tags": [
+          "Paiements"
+        ],
+        "summary": "Vérifier un paiement chez l'agrégateur",
+        "description": "Interroge l'agrégateur et met à jour le statut. Un paiement ne passe à `succeeded` qu'après cette vérification.",
+        "operationId": "refreshPayment",
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant Pont du paiement.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Le paiement à jour.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Payment"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Clé absente ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Paiement introuvable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "L'agrégateur est injoignable ou a refusé.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/payments/{id}/refunds": {
+      "post": {
+        "tags": [
+          "Paiements"
+        ],
+        "summary": "Rembourser un paiement",
+        "description": "Sans `amount`, rembourse le montant restant. Seul un paiement `succeeded` se rembourse. Le sandbox ne gère pas les remboursements : `422 no_provider_available`.",
+        "operationId": "createRefund",
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant Pont du paiement.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "description": "Clé d'idempotence (8 à 255 caractères). Sans elle, Pont utilise `auto:<type>:<reference>`.",
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 255
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRefundRequest"
+              },
+              "example": {
+                "amount": 2000
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Remboursement créé.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Refund"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Paiement non remboursable ou montant supérieur au restant.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Clé absente ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Paiement introuvable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Aucun agrégateur disponible pour rembourser.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/payouts": {
+      "post": {
+        "tags": [
+          "Retraits"
+        ],
+        "summary": "Envoyer de l'argent",
+        "description": "Envoie de l'argent vers un numéro Mobile Money. La `reference` sert d'idempotence.",
+        "operationId": "createPayout",
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "description": "Clé d'idempotence (8 à 255 caractères). Sans elle, Pont utilise `auto:<type>:<reference>`.",
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 255
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePayoutRequest"
+              },
+              "example": {
+                "amount": 10000,
+                "currency": "XOF",
+                "country": "BJ",
+                "operator": "mtn_bj",
+                "recipient": {
+                  "phone": "+2290100000001"
+                },
+                "reference": "salaire-oct-12"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Retrait créé.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Payout"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requête invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Clé absente ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Même référence avec un contenu différent.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Montant refusé, numéro invalide ou aucun agrégateur.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "L'agrégateur a refusé.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/payouts/{id}": {
+      "get": {
+        "tags": [
+          "Retraits"
+        ],
+        "summary": "Lire un retrait",
+        "description": "État connu par Pont.",
+        "operationId": "getPayout",
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant Pont du retrait (`po_…`).",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Le retrait.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Payout"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Clé absente ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Retrait introuvable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/payouts/{id}/refresh": {
+      "post": {
+        "tags": [
+          "Retraits"
+        ],
+        "summary": "Vérifier un retrait chez l'agrégateur",
+        "description": "Interroge l'agrégateur et met à jour le statut.",
+        "operationId": "refreshPayout",
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant Pont du retrait.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Le retrait à jour.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Payout"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Clé absente ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Retrait introuvable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "L'agrégateur est injoignable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/wallets/{user}": {
+      "put": {
+        "tags": [
+          "Portefeuilles"
+        ],
+        "summary": "Créer ou configurer un portefeuille",
+        "description": "Crée le portefeuille d'un utilisateur s'il n'existe pas. Palier par défaut : `basique`. Les paliers `basique` (solde 200 000, par opération 50 000, sorties 100 000/jour et 500 000/mois) et `complet` (2 000 000, 500 000, 1 000 000, 5 000 000) sont fournis. Un transfert exige un palier sur les deux portefeuilles.",
+        "operationId": "putWallet",
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant de l'utilisateur (`A-Z a-z 0-9 _ -`, 64 caractères au plus).",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WalletProfileRequest"
+              },
+              "example": {
+                "tier": "complet"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Le portefeuille.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Wallet"
+                },
+                "example": {
+                  "userId": "awa",
+                  "currency": "XOF",
+                  "available": 0,
+                  "held": 0,
+                  "tier": "complet",
+                  "frozen": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requête invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Clé absente ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Plafond atteint ou solde insuffisant.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/LimitError"
+                    },
+                    {
+                      "$ref": "#/components/schemas/InsufficientFundsError"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Le stockage choisi n'a pas de registre (mode Convex). Utilisez PostgreSQL.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Portefeuilles"
+        ],
+        "summary": "Lire un portefeuille",
+        "description": "Solde disponible, solde bloqué, palier et gel.",
+        "operationId": "getWallet",
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant de l'utilisateur (`A-Z a-z 0-9 _ -`, 64 caractères au plus).",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Le portefeuille.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Wallet"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requête invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Clé absente ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Portefeuille introuvable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Plafond atteint ou solde insuffisant.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/LimitError"
+                    },
+                    {
+                      "$ref": "#/components/schemas/InsufficientFundsError"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Le stockage choisi n'a pas de registre (mode Convex). Utilisez PostgreSQL.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/wallets/{user}/movements": {
+      "get": {
+        "tags": [
+          "Portefeuilles"
+        ],
+        "summary": "Lister les mouvements",
+        "description": "Écritures du registre qui touchent ce portefeuille.",
+        "operationId": "listWalletMovements",
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant de l'utilisateur (`A-Z a-z 0-9 _ -`, 64 caractères au plus).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Nombre d'éléments (1 à 200, 50 par défaut).",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mouvements.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Movement"
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requête invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Clé absente ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Plafond atteint ou solde insuffisant.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/LimitError"
+                    },
+                    {
+                      "$ref": "#/components/schemas/InsufficientFundsError"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Le stockage choisi n'a pas de registre (mode Convex). Utilisez PostgreSQL.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/wallets/{user}/deposits": {
+      "post": {
+        "tags": [
+          "Portefeuilles"
+        ],
+        "summary": "Alimenter un portefeuille",
+        "description": "Encaisse un paiement Mobile Money. Le portefeuille est crédité quand le paiement est confirmé : appelez `POST /v1/payments/{id}/refresh` ou attendez le cycle de 30 secondes.",
+        "operationId": "depositToWallet",
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant de l'utilisateur (`A-Z a-z 0-9 _ -`, 64 caractères au plus).",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DepositRequest"
+              },
+              "example": {
+                "amount": 20000,
+                "country": "BJ",
+                "phone": "+2290100000001",
+                "reference": "depot-1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Paiement de dépôt créé.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Payment"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requête invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Clé absente ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Plafond atteint ou solde insuffisant.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/LimitError"
+                    },
+                    {
+                      "$ref": "#/components/schemas/InsufficientFundsError"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Le stockage choisi n'a pas de registre (mode Convex). Utilisez PostgreSQL.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/wallets/{user}/withdrawals": {
+      "post": {
+        "tags": [
+          "Portefeuilles"
+        ],
+        "summary": "Retirer vers Mobile Money",
+        "description": "Workflow `wallet.withdraw` : vérifier les plafonds, bloquer les fonds, envoyer le retrait, puis débiter. En cas d'échec, les fonds bloqués sont libérés (compensation).",
+        "operationId": "withdrawFromWallet",
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant de l'utilisateur (`A-Z a-z 0-9 _ -`, 64 caractères au plus).",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WithdrawalRequest"
+              },
+              "example": {
+                "amount": 5000,
+                "country": "BJ",
+                "phone": "+2290100000001",
+                "operator": "mtn_bj",
+                "reference": "retrait-1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Retrait exécuté.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WithdrawalResult"
+                },
+                "example": {
+                  "id": "wfr_93b8690f49654ceb9f594af721302033",
+                  "status": "succeeded",
+                  "payoutId": "po_f6be299eb1f44d63a8d4a588965ce39e",
+                  "amount": 5000,
+                  "fee": 0
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requête invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Clé absente ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Plafond atteint ou solde insuffisant.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/LimitError"
+                    },
+                    {
+                      "$ref": "#/components/schemas/InsufficientFundsError"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Retrait échoué après compensation (`withdrawal_failed`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Le stockage choisi n'a pas de registre (mode Convex). Utilisez PostgreSQL.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/wallets/transfers": {
+      "post": {
+        "tags": [
+          "Portefeuilles"
+        ],
+        "summary": "Transférer entre deux portefeuilles",
+        "description": "Mouvement interne au registre, sans agrégateur. Les deux portefeuilles doivent avoir un palier. La `reference` sert d'idempotence.",
+        "operationId": "transferBetweenWallets",
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransferRequest"
+              },
+              "example": {
+                "from": "awa",
+                "to": "koffi",
+                "amount": 3000,
+                "reference": "transfert-1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Transfert effectué.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requête invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Clé absente ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Plafond atteint ou solde insuffisant.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/LimitError"
+                    },
+                    {
+                      "$ref": "#/components/schemas/InsufficientFundsError"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Le stockage choisi n'a pas de registre (mode Convex). Utilisez PostgreSQL.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/overview": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Vue d'ensemble",
+        "description": "Chiffres du dashboard : paiements et retraits récents, volume réussi.",
+        "operationId": "adminOverview",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vue d'ensemble.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Overview"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Clé absente ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/payments": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Lister les paiements",
+        "description": "Paiements récents, le plus récent d'abord.",
+        "operationId": "adminListPayments",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Nombre d'éléments (1 à 200, 50 par défaut).",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paiements.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Payment"
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Clé absente ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/payments/{id}": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Détail d'un paiement",
+        "description": "Paiement, remboursements et chronologie.",
+        "operationId": "adminGetPayment",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant Pont du paiement.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Détail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Jeton absent ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Paiement introuvable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/payments/{id}/refund": {
+      "post": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Rembourser depuis le dashboard",
+        "description": "Même règles que `POST /v1/payments/{id}/refunds`.",
+        "operationId": "adminRefundPayment",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant Pont du paiement.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRefundRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Remboursement créé.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Refund"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Paiement non remboursable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Jeton absent ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Paiement introuvable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Aucun agrégateur disponible.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/payouts": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Lister les retraits",
+        "description": "Retraits récents.",
+        "operationId": "adminListPayouts",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Nombre d'éléments (1 à 200, 50 par défaut).",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retraits.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Payout"
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Clé absente ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/coverage": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Couverture par pays",
+        "description": "Quels agrégateurs encaissent, paient et remboursent dans quels pays.",
+        "operationId": "adminCoverage",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Couverture.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/CoverageCountry"
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Clé absente ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/providers-health": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Santé des agrégateurs",
+        "description": "Taux de réussite sur la dernière heure et paiements à réconcilier.",
+        "operationId": "adminProvidersHealth",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Santé.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ProviderHealth"
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Clé absente ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/test-payment": {
+      "post": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Lancer un paiement de test",
+        "description": "Sandbox uniquement. `scenario` : 7 chiffres du numéro magique (`0000001` succès par défaut, `0000002` solde insuffisant, `0000003` jamais confirmé, `0000004` webhook en double, `0000005` webhook tardif, `0000006` agrégateur en panne, `0000007` ambigu, `0000008` refusé).",
+        "operationId": "adminTestPayment",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "scenario": {
+                    "type": "string",
+                    "pattern": "^\\d{7}$",
+                    "examples": [
+                      "0000002"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Paiement de test.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Payment"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Jeton absent ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Le sandbox n'est pas actif.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/wallets": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Lister les portefeuilles",
+        "description": "Portefeuilles existants.",
+        "operationId": "adminListWallets",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Nombre d'éléments (1 à 200, 50 par défaut).",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Portefeuilles.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Wallet"
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Jeton absent ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Pas de registre (mode Convex).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/wallets/{user}": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Lire un portefeuille",
+        "description": "Détail d'un portefeuille.",
+        "operationId": "adminGetWallet",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant de l'utilisateur (`A-Z a-z 0-9 _ -`, 64 caractères au plus).",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Portefeuille.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Wallet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Jeton absent ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Portefeuille introuvable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Pas de registre.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/wallets/{user}/freeze": {
+      "post": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Geler ou dégeler un portefeuille",
+        "description": "Un portefeuille gelé ne peut plus rien sortir (`limit_exceeded` avec `limit: frozen`).",
+        "operationId": "adminFreezeWallet",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant de l'utilisateur (`A-Z a-z 0-9 _ -`, 64 caractères au plus).",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "frozen": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "frozen"
+                ]
+              },
+              "example": {
+                "frozen": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Portefeuille mis à jour.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Wallet"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requête invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Jeton absent ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Pas de registre.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/ledger": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Lire le registre",
+        "description": "Écritures en partie double et comptes système.",
+        "operationId": "adminLedger",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Nombre d'éléments (1 à 200, 50 par défaut).",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Registre.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ledger"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Jeton absent ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Pas de registre.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/providers": {
+      "get": {
+        "tags": [
+          "Clés et agrégateurs"
+        ],
+        "summary": "Lister les agrégateurs",
+        "description": "État de configuration, champs (secrets masqués) et URL de webhook. Les agrégateurs personnalisés chargés depuis `PONT_PLUGINS_DIR` portent `custom: true`.",
+        "operationId": "adminListProviders",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agrégateurs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProvidersList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Clé absente ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/providers/{id}": {
+      "put": {
+        "tags": [
+          "Clés et agrégateurs"
+        ],
+        "summary": "Enregistrer les clés d'un agrégateur",
+        "description": "Chiffre les clés dans le coffre (AES-256-GCM, `PONT_ENCRYPTION_KEY`). Pont valide la combinaison d'agrégateurs avant d'écrire.",
+        "operationId": "adminPutProvider",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant de l'agrégateur.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Champs de l'agrégateur, voir `fields` dans `GET /admin/providers`.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "secretKey": "sk_sandbox_…"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Agrégateur mis à jour.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Champ manquant ou inconnu.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Jeton absent ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Coffre désactivé : définissez `PONT_ENCRYPTION_KEY` (`vault_disabled`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Combinaison d'agrégateurs refusée (`invalid_configuration`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Clés et agrégateurs"
+        ],
+        "summary": "Supprimer les clés d'un agrégateur",
+        "description": "Retire les clés du coffre. Les clés des variables d'environnement ne sont pas touchées.",
+        "operationId": "adminDeleteProvider",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant de l'agrégateur.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Clés supprimées.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderView"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Jeton absent ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Coffre désactivé.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/webhooks": {
+      "get": {
+        "tags": [
+          "Webhooks sortants"
+        ],
+        "summary": "Lire les webhooks",
+        "description": "URL à déclarer chez les agrégateurs, destinataires de vos événements et dernières livraisons.",
+        "operationId": "adminListWebhooks",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Webhooks.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhooksView"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Clé absente ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/webhooks/endpoints": {
+      "post": {
+        "tags": [
+          "Webhooks sortants"
+        ],
+        "summary": "Ajouter un destinataire",
+        "description": "Renvoie le secret de signature **une seule fois**. Vérifiez `Pont-Signature` : `t=<unix>,v1=<hmac_sha256(secret, t + \".\" + corps)>`, tolérance 300 s.",
+        "operationId": "adminCreateEndpoint",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri"
+                  }
+                },
+                "required": [
+                  "url"
+                ]
+              },
+              "example": {
+                "url": "https://exemple.bj/webhooks/pont"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Destinataire créé.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EndpointCreated"
+                },
+                "example": {
+                  "id": "ep_758013f8ac09",
+                  "url": "https://exemple.bj/webhooks/pont",
+                  "secret": "whsec_…"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "URL invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Jeton absent ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Coffre désactivé.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/webhooks/endpoints/{id}": {
+      "delete": {
+        "tags": [
+          "Webhooks sortants"
+        ],
+        "summary": "Supprimer un destinataire",
+        "description": "Arrête les envois vers cette URL.",
+        "operationId": "adminDeleteEndpoint",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant du destinataire (`ep_…`).",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Supprimé.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "deleted": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Jeton absent ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Destinataire introuvable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/webhooks/deliveries/{id}": {
+      "post": {
+        "tags": [
+          "Webhooks sortants"
+        ],
+        "summary": "Renvoyer une livraison",
+        "description": "Relance immédiate d'une livraison échouée. Le calendrier automatique : 0 s, 1 min, 5 min, 30 min, 2 h, 6 h, 12 h, 1 j, 2 j, 3 j.",
+        "operationId": "adminResendDelivery",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Identifiant de la livraison (`whd_…`).",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Livraison relancée.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Delivery"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Jeton absent ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Livraison introuvable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/email": {
+      "get": {
+        "tags": [
+          "E-mail et alertes"
+        ],
+        "summary": "Lire la configuration SMTP",
+        "description": "Le mot de passe n'est jamais renvoyé.",
+        "operationId": "adminGetEmail",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Configuration.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailView"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Clé absente ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "E-mail et alertes"
+        ],
+        "summary": "Enregistrer la configuration SMTP",
+        "description": "Le mot de passe est chiffré dans le coffre.",
+        "operationId": "adminPutEmail",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailConfigRequest"
+              },
+              "example": {
+                "host": "smtp.exemple.bj",
+                "port": 587,
+                "security": "starttls",
+                "user": "contact@exemple.bj",
+                "from": "Pont <contact@exemple.bj>"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Configuration enregistrée.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requête invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Jeton absent ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Coffre désactivé.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "E-mail et alertes"
+        ],
+        "summary": "Supprimer la configuration SMTP",
+        "description": "Désactive l'envoi d'e-mails.",
+        "operationId": "adminDeleteEmail",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Supprimée.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailView"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Clé absente ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/email/test": {
+      "post": {
+        "tags": [
+          "E-mail et alertes"
+        ],
+        "summary": "Envoyer un e-mail de test",
+        "description": "Vérifie la configuration SMTP.",
+        "operationId": "adminTestEmail",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "to": {
+                    "type": "string",
+                    "format": "email"
+                  }
+                },
+                "required": [
+                  "to"
+                ]
+              },
+              "example": {
+                "to": "moi@exemple.bj"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "E-mail envoyé.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "sent": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Adresse invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Jeton absent ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "SMTP non configuré (`smtp_not_configured`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Le serveur SMTP a refusé (`smtp_error`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/email/send": {
+      "post": {
+        "tags": [
+          "E-mail et alertes"
+        ],
+        "summary": "Envoyer un e-mail",
+        "description": "Envoi libre via le SMTP configuré.",
+        "operationId": "adminSendEmail",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "to": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "subject": {
+                    "type": "string"
+                  },
+                  "text": {
+                    "type": "string"
+                  },
+                  "html": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "to",
+                  "subject",
+                  "text"
+                ]
+              },
+              "example": {
+                "to": "moi@exemple.bj",
+                "subject": "Bonjour",
+                "text": "Message de test."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "E-mail envoyé.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "sent": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requête invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Jeton absent ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "SMTP non configuré.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Le serveur SMTP a refusé.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/alerts": {
+      "get": {
+        "tags": [
+          "E-mail et alertes"
+        ],
+        "summary": "Lire les alertes",
+        "description": "Règles, destinataires, seuil et historique des 50 dernières alertes.",
+        "operationId": "adminGetAlerts",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Alertes.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlertsView"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Clé absente ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "E-mail et alertes"
+        ],
+        "summary": "Configurer les alertes",
+        "description": "Active des règles et choisit les destinataires. Exige un SMTP configuré.",
+        "operationId": "adminPutAlerts",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AlertsConfigRequest"
+              },
+              "example": {
+                "rules": {
+                  "payment_failed": true,
+                  "admin_login": true
+                },
+                "recipients": [
+                  "moi@exemple.bj"
+                ],
+                "lowBalanceThreshold": 100000
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Alertes configurées.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlertsView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requête invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Jeton absent ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "SMTP non configuré (`alerts_not_ready`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/alerts/test": {
+      "post": {
+        "tags": [
+          "E-mail et alertes"
+        ],
+        "summary": "Envoyer une alerte de test",
+        "description": "Envoie une alerte aux destinataires configurés.",
+        "operationId": "adminTestAlerts",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Alerte envoyée.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "sent": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Jeton absent ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Alertes non prêtes (`alerts_not_ready`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Envoi refusé.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/alerts/events": {
+      "post": {
+        "tags": [
+          "E-mail et alertes"
+        ],
+        "summary": "Signaler un événement",
+        "description": "Utilisé par le dashboard pour la règle `admin_login`.",
+        "operationId": "adminAlertEvent",
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "rule": {
+                    "type": "string",
+                    "enum": [
+                      "admin_login"
+                    ]
+                  },
+                  "detail": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "rule"
+                ]
+              },
+              "example": {
+                "rule": "admin_login",
+                "detail": "Connexion de ancien@exemple.bj"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Événement traité.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requête invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Jeton absent ou invalide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "webhooks": {
+    "pontEvent": {
+      "post": {
+        "tags": [
+          "Webhooks sortants"
+        ],
+        "summary": "Événement Pont",
+        "description": "Envoyé à chacun de vos destinataires. En-têtes : `Pont-Signature` et `Pont-Event-Id`. Répondez `2xx` rapidement ; sinon Pont réessaie (0 s, 1 min, 5 min, 30 min, 2 h, 6 h, 12 h, 1 j, 2 j, 3 j).",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PontEvent"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Événement reçu."
+          }
+        }
+      }
+    }
+  }
+}
