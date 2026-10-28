@@ -1,0 +1,19 @@
+{
+  "name": "@pont/auth",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Rôles et permissions d'une fintech : le développeur définit ses rôles, Pont les applique.",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p .",
+    "test": "vitest run",
+    "build": "tsup src/index.ts --format esm --dts --clean --target node20"
+  },
+  "dependencies": {
+    "zod": "3.25.76"
+  },
+  "license": "UNLICENSED"
+}
