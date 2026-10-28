@@ -1,7 +1,7 @@
 import "server-only";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import type { Resource } from "@pont/auth";
+import type { Resource } from "@pont-bj/auth";
 import { getAuth, hasAdmin } from "./auth";
 import { loadRoles } from "./roles";
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { PontError } from "@pont/core";
-import { createApp } from "@pont/framework";
+import { PontError } from "@pont-bj/core";
+import { createApp } from "@pont-bj/framework";
 import {
   InsufficientFundsError,
   Ledger,

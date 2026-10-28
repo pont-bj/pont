@@ -1,4 +1,4 @@
-# @pont/auth
+# @pont-bj/auth
 
 Rôles et permissions d'une fintech : tu définis tes rôles, Pont les applique.
 
@@ -7,7 +7,7 @@ Rôles et permissions d'une fintech : tu définis tes rôles, Pont les applique.
 ## Installation
 
 ```bash
-pnpm add @pont/auth
+pnpm add @pont-bj/auth
 ```
 
 ## Utilisation
@@ -16,8 +16,8 @@ Ce paquet est surtout destiné à être utilisé via les autres paquets Pont. Vo
 
 ## Documentation
 
-- Guide d'auto-hébergement : [docs/self-host](https://github.com/aboudou-cto-bloko/pont/tree/main/docs/self-host)
-- Dépôt : https://github.com/aboudou-cto-bloko/pont
+- Guide d'auto-hébergement : [docs/self-host](https://github.com/pont-bj/pont/tree/main/docs/self-host)
+- Dépôt : https://github.com/pont-bj/pont
 
 ## Licence
 

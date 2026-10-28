@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { PRESET_NAMES } from "@pont/auth";
+import { PRESET_NAMES } from "@pont-bj/auth";
 
 const schema = z.object({
   /** Adresse interne du serveur Pont. */

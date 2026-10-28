@@ -1,6 +1,6 @@
-import { PontError, type FetchLike } from "@pont/core";
-import { WebhookRelay, type PontEngine } from "@pont/engine";
-import { createPontFromEnv, parseEnv } from "@pont/node";
+import { PontError, type FetchLike } from "@pont-bj/core";
+import { WebhookRelay, type PontEngine } from "@pont-bj/engine";
+import { createPontFromEnv, parseEnv } from "@pont-bj/node";
 import { authorized, createApp, errorResponse } from "./app.js";
 import { createAlerts } from "./alerts.js";
 import { createEmail, smtpTransport, type TransportFactory } from "./email.js";

@@ -1,7 +1,7 @@
-import { PontError, type Country, type Currency, type Operator, type Payment, type Payout } from "@pont/core";
-import type { PontEngine, PontEvent } from "@pont/engine";
-import { MemoryWorkflowRunStore, createWorkflow, defineRecipe, type WorkflowRun, type WorkflowRunStore } from "@pont/framework";
-import type { Limits, Wallets } from "@pont/ledger";
+import { PontError, type Country, type Currency, type Operator, type Payment, type Payout } from "@pont-bj/core";
+import type { PontEngine, PontEvent } from "@pont-bj/engine";
+import { MemoryWorkflowRunStore, createWorkflow, defineRecipe, type WorkflowRun, type WorkflowRunStore } from "@pont-bj/framework";
+import type { Limits, Wallets } from "@pont-bj/ledger";
 
 // Recette « Portefeuille mobile » (ADR-003) : relie le moteur de paiement, le registre et les plafonds.
 

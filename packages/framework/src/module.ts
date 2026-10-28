@@ -1,4 +1,4 @@
-import { PontError } from "@pont/core";
+import { PontError } from "@pont-bj/core";
 
 // Contrat de module du framework (ADR-003). Un module est une unité indépendante : son nom, ses dépendances,
 // sa licence (open core) et la fabrique de ses services, qui reçoit les services des modules dont il dépend.

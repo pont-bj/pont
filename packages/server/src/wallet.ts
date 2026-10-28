@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { PontError, countrySchema, operatorSchema, type Currency } from "@pont/core";
-import type { PontEngine } from "@pont/engine";
-import { InsufficientFundsError, Ledger, Limits, Wallets, type Entry, type LedgerStore, type ManagedProfileStore } from "@pont/ledger";
-import { LimitExceededError, WalletService, walletRecipe } from "@pont/recipes";
+import { PontError, countrySchema, operatorSchema, type Currency } from "@pont-bj/core";
+import type { PontEngine } from "@pont-bj/engine";
+import { InsufficientFundsError, Ledger, Limits, Wallets, type Entry, type LedgerStore, type ManagedProfileStore } from "@pont-bj/ledger";
+import { LimitExceededError, WalletService, walletRecipe } from "@pont-bj/recipes";
 import type { ServerEnv } from "./config.js";
 import type { StorageAdapter } from "./storage.js";
 

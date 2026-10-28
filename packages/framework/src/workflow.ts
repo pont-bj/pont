@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { PontError } from "@pont/core";
+import { PontError } from "@pont-bj/core";
 
 // Moteur de workflows durables avec compensation (modèle saga).
 // - Chaque étape est enregistrée dès qu'elle se termine : après un arrêt du serveur, une nouvelle exécution

@@ -26,7 +26,7 @@ import {
   type TransferVerified,
   type VerifiedState,
   type WebhookContext,
-} from "@pont/core";
+} from "@pont-bj/core";
 import {
   MemoryPayoutStore,
   MemoryRefundStore,

@@ -2,8 +2,8 @@ import { existsSync, statSync } from "node:fs";
 import { isAbsolute } from "node:path";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { buildWebhookDelivery, type PontEvent } from "@pont/engine";
-import { SCENARIO_NAMES, addRecipe, detectProject, listRecipes, runDoctor, runInit, runTrigger } from "@pont/cli";
+import { buildWebhookDelivery, type PontEvent } from "@pont-bj/engine";
+import { SCENARIO_NAMES, addRecipe, detectProject, listRecipes, runDoctor, runInit, runTrigger } from "@pont-bj/cli";
 import { COUNTRIES, DOCS, ERROR_CODES, OPERATORS, coverage, explainError, searchDocs } from "./knowledge.js";
 
 // Serveur MCP niveau 1 : intégration. Sandbox uniquement — aucun outil n'effectue d'opération réelle.

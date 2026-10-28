@@ -27,10 +27,10 @@ export function nextAppFiles(project: ProjectInfo, stores: "memory" | "convex" =
       ? convexLibFile(`${lib}.${ext}`)
       : {
       path: `${lib}.${ext}`,
-      content: `import { createPontFromEnv } from "@pont/node";
+      content: `import { createPontFromEnv } from "@pont-bj/node";
 
 // Vos clés d'agrégateur restent dans vos variables d'environnement : Pont ne les reçoit jamais.
-// Avant le live : branchez un stockage persistant (ex. @pont/store-convex) via l'option \`stores\`.
+// Avant le live : branchez un stockage persistant (ex. @pont-bj/store-convex) via l'option \`stores\`.
 export const pont = createPontFromEnv({
   onEvent: async (event) => {
     // Réagissez ici aux changements d'état (commande payée, retrait envoyé…).
@@ -41,7 +41,7 @@ export const pont = createPontFromEnv({
     },
     {
       path: hooks,
-      content: `import { createWebhookRoute } from "@pont/node";
+      content: `import { createWebhookRoute } from "@pont-bj/node";
 import { pont } from "${importFrom(hooks, lib)}";
 
 // Webhooks entrants des agrégateurs. Ne lisez pas le corps avant Pont : les signatures portent sur les octets bruts.
@@ -50,7 +50,7 @@ export const { POST } = createWebhookRoute(pont);
     },
     {
       path: cron,
-      content: `import { createCronRoute } from "@pont/node";
+      content: `import { createCronRoute } from "@pont-bj/node";
 import { ${withRelay ? "pont, relay" : "pont"} } from "${importFrom(cron, lib)}";
 
 // Réconciliation périodique${withRelay ? " + livraison des webhooks" : ""}. vercel.json : { "crons": [{ "path": "/api/pont/cron", "schedule": "*/5 * * * *" }] }
@@ -84,7 +84,7 @@ export function expressFiles(project: ProjectInfo): GeneratedFile[] {
     {
       path: posix.join(dir, `pont.${ext}`),
       content: `import express from "express";
-import { createPontFromEnv, handleProviderRequest } from "@pont/node";
+import { createPontFromEnv, handleProviderRequest } from "@pont-bj/node";
 
 // Vos clés d'agrégateur restent dans vos variables d'environnement : Pont ne les reçoit jamais.
 export const pont = createPontFromEnv();

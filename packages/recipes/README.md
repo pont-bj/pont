@@ -1,4 +1,4 @@
-# @pont/recipes
+# @pont-bj/recipes
 
 Recettes prêtes à l'emploi pour Pont (par exemple la recette « portefeuille »).
 
@@ -7,7 +7,7 @@ Recettes prêtes à l'emploi pour Pont (par exemple la recette « portefeuille �
 ## Installation
 
 ```bash
-pnpm add @pont/recipes
+pnpm add @pont-bj/recipes
 ```
 
 ## Utilisation
@@ -16,8 +16,8 @@ Ce paquet est surtout destiné à être utilisé via les autres paquets Pont. Vo
 
 ## Documentation
 
-- Guide d'auto-hébergement : [docs/self-host](https://github.com/aboudou-cto-bloko/pont/tree/main/docs/self-host)
-- Dépôt : https://github.com/aboudou-cto-bloko/pont
+- Guide d'auto-hébergement : [docs/self-host](https://github.com/pont-bj/pont/tree/main/docs/self-host)
+- Dépôt : https://github.com/pont-bj/pont
 
 ## Licence
 

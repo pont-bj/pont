@@ -1,7 +1,7 @@
 import { randomBytes } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { createPontFromEnv } from "@pont/node";
+import { createPontFromEnv } from "@pont-bj/node";
 import { detectProject, installCommand, type ProjectInfo } from "../project.js";
 import { AGENTS_MARKER_END, AGENTS_MARKER_START, agentsSection } from "../templates/agents.js";
 import { NEW_SCHEMA, pontStoreFile, pontTablesFile } from "../templates/convex.js";
@@ -30,7 +30,7 @@ export interface InitResult {
   testPayment: { ok: boolean; ms: number; status: string } | null;
 }
 
-const PACKAGES = ["@pont/node"];
+const PACKAGES = ["@pont-bj/node"];
 
 function filesFor(project: ProjectInfo, stores: "memory" | "convex"): GeneratedFile[] | null {
   switch (project.stack) {
@@ -75,7 +75,7 @@ export async function runInit(options: InitOptions): Promise<InitResult> {
       project.stack === "laravel" || project.stack === "php"
         ? "Le SDK PHP/Laravel arrive bientôt."
         : project.stack === "next-pages"
-          ? "Next.js Pages Router : utilisez `handleProviderRequest` de @pont/node dans une route API."
+          ? "Next.js Pages Router : utilisez `handleProviderRequest` de @pont-bj/node dans une route API."
           : "Stacks supportées : Next.js (App Router), Express.";
     log(`⚠️  Génération automatique non disponible pour cette stack. ${hint}`);
     return result;
@@ -114,7 +114,7 @@ export async function runInit(options: InitOptions): Promise<InitResult> {
   if (options.agent) writeAgents(cwd, project, options.dryRun, log);
   if (stores === "convex") setupConvexSchema(cwd, options.dryRun, result, log);
 
-  result.installCommand = installCommand(project.packageManager, stores === "convex" ? [...PACKAGES, "@pont/store-convex", "convex"] : PACKAGES);
+  result.installCommand = installCommand(project.packageManager, stores === "convex" ? [...PACKAGES, "@pont-bj/store-convex", "convex"] : PACKAGES);
   log(`→ Installez le SDK : ${result.installCommand}`);
 
   if (options.testPayment) {

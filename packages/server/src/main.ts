@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 import { createServer } from "node:http";
 import { Readable } from "node:stream";
-import { isPontError } from "@pont/core";
+import { isPontError } from "@pont-bj/core";
 import { createRuntime } from "./runtime.js";
 
 function startFailure(error: unknown): never {

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { PontError } from "@pont/core";
+import { PontError } from "@pont-bj/core";
 
 const secret = z.string().min(32, "32 caractères minimum (openssl rand -hex 32).");
 

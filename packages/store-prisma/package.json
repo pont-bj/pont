@@ -1,5 +1,5 @@
 {
-  "name": "@pont/store-prisma",
+  "name": "@pont-bj/store-prisma",
   "version": "0.1.0",
   "description": "Stockage PostgreSQL (Prisma) pour Pont, y compris registre et portefeuilles.",
   "type": "module",
@@ -25,10 +25,10 @@
     "build": "tsup src/index.ts --format esm --dts --clean --target node20"
   },
   "dependencies": {
-    "@pont/core": "workspace:*",
-    "@pont/engine": "workspace:*",
-    "@pont/framework": "workspace:*",
-    "@pont/ledger": "workspace:*",
+    "@pont-bj/core": "workspace:*",
+    "@pont-bj/engine": "workspace:*",
+    "@pont-bj/framework": "workspace:*",
+    "@pont-bj/ledger": "workspace:*",
     "@prisma/adapter-pg": "7.10.1",
     "@prisma/client": "7.10.1"
   },
@@ -46,17 +46,17 @@
   },
   "devDependencies": {
     "prisma": "7.10.1",
-    "@pont/sandbox": "workspace:*"
+    "@pont-bj/sandbox": "workspace:*"
   },
   "author": "François Mawutô Aboudou ZINSOU <pro@aboudouzinsou.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aboudou-cto-bloko/pont.git",
+    "url": "git+https://github.com/pont-bj/pont.git",
     "directory": "packages/store-prisma"
   },
-  "homepage": "https://github.com/aboudou-cto-bloko/pont#readme",
+  "homepage": "https://github.com/pont-bj/pont#readme",
   "bugs": {
-    "url": "https://github.com/aboudou-cto-bloko/pont/issues"
+    "url": "https://github.com/pont-bj/pont/issues"
   },
   "keywords": [
     "payments",

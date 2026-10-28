@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PontError } from "@pont/core";
+import { PontError } from "@pont-bj/core";
 import {
   MemoryWorkflowRunStore,
   createApp,

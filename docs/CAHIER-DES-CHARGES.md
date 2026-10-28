@@ -199,9 +199,9 @@ Distribuée via `npx pont` (Node ≥ 20). Le générateur de code est **idempote
 
 | Paquet | Contenu |
 |---|---|
-| `@pont/node` | Client typé, `webhooks.verify()`, erreurs typées, retries + idempotence automatiques |
-| `@pont/next` | Route handlers prêts à l'emploi (`createWebhookHandler`), server actions |
-| `@pont/react` | `<PontCheckout>`, `<PayButton>`, `<PhoneInput>` (détection opérateur par préfixe), hooks `usePayment` |
+| `@pont-bj/node` | Client typé, `webhooks.verify()`, erreurs typées, retries + idempotence automatiques |
+| `@pont-bj/next` | Route handlers prêts à l'emploi (`createWebhookHandler`), server actions |
+| `@pont-bj/react` | `<PontCheckout>`, `<PayButton>`, `<PhoneInput>` (détection opérateur par préfixe), hooks `usePayment` |
 | `pont/php` | Client PHP 8.1+ sans dépendance lourde, vérification webhook |
 | `pont/laravel` | `php artisan pont:install`, facade `Pont::`, events (`PaymentSucceeded`…), contrôleur webhook, migration optionnelle |
 
@@ -216,7 +216,7 @@ Exigences : TypeScript strict, aucun `any`, Zod aux frontières ; PHP typé + PH
 
 ### F8 — MCP (niveau 1 : intégration)
 
-Serveur `@pont/mcp` (stdio + HTTP streamable), installé par `pont init --agent`.
+Serveur `@pont-bj/mcp` (stdio + HTTP streamable), installé par `pont init --agent`.
 
 | Outil | Rôle |
 |---|---|

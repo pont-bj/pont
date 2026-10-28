@@ -1,7 +1,7 @@
 import { generateKeyPairSync, randomUUID } from "node:crypto";
 import { describe, expect, it } from "vitest";
-import { signInstruction, type SignedInstructionPayload } from "@pont/core";
-import { MemoryIdempotencyStore } from "@pont/engine";
+import { signInstruction, type SignedInstructionPayload } from "@pont-bj/core";
+import { MemoryIdempotencyStore } from "@pont-bj/engine";
 import { createPontFromEnv, executeInstruction, type InstructionExecutorOptions } from "../src/index.js";
 
 const pontKeys = generateKeyPairSync("ed25519");

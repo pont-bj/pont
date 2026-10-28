@@ -20,7 +20,7 @@ Nos propres conditions d'utilisation lient Pont et le marchand, pas le marchand 
 ## Décision : hybride, clés chez le marchand par défaut
 
 **1. Par défaut — moteur chez le marchand (« BYOK local »).**
-Le moteur (`@pont/node`) tourne dans le backend du marchand ; les clés restent dans ses variables d'environnement. Le cloud Pont ne reçoit que des métadonnées sans secret (statuts, montants, références, numéros masqués).
+Le moteur (`@pont-bj/node`) tourne dans le backend du marchand ; les clés restent dans ses variables d'environnement. Le cloud Pont ne reçoit que des métadonnées sans secret (statuts, montants, références, numéros masqués).
 
 **2. Dashboard sans clés — instructions signées.**
 Les opérations lancées depuis le dashboard (remboursement, retrait, renvoi de webhook) ne sont pas exécutées par Pont : Pont envoie une **instruction signée** au backend du marchand, qui la vérifie (signature, horodatage, nonce anti-rejeu, périmètre autorisé, plafond), l'exécute avec ses propres clés et renvoie le résultat. Le marchand garde le confort du dashboard ; Pont ne touche jamais une clé.

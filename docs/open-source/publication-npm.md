@@ -8,12 +8,12 @@ Source unique des métadonnées : `scripts/publish-meta.json` (scope, version, l
 
 | Paquet | Publié ? | Remarque |
 |---|---|---|
-| `@pont/core`, `framework`, `engine`, `sandbox`, `ledger`, `recipes`, `auth` | oui | bibliothèques |
-| `@pont/adapter-fedapay`, `-pawapay`, `-paydunya`, `-kkiapay`, `-cinetpay` | oui | un par agrégateur |
-| `@pont/node` | oui | SDK |
-| `@pont/store-convex`, `@pont/store-prisma` | oui | stockage |
-| `@pont/cli` (binaire `pont`), `@pont/mcp` (binaire `pont-mcp`) | oui | outils |
-| `@pont/server` | non (`private: true`) | distribué par Docker / `deploy/self-host`, son `bin` pointe encore vers `src/` |
+| `@pont-bj/core`, `framework`, `engine`, `sandbox`, `ledger`, `recipes`, `auth` | oui | bibliothèques |
+| `@pont-bj/adapter-fedapay`, `-pawapay`, `-paydunya`, `-kkiapay`, `-cinetpay` | oui | un par agrégateur |
+| `@pont-bj/node` | oui | SDK |
+| `@pont-bj/store-convex`, `@pont-bj/store-prisma` | oui | stockage |
+| `@pont-bj/cli` (binaire `pont`), `@pont-bj/mcp` (binaire `pont-mcp`) | oui | outils |
+| `@pont-bj/server` | non (`private: true`) | distribué par Docker / `deploy/self-host`, son `bin` pointe encore vers `src/` |
 | `apps/*` | non (`private: true`) | applications |
 | `packages/react` | non | dossier vide (pas de `package.json`), prévu « bientôt » |
 
@@ -37,10 +37,10 @@ Alternative sans écriture : `pnpm -r publish --dry-run --no-git-checks`.
 
 ## 3. Avant la première publication (HUMAIN)
 
-1. **Nom définitif.** `pont` et `pont-cli` existent déjà sur npm (hors scope, donc sans impact direct sur `@pont/*`, mais source de confusion et de risque de marque). Le nom est un nom de code : décider avant de publier, car un paquet publié ne se renomme pas (on ne peut que le déprécier).
+1. **Nom définitif.** `pont` et `pont-cli` existent déjà sur npm (hors scope, donc sans impact direct sur `@pont-bj/*`, mais source de confusion et de risque de marque). Le nom est un nom de code : décider avant de publier, car un paquet publié ne se renomme pas (on ne peut que le déprécier).
 2. **Propriété du scope.** `@pont` n'est pas publié mais sa propriété n'est pas vérifiée. Vérifier :
    ```bash
-   npm view @pont/core            # 404 attendu tant que rien n'est publié
+   npm view @pont-bj/core            # 404 attendu tant que rien n'est publié
    npm org ls pont 2>&1 | head    # échoue si tu n'es pas membre
    ```
    puis créer l'organisation sur https://www.npmjs.com/org/create (le nom d'organisation = le scope). Si `pont` est déjà pris, on ne peut pas publier sous `@pont` : appliquer la procédure de renommage (section 5) avant tout.
@@ -53,13 +53,13 @@ Alternative sans écriture : `pnpm -r publish --dry-run --no-git-checks`.
 
 `pnpm -r publish` respecte l'ordre topologique des dépendances. À titre indicatif :
 
-1. `@pont/core`
-2. `@pont/framework`, `@pont/sandbox`, `@pont/auth`
-3. `@pont/engine`, `@pont/ledger`
-4. `@pont/adapter-*` (5 paquets), `@pont/recipes`
-5. `@pont/store-convex`, `@pont/store-prisma`
-6. `@pont/node`
-7. `@pont/cli`, puis `@pont/mcp`
+1. `@pont-bj/core`
+2. `@pont-bj/framework`, `@pont-bj/sandbox`, `@pont-bj/auth`
+3. `@pont-bj/engine`, `@pont-bj/ledger`
+4. `@pont-bj/adapter-*` (5 paquets), `@pont-bj/recipes`
+5. `@pont-bj/store-convex`, `@pont-bj/store-prisma`
+6. `@pont-bj/node`
+7. `@pont-bj/cli`, puis `@pont-bj/mcp`
 
 Premier essai conseillé : lancer le workflow à la main avec `simulation = true` (par défaut). Publication réelle : pousser un tag `vX.Y.Z` (après l'accord humain) ou relancer le workflow avec `simulation = false`.
 
@@ -69,7 +69,7 @@ Le script racine `release` (`changeset publish`) ne fonctionne pas : `@changeset
 
 Le nom n'apparaît à deux endroits distincts :
 
-- **Le scope npm** (`@pont/…`), centralisé : `scripts/publish-meta.json` (clé `scope`) et le script de renommage.
+- **Le scope npm** (`@pont-bj/…`), centralisé : `scripts/publish-meta.json` (clé `scope`) et le script de renommage.
 - **Les binaires** `pont`, `pont-mcp`, `pont-server` et les mentions « Pont » dans les textes : à changer à la main (voir ci-dessous).
 
 Étapes :
@@ -100,6 +100,6 @@ Vérification après publication : la page npm du paquet affiche « Built and si
 
 ## 7. Après la publication
 
-- Tester l'installation dans un projet vierge (`pnpm add @pont/node`), et `npx @pont/cli --help`.
+- Tester l'installation dans un projet vierge (`pnpm add @pont-bj/node`), et `npx @pont-bj/cli --help`.
 - En cas d'erreur : `npm unpublish` n'est possible que dans les 72 h et sous conditions ; préférer `npm deprecate` puis une version corrective.
 - Si le jeton a fuité : le révoquer immédiatement sur npmjs.com, puis en recréer un.

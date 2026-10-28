@@ -1,11 +1,11 @@
 {
-  "scope": "@pont",
+  "scope": "@pont-bj",
   "version": "0.1.0",
   "license": "BUSL-1.1",
   "author": "François Mawutô Aboudou ZINSOU <pro@aboudouzinsou.com>",
-  "repoUrl": "https://github.com/aboudou-cto-bloko/pont",
-  "homepage": "https://github.com/aboudou-cto-bloko/pont#readme",
-  "bugs": "https://github.com/aboudou-cto-bloko/pont/issues",
+  "repoUrl": "https://github.com/pont-bj/pont",
+  "homepage": "https://github.com/pont-bj/pont#readme",
+  "bugs": "https://github.com/pont-bj/pont/issues",
   "node": ">=20",
   "private": [
     "packages/server"

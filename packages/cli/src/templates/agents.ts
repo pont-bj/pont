@@ -6,7 +6,7 @@ export function agentsSection(stack: string): string {
   return `${AGENTS_MARKER_START}
 ## Paiements : Pont
 
-Ce projet encaisse via **Pont** (\`@pont/node\`), orchestrateur des agrégateurs africains (FedaPay, PawaPay, PayDunya, Kkiapay).
+Ce projet encaisse via **Pont** (\`@pont-bj/node\`), orchestrateur des agrégateurs africains (FedaPay, PawaPay, PayDunya, Kkiapay).
 Stack détectée : ${stack}.
 
 Règles non négociables :

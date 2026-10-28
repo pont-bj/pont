@@ -115,6 +115,6 @@ Dashboard (jeton admin) : `GET /admin/wallets`, `GET /admin/wallets/<user>`, `PO
 ## Limites actuelles
 
 - Une seule devise par instance.
-- Pas de remboursement d'un dépôt crédité (annulation d'écriture disponible dans `@pont/ledger`, non exposée par l'API).
+- Pas de remboursement d'un dépôt crédité (annulation d'écriture disponible dans `@pont-bj/ledger`, non exposée par l'API).
 - Les frais de transfert sont acceptés (`fee`) mais pas calculés automatiquement ; seuls les frais de retrait ont une grille (`PONT_WITHDRAWAL_FEE_BPS`).
 - Un utilisateur sans palier est bloqué : votre application doit définir le palier à l'ouverture.

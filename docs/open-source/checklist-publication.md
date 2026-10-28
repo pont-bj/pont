@@ -30,7 +30,7 @@
 
 ## 4. Placeholders à remplacer
 
-État au 28 octobre 2026 : contacts, propriétaire et URL du dépôt sont renseignés. **Provisoire** : `aboudou-cto-bloko/pont` et `https://github.com/aboudou-cto-bloko/pont` supposent que le dépôt portera ce nom ; à corriger si le nom définitif change (`git grep -n "aboudou-cto-bloko/pont"` et `scripts/publish-meta.json`).
+État au 28 octobre 2026 : contacts, propriétaire et URL du dépôt sont renseignés. **Provisoire** : `pont-bj/pont` et `https://github.com/pont-bj/pont` supposent que le dépôt portera ce nom ; à corriger si le nom définitif change (`git grep -n "pont-bj/pont"` et `scripts/publish-meta.json`).
 
 | Placeholder | Où | État |
 |---|---|---|

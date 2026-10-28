@@ -11,7 +11,7 @@ Pont fournit l'authentification des utilisateurs de **votre** fintech (Better Au
 
 - Chaque utilisateur a **un rôle** (un identifiant comme `client` ou `tresorier`).
 - Un rôle est un ensemble de **permissions** : une *action* sur une *ressource* (`paiements.creer`, `retraits.approuver`, `registre.lire`…).
-- Un rôle peut porter un **palier KYC** (`kycTier`), clé du palier de plafonds du registre (`@pont/ledger`).
+- Un rôle peut porter un **palier KYC** (`kycTier`), clé du palier de plafonds du registre (`@pont-bj/ledger`).
 - Les rôles sont stockés dans le dashboard et **modifiables à chaud** (page « Rôles »), sans redéployer.
 - Un rôle inconnu, vide ou nul n'a **aucune** permission.
 
@@ -63,11 +63,11 @@ Ensuite, tout se modifie dans le dashboard : créer un rôle, cocher ses permiss
 
 ## Définir ses rôles dans le code
 
-Pour versionner vos rôles ou les générer, le paquet `@pont/auth` valide une configuration :
+Pour versionner vos rôles ou les générer, le paquet `@pont-bj/auth` valide une configuration :
 
 ```ts
 // pont.config.ts
-import { definePont } from "@pont/auth";
+import { definePont } from "@pont-bj/auth";
 
 export default definePont({
   roles: {

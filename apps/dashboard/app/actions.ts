@@ -9,7 +9,7 @@ import { env } from "@/lib/env";
 import { PontApiError, addEndpoint, refundPayment, emailConfigured, removeEmail, saveAlerts, saveEmail, sendTestAlert, sendTestEmail, createTestPayment, removeEndpoint, removeProvider, resendDelivery, saveProvider, setFrozen } from "@/lib/pont";
 import { requirePermission } from "@/lib/session";
 import { createUser, deleteRole, saveRole, setUserRole } from "@/lib/roles";
-import { RESOURCES, RESOURCE_NAMES } from "@pont/auth";
+import { RESOURCES, RESOURCE_NAMES } from "@pont-bj/auth";
 
 export interface FormState {
   error?: string;

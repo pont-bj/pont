@@ -1,4 +1,4 @@
-import { PONT_SIGNATURE_HEADER, signPontWebhook, type Payment, type Payout, type Refund } from "@pont/core";
+import { PONT_SIGNATURE_HEADER, signPontWebhook, type Payment, type Payout, type Refund } from "@pont-bj/core";
 import type { PontEvent } from "./engine.js";
 
 export interface WebhookDelivery {

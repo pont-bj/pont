@@ -8,7 +8,7 @@ Date des vérifications : 2026-10-28. Ce document n'est pas un avis juridique. A
 |---|---|---|
 | npm `pont` | Pris (v0.0.0, « bridge for remote management of objects/functions ») | `npm view pont` |
 | npm `pont-cli` | Pris (v0.3.4, « Pont CLI ») | `npm view pont-cli` |
-| npm `@pont/*` | `npm view @pont/anything` renvoie 404, ce qui ne prouve pas que le scope soit libre (un scope peut exister sans ce paquet). La page `npmjs.com/~pont` répond 403 (anti-bot), non exploitable. À vérifier à la main sur npmjs.com | npm, curl |
+| npm `@pont-bj/*` | `npm view @pont-bj/anything` renvoie 404, ce qui ne prouve pas que le scope soit libre (un scope peut exister sans ce paquet). La page `npmjs.com/~pont` répond 403 (anti-bot), non exploitable. À vérifier à la main sur npmjs.com | npm, curl |
 | GitHub `pont` | Compte utilisateur existant (1 dépôt public). L'organisation/le nom est donc pris | `gh api users/pont` |
 | Dépôts « Pont » paiement | Aucun dépôt populaire trouvé (résultats voisins à 0-1 étoile : Pontswap, pontmore...) | `gh search repos` |
 | Domaines | `pont.com` (DNS GoDaddy) pris ; `pont.dev` (OVH) pris ; `getpont.com` et `usepont.com` pris ; `pont.io`, `pont.africa`, `pont.bj` : pas de NS visible, **incertain** (un domaine .io/.bj peut être enregistré sans délégation ; whois absent de la machine) | `dig NS` |
@@ -55,7 +55,7 @@ Occurrences insensibles à la casse de « pont » dans les fichiers suivis par g
 | Apps (dashboard, docs, landing) | environ 580 | 96 |
 | Docs et fichiers racine `*.md` | environ 400 | 58 |
 | Docker / déploiement (`deploy/`) | environ 150 | 8 |
-| Imports `@pont/...` | 390 occurrences, 23 noms de paquets distincts | transversal |
+| Imports `@pont-bj/...` | 390 occurrences, 23 noms de paquets distincts | transversal |
 | Total | environ 2 170 | |
 
 Autres coûts : 91 fichiers dont le nom contient « pont » (logo, symboles, dossier de marque), la CLI `pont` (commande, binaire), `definePont`, `docs.pont.aboudouzinsou...` (domaines/URL), variables d'environnement et images Docker, `TRADEMARK.md`, le logo (le symbole est un P-pont : il ne fonctionne qu'avec un nom en P), le slogan, et les textes de landing. Techniquement faisable par recherche/remplacement scripté, avec revue manuelle (le mot français « pont » peut apparaître dans la prose).

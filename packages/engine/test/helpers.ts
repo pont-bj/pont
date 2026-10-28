@@ -18,7 +18,7 @@ import type {
   RefundRequest,
   TransferAccepted,
   TransferVerified,
-} from "@pont/core";
+} from "@pont-bj/core";
 
 /** Adaptateur programmable pour tester le moteur. */
 export class FakeAdapter implements ProviderAdapter {

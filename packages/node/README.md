@@ -1,4 +1,4 @@
-# @pont/node
+# @pont-bj/node
 
 Moteur Pont dans votre backend. Vos clés d'agrégateur restent dans vos variables d'environnement.
 
@@ -22,11 +22,11 @@ Kkiapay ne peut pas être combiné avec un autre agrégateur (CGU Art. 18).
 
 ```ts
 // lib/pont.ts
-import { createPontFromEnv } from "@pont/node";
+import { createPontFromEnv } from "@pont-bj/node";
 export const pont = createPontFromEnv();
 
 // app/api/pont/hooks/[provider]/route.ts
-import { createWebhookRoute } from "@pont/node";
+import { createWebhookRoute } from "@pont-bj/node";
 import { pont } from "@/lib/pont";
 export const { POST } = createWebhookRoute(pont);
 

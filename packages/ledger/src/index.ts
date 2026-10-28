@@ -1,4 +1,4 @@
-import { defineModule } from "@pont/framework";
+import { defineModule } from "@pont-bj/framework";
 import { Ledger, MemoryLedgerStore, type LedgerStore } from "./ledger.js";
 import { Limits, MemoryCustomerProfileStore, type CustomerProfileStore } from "./limits.js";
 import { Wallets } from "./wallets.js";

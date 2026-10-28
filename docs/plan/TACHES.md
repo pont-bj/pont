@@ -7,17 +7,17 @@
 | T-000 | Capacités + CGU des agrégateurs | metier | ✅ 2026-10-26 |
 | T-007 | Fiche PawaPay | metier | ✅ (CGU non publiques ⏳) |
 | T-020 | Documentation agrégateurs téléchargée (`docs/providers/`) | backend | ✅ (CinetPay injoignable) |
-| T-021 | `@pont/core` : modèle, erreurs FR, états, téléphone, signatures HMAC + RFC 9421, HTTP, Zod | backend | ✅ |
-| T-022 | `@pont/sandbox` : 8 numéros magiques | backend | ✅ |
+| T-021 | `@pont-bj/core` : modèle, erreurs FR, états, téléphone, signatures HMAC + RFC 9421, HTTP, Zod | backend | ✅ |
+| T-022 | `@pont-bj/sandbox` : 8 numéros magiques | backend | ✅ |
 | T-023 | Adaptateurs : dépôts, vérification, webhooks (5 agrégateurs) | backend | ✅ |
-| T-024 | `@pont/engine` : idempotence, routage, failover sûr, réconciliation, intégrité | backend | ✅ |
+| T-024 | `@pont-bj/engine` : idempotence, routage, failover sûr, réconciliation, intégrité | backend | ✅ |
 | T-010 | PawaPay : vérification complète RFC 9421 des callbacks | backend | ✅ 2026-10-27 |
 | T-012 | Retraits : FedaPay, PawaPay, PayDunya | backend | ✅ 2026-10-27 |
 | T-013 | Remboursements : PawaPay (total/partiel), Kkiapay (total) + cumul côté moteur | backend | ✅ 2026-10-27 |
 | T-015 | Relais de webhooks sortants : reprises ~3 jours, signature par tentative, anti-SSRF, renvoi manuel | backend | ✅ 2026-10-27 |
-| T-018 | `@pont/node` : configuration par variables d'env, route Next.js, handler `Request` | backend | ✅ 2026-10-27 |
+| T-018 | `@pont-bj/node` : configuration par variables d'env, route Next.js, handler `Request` | backend | ✅ 2026-10-27 |
 | T-026 | Audit de fidélité à la doc (`docs/metier/fidelite-doc.md`), suppression des statuts inventés | backend + metier | ✅ 2026-10-27 |
-| T-017 | `@pont/store-convex` : stores persistants (paiements, retraits, remboursements, idempotence, livraisons), secret partagé | backend | ✅ 2026-10-27 |
+| T-017 | `@pont-bj/store-convex` : stores persistants (paiements, retraits, remboursements, idempotence, livraisons), secret partagé | backend | ✅ 2026-10-27 |
 | T-027 | Réconciliation (`engine.reconcile`) + route cron protégée (`createCronRoute`) | backend | ✅ 2026-10-27 |
 | T-019a | CLI `pont` : `init` (Next.js App Router, Express ; env, .gitignore, AGENTS.md, paiement test), `doctor` (9 contrôles, mode `--ci`), `trigger` | backend | ✅ 2026-10-27 |
 | T-019b | MCP niveau 1 : 8 outils + 7 ressources de doc, sandbox uniquement, testé en mémoire et en stdio | backend | ✅ 2026-10-27 |
@@ -48,17 +48,17 @@ Tests : 183 (core 11, framework 14, engine 76, ledger 14, recipes 10, node 12, s
 | T-034 | Choisir le nom définitif (`pont` est pris sur npm) puis publier | François | ⏳ |
 | T-011 | CinetPay : vérification `x-token` + endpoint de statut confirmés | backend | après T-002 |
 | T-025 | SDK PHP / Laravel, plugin WooCommerce | backend | |
-| T-028 | Valider `@pont/store-convex` sur un vrai déploiement Convex (les tests tournent sous `convex-test`) | backend | |
+| T-028 | Valider `@pont-bj/store-convex` sur un vrai déploiement Convex (les tests tournent sous `convex-test`) | backend | |
 | T-008 | Maquettes Lunacy du dashboard | frontend | ✅ 7 écrans validés 2026-10-27 |
 
 ## Framework (ADR-003)
 
 | ID | Tâche | Agent | Note |
 |---|---|---|---|
-| T-040 | Contrat de module, moteur de workflows avec compensation, format de recette (`@pont/framework`) | code-principal | ✅ v1 2026-10-27 ; limites → T-045 |
+| T-040 | Contrat de module, moteur de workflows avec compensation, format de recette (`@pont-bj/framework`) | code-principal | ✅ v1 2026-10-27 ; limites → T-045 |
 | T-045 | Workflows durables : persister chaque étape, reprise après crash, verrou par clé d'idempotence | backend | ✅ 2026-10-27 |
-| T-041 | `@pont/store-prisma` (Prisma Postgres) : mêmes stores que Convex + runs de workflows | backend | ✅ 2026-10-27, testé sur Postgres 16 réel |
-| T-042 | Modules `ledger` (partie double), `wallets`, `limits` (`@pont/ledger`) + règles R-030 à R-036 | backend + metier | ✅ mémoire 2026-10-27 ; Postgres → T-046 |
+| T-041 | `@pont-bj/store-prisma` (Prisma Postgres) : mêmes stores que Convex + runs de workflows | backend | ✅ 2026-10-27, testé sur Postgres 16 réel |
+| T-042 | Modules `ledger` (partie double), `wallets`, `limits` (`@pont-bj/ledger`) + règles R-030 à R-036 | backend + metier | ✅ mémoire 2026-10-27 ; Postgres → T-046 |
 | T-046 | Stockage Prisma du registre, R-031 vérifiée sous concurrence réelle | backend | ✅ 2026-10-27 (50 retraits / 20 connexions) |
 | T-043 | Recette « Portefeuille mobile » de bout en bout + `pont add recipe` + MCP `list_recipes` / `apply_recipe` | backend | ✅ 2026-10-27 (code généré vérifié à la compilation) |
 | T-044 | Licence et découpage open source / propriétaire | François | |

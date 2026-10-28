@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { hmacSha256Hex, sha512Hex, type DepositRequest } from "@pont/core";
-import { FedaPayAdapter } from "@pont/adapter-fedapay";
-import { PawaPayAdapter } from "@pont/adapter-pawapay";
-import { PayDunyaAdapter } from "@pont/adapter-paydunya";
-import { KkiapayAdapter } from "@pont/adapter-kkiapay";
-import { CinetPayAdapter } from "@pont/adapter-cinetpay";
+import { hmacSha256Hex, sha512Hex, type DepositRequest } from "@pont-bj/core";
+import { FedaPayAdapter } from "@pont-bj/adapter-fedapay";
+import { PawaPayAdapter } from "@pont-bj/adapter-pawapay";
+import { PayDunyaAdapter } from "@pont-bj/adapter-paydunya";
+import { KkiapayAdapter } from "@pont-bj/adapter-kkiapay";
+import { CinetPayAdapter } from "@pont-bj/adapter-cinetpay";
 import { mockFetch, networkError } from "./helpers.js";
 
 const request = (overrides: Partial<DepositRequest["input"]> = {}): DepositRequest => ({

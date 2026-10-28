@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from "node:crypto";
-import { PontError, type Currency } from "@pont/core";
+import { PontError, type Currency } from "@pont-bj/core";
 
 // Registre en partie double (R-030, R-031, R-036).
 

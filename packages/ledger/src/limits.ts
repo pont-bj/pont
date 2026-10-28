@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { PontError, type Currency } from "@pont/core";
+import { PontError, type Currency } from "@pont-bj/core";
 import type { Wallets } from "./wallets.js";
 
 // Plafonds par palier KYC et gel de compte (R-035). Les montants exacts relèvent de la fintech et de son

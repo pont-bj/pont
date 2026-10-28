@@ -1,7 +1,7 @@
 import { randomBytes, randomUUID } from "node:crypto";
 import { z } from "zod";
-import { PontError, isPontError, type Mode } from "@pont/core";
-import type { Delivery, WebhookEndpoint, WebhookRelay } from "@pont/engine";
+import { PontError, isPontError, type Mode } from "@pont-bj/core";
+import type { Delivery, WebhookEndpoint, WebhookRelay } from "@pont-bj/engine";
 import { AlertConfigError, RULES, RULE_IDS, type AlertService, type RuleId } from "./alerts.js";
 import { SmtpError, type EmailService } from "./email.js";
 import type { ProviderRegistry } from "./registry.js";

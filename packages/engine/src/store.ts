@@ -1,4 +1,4 @@
-import type { Payment, Payout, ProviderId, Refund } from "@pont/core";
+import type { Payment, Payout, ProviderId, Refund } from "@pont-bj/core";
 
 interface StoredRecord {
   id: string;

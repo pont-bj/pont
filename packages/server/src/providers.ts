@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { PontError } from "@pont/core";
-import { MemoryPaymentStore } from "@pont/engine";
-import type { ProviderAdapter } from "@pont/core";
-import { createPontFromEnv } from "@pont/node";
+import { PontError } from "@pont-bj/core";
+import { MemoryPaymentStore } from "@pont-bj/engine";
+import type { ProviderAdapter } from "@pont-bj/core";
+import { createPontFromEnv } from "@pont-bj/node";
 import type { Vault } from "./vault.js";
 
 interface FieldSpec {

@@ -12,7 +12,7 @@ Marqueurs : **AGENT** = fait ou faisable par un agent (état indiqué) ; **HUMAI
 ## Phase 1 : préparation du dépôt (AGENT, fait)
 
 5. **AGENT (fait)** Contacts (`pro@aboudouzinsou.com`), `CODEOWNERS`, URLs du dépôt (provisoires) renseignés.
-6. **AGENT (fait)** Métadonnées npm, `README.md` par paquet, `private: true` sur `@pont/server` et les apps, vérification des tarballs. Refaire si le nom change : `node scripts/apply-publish-meta.mjs`.
+6. **AGENT (fait)** Métadonnées npm, `README.md` par paquet, `private: true` sur `@pont-bj/server` et les apps, vérification des tarballs. Refaire si le nom change : `node scripts/apply-publish-meta.mjs`.
 7. **AGENT (fait)** Audit de secrets (0 fuite réelle) ; références `~/Brain` retirées.
 8. **AGENT (fait)** `ROADMAP.md`, `CHANGELOG.md`, politique de confidentialité, workflow `release.yml`.
 9. **AGENT (à faire, après décision 4)** Appliquer `docs-internes.md` : retirer `docs/plan/demo*`, `docs/legal/CGU-brouillon.md`, `skills-lock.json`, `.claude/`, sections commerciales du cahier des charges ; adopter `CLAUDE.public.md`.
@@ -34,7 +34,7 @@ Marqueurs : **AGENT** = fait ou faisable par un agent (état indiqué) ; **HUMAI
 15. **HUMAIN** Activer la 2FA sur le compte `aboudou-cto-bloko`.
 16. **HUMAIN** Créer le dépôt, **privé d'abord** :
     ```bash
-    gh repo create aboudou-cto-bloko/pont --private --source . --remote origin
+    gh repo create pont-bj/pont --private --source . --remote origin
     git push -u origin main        # le premier push est une action humaine
     ```
     (Pour un dépôt neuf sans historique : copier l'arbre propre dans un dossier vide, `git init`, premier commit en français, puis `gh repo create`.)
@@ -46,7 +46,7 @@ Marqueurs : **AGENT** = fait ou faisable par un agent (état indiqué) ; **HUMAI
 
 20. **HUMAIN** Créer l'organisation npm (scope), activer la 2FA obligatoire, créer le jeton granulaire, l'enregistrer en secret `NPM_TOKEN`, créer l'environnement `npm-publication` avec validation : détail dans `publication-npm.md`.
 21. **AGENT/HUMAIN** Lancer le workflow « Publication npm » en simulation, relire le journal, puis publication réelle (tag `v0.1.0`) par l'humain.
-22. **AGENT** Tester dans un projet vierge : `pnpm add @pont/node` et `npx @pont/cli --help`.
+22. **AGENT** Tester dans un projet vierge : `pnpm add @pont-bj/node` et `npx @pont-bj/cli --help`.
 
 ## Phase 5 : site (HUMAIN)
 
@@ -56,7 +56,7 @@ Marqueurs : **AGENT** = fait ou faisable par un agent (état indiqué) ; **HUMAI
 
 ## Phase 6 : mise en public et annonce (HUMAIN)
 
-26. **HUMAIN** Rendre le dépôt public : `gh repo edit aboudou-cto-bloko/pont --visibility public --accept-visibility-change-consequences`. Vérifier le rendu des modèles d'issue et de PR.
+26. **HUMAIN** Rendre le dépôt public : `gh repo edit pont-bj/pont --visibility public --accept-visibility-change-consequences`. Vérifier le rendu des modèles d'issue et de PR.
 27. **HUMAIN** Créer la release GitHub `v0.1.0` à partir de `CHANGELOG.md`.
 28. **HUMAIN** Annoncer (LinkedIn, X, communautés développeurs francophones, Product Hunt/Hacker News éventuellement) avec un message honnête : sandbox, `0.x`, aucun agrégateur éprouvé en production, licence à code source disponible (BUSL-1.1, pas « open source » au sens strict avant conversion).
 

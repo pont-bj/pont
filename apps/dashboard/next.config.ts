@@ -2,8 +2,8 @@ import type { NextConfig } from "next";
 
 const config: NextConfig = {
   poweredByHeader: false,
-  // @pont/auth est publié en TypeScript : on le compile avec l'application, et les imports « .js » pointent vers les sources « .ts ».
-  transpilePackages: ["@pont/auth"],
+  // @pont-bj/auth est publié en TypeScript : on le compile avec l'application, et les imports « .js » pointent vers les sources « .ts ».
+  transpilePackages: ["@pont-bj/auth"],
   webpack(webpackConfig) {
     webpackConfig.resolve.extensionAlias = { ".js": [".ts", ".tsx", ".js"] };
     return webpackConfig;

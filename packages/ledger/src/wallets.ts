@@ -1,4 +1,4 @@
-import { PontError, type Currency } from "@pont/core";
+import { PontError, type Currency } from "@pont-bj/core";
 import type { Account, Ledger, PostResult } from "./ledger.js";
 
 // Portefeuilles utilisateurs au-dessus du registre (R-031 à R-033).

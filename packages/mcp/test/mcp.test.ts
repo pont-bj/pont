@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { describe, expect, it } from "vitest";
-import { verifyPontWebhook } from "@pont/core";
+import { verifyPontWebhook } from "@pont-bj/core";
 import { createPontMcpServer } from "../src/index.js";
 
 async function connect(options: Parameters<typeof createPontMcpServer>[0] = {}) {
@@ -55,7 +55,7 @@ describe("serveur MCP Pont", () => {
     expect(existsSync(join(root, "lib/pont.ts"))).toBe(false);
 
     const { data: applied } = await call(client, "scaffold_integration", { projectDir: root, apply: true });
-    expect(applied?.installCommand).toBe("npm install @pont/node");
+    expect(applied?.installCommand).toBe("npm install @pont-bj/node");
     expect(existsSync(join(root, "lib/pont.ts"))).toBe(true);
     expect(existsSync(join(root, "AGENTS.md"))).toBe(true);
 
@@ -73,7 +73,7 @@ describe("serveur MCP Pont", () => {
     expect(preview).toMatchObject({ applied: false, created: ["lib/pont-wallet.ts"] });
     expect(existsSync(join(root, "lib/pont-wallet.ts"))).toBe(false);
     const { data: applied } = await call(client, "apply_recipe", { projectDir: root, recipeId: "wallet", apply: true });
-    expect(applied?.installCommand).toBe("npm install @pont/ledger @pont/recipes");
+    expect(applied?.installCommand).toBe("npm install @pont-bj/ledger @pont-bj/recipes");
     expect(existsSync(join(root, "lib/pont-wallet.ts"))).toBe(true);
     expect((await call(client, "apply_recipe", { projectDir: root, recipeId: "inconnue" })).result.isError).toBe(true);
   });

@@ -16,4 +16,4 @@ Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Ver
 
 ## [0.1.0] - à venir
 
-Première version prévue des paquets (`@pont/*`), non publiée à ce jour : moteur, cinq adaptateurs (FedaPay, PawaPay, PayDunya, Kkiapay, CinetPay), sandbox, SDK Node, CLI, serveur MCP, serveur autonome, registre et portefeuilles, stockages PostgreSQL et Convex, rôles, dashboard minimal, self-host Docker.
+Première version prévue des paquets (`@pont-bj/*`), non publiée à ce jour : moteur, cinq adaptateurs (FedaPay, PawaPay, PayDunya, Kkiapay, CinetPay), sandbox, SDK Node, CLI, serveur MCP, serveur autonome, registre et portefeuilles, stockages PostgreSQL et Convex, rôles, dashboard minimal, self-host Docker.

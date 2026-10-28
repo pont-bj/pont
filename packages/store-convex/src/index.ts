@@ -1,5 +1,5 @@
 import { makeFunctionReference } from "convex/server";
-import { PontError, type Payment, type Payout, type ProviderId, type Refund } from "@pont/core";
+import { PontError, type Payment, type Payout, type ProviderId, type Refund } from "@pont-bj/core";
 import {
   isUnsettled,
   type Delivery,
@@ -11,7 +11,7 @@ import {
   type RecordStore,
   type RefundStore,
   type SecretStore,
-} from "@pont/engine";
+} from "@pont-bj/engine";
 
 /** Sous-ensemble de `ConvexHttpClient` (et de `convex-test`) utilisé par les stores. */
 export interface ConvexRunner {

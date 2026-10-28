@@ -1,6 +1,6 @@
 import { createCipheriv, createDecipheriv, randomBytes } from "node:crypto";
-import { PontError } from "@pont/core";
-import type { SecretStore } from "@pont/engine";
+import { PontError } from "@pont-bj/core";
+import type { SecretStore } from "@pont-bj/engine";
 
 const VERSION = "v1";
 

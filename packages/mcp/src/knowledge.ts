@@ -1,9 +1,9 @@
-import type { Capability, Country, Operator, ProviderAdapter } from "@pont/core";
-import { FedaPayAdapter } from "@pont/adapter-fedapay";
-import { PawaPayAdapter } from "@pont/adapter-pawapay";
-import { PayDunyaAdapter } from "@pont/adapter-paydunya";
-import { KkiapayAdapter } from "@pont/adapter-kkiapay";
-import { CinetPayAdapter } from "@pont/adapter-cinetpay";
+import type { Capability, Country, Operator, ProviderAdapter } from "@pont-bj/core";
+import { FedaPayAdapter } from "@pont-bj/adapter-fedapay";
+import { PawaPayAdapter } from "@pont-bj/adapter-pawapay";
+import { PayDunyaAdapter } from "@pont-bj/adapter-paydunya";
+import { KkiapayAdapter } from "@pont-bj/adapter-kkiapay";
+import { CinetPayAdapter } from "@pont-bj/adapter-cinetpay";
 
 export const COUNTRIES: Country[] = ["BJ", "TG", "CI", "SN", "BF", "ML", "NE", "GN", "CM", "CG", "CD", "GA"];
 export const OPERATORS: Operator[] = [
@@ -98,7 +98,7 @@ const ERRORS: Record<string, Omit<ErrorExplanation, "code">> = {
   adapter_error: { meaning: "Erreur inattendue dans l'adaptateur : on ignore si la demande est partie.", fix: "Le paiement est à réconcilier ; la réconciliation (cron) le réglera. Ne recréez pas de paiement pour la même commande." },
   amount_not_multiple_of_5: { meaning: "CinetPay exige un montant multiple de 5.", fix: "Arrondissez côté serveur de façon explicite, avant la création." },
   operator_required: { meaning: "PawaPay exige l'opérateur (`operator`).", fix: "Demandez l'opérateur au client ou déduisez-le de votre interface." },
-  preauth_code_required: { meaning: "Orange Burkina (via PawaPay) exige un code à usage unique généré par le client AVANT le paiement.", fix: "Affichez : Composez *144*4*6# → montant → code PIN → code reçu par SMS ; puis recréez le paiement avec `preAuthorisationCode` (nouvelle clé d'idempotence). Instructions : PREAUTH_INSTRUCTIONS de @pont/adapter-pawapay." },
+  preauth_code_required: { meaning: "Orange Burkina (via PawaPay) exige un code à usage unique généré par le client AVANT le paiement.", fix: "Affichez : Composez *144*4*6# → montant → code PIN → code reçu par SMS ; puis recréez le paiement avec `preAuthorisationCode` (nouvelle clé d'idempotence). Instructions : PREAUTH_INSTRUCTIONS de @pont-bj/adapter-pawapay." },
   partial_refund_not_supported: { meaning: "Kkiapay ne rembourse que la totalité.", fix: "Remboursez la totalité ou passez par un virement manuel." },
   not_found: { meaning: "L'agrégateur ne connaît pas l'opération.", fix: "Si elle venait d'un statut ambigu, rien n'a été débité." },
 };
@@ -121,7 +121,7 @@ export const DOCS: DocSection[] = [
     id: "quickstart",
     title: "Démarrage rapide",
     body: `1. \`npx pont init --agent\` (ou l'outil scaffold_integration) : génère lib/pont, la route des webhooks /api/pont/hooks/[provider], la route cron, un exemple d'action et .env.local en sandbox.
-2. Installez \`@pont/node\`.
+2. Installez \`@pont-bj/node\`.
 3. Créez un paiement côté serveur : \`pont.createPayment({ amount, currency: "XOF", country: "BJ", customer: { phone }, reference }, idempotencyKey)\`.
 4. Présentez \`payment.nextAction\` au client : redirect (URL), await_customer (valider sur le téléphone), client_widget (Kkiapay).
 5. Livrez uniquement quand \`payment.status === "succeeded"\` (événement payment.succeeded).`,
@@ -149,7 +149,7 @@ export const DOCS: DocSection[] = [
   {
     id: "stockage",
     title: "Stockage et réconciliation",
-    body: `En live, un stockage persistant est obligatoire (option stores de createPontFromEnv). @pont/store-convex fournit tous les stores ; copiez convex/pontStore.ts, fusionnez pontTables dans votre schéma, définissez PONT_STORE_SECRET (32+ caractères) des deux côtés. Le cron /api/pont/cron (toutes les 5 min, Authorization: Bearer CRON_SECRET) réconcilie les opérations incertaines et livre les webhooks.`,
+    body: `En live, un stockage persistant est obligatoire (option stores de createPontFromEnv). @pont-bj/store-convex fournit tous les stores ; copiez convex/pontStore.ts, fusionnez pontTables dans votre schéma, définissez PONT_STORE_SECRET (32+ caractères) des deux côtés. Le cron /api/pont/cron (toutes les 5 min, Authorization: Bearer CRON_SECRET) réconcilie les opérations incertaines et livre les webhooks.`,
   },
   {
     id: "variables",

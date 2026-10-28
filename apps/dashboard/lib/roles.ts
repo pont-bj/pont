@@ -1,5 +1,5 @@
 import "server-only";
-import { RoleSet, roleNameSchema, roleDefinitionSchema, type RoleDefinition } from "@pont/auth";
+import { RoleSet, roleNameSchema, roleDefinitionSchema, type RoleDefinition } from "@pont-bj/auth";
 import { getAuth } from "./auth";
 import { ADMIN_ROLE } from "./roles-db";
 

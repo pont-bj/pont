@@ -1,5 +1,5 @@
 {
-  "name": "@pont/framework",
+  "name": "@pont-bj/framework",
   "version": "0.1.0",
   "description": "Briques communes de Pont (validation, erreurs, utilitaires).",
   "type": "module",
@@ -21,7 +21,7 @@
     "build": "tsup src/index.ts --format esm --dts --clean --target node20"
   },
   "dependencies": {
-    "@pont/core": "workspace:*",
+    "@pont-bj/core": "workspace:*",
     "zod": "3.25.76"
   },
   "publishConfig": {
@@ -38,12 +38,12 @@
   "author": "François Mawutô Aboudou ZINSOU <pro@aboudouzinsou.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aboudou-cto-bloko/pont.git",
+    "url": "git+https://github.com/pont-bj/pont.git",
     "directory": "packages/framework"
   },
-  "homepage": "https://github.com/aboudou-cto-bloko/pont#readme",
+  "homepage": "https://github.com/pont-bj/pont#readme",
   "bugs": {
-    "url": "https://github.com/aboudou-cto-bloko/pont/issues"
+    "url": "https://github.com/pont-bj/pont/issues"
   },
   "keywords": [
     "payments",

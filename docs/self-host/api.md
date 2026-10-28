@@ -86,7 +86,7 @@ Statuts : `pending`, `processing`, `succeeded`, `failed`, `expired`, `cancelled`
 **Sortants.** Avec `PONT_WEBHOOK_URL` ou des destinataires ajoutés dans le dashboard, Pont envoie vos événements (`payment.succeeded`, `payment.failed`, `payout.succeeded`, `refund.succeeded`…) en `POST`, signés dans l'en-tête `Pont-Signature`. Livraison au moins une fois, avec relances sur environ 3 jours. Vérifiez la signature sur le **corps brut** :
 
 ```ts
-import { verifyPontSignature } from "@pont/node";
+import { verifyPontSignature } from "@pont-bj/node";
 const ok = verifyPontSignature(process.env.PONT_WEBHOOK_SECRET!, rawBody, request.headers.get("pont-signature"));
 ```
 

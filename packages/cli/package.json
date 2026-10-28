@@ -1,5 +1,5 @@
 {
-  "name": "@pont/cli",
+  "name": "@pont-bj/cli",
   "version": "0.1.0",
   "description": "CLI Pont : sandbox, essais de paiement et outils de développement en ligne de commande.",
   "type": "module",
@@ -16,13 +16,13 @@
     "build": "tsup src/index.ts src/bin.ts --format esm --dts --clean --target node20"
   },
   "dependencies": {
-    "@pont/core": "workspace:*",
-    "@pont/node": "workspace:*",
-    "@pont/engine": "workspace:*",
-    "@pont/sandbox": "workspace:*",
-    "@pont/store-convex": "workspace:*",
-    "@pont/recipes": "workspace:*",
-    "@pont/framework": "workspace:*",
+    "@pont-bj/core": "workspace:*",
+    "@pont-bj/node": "workspace:*",
+    "@pont-bj/engine": "workspace:*",
+    "@pont-bj/sandbox": "workspace:*",
+    "@pont-bj/store-convex": "workspace:*",
+    "@pont-bj/recipes": "workspace:*",
+    "@pont-bj/framework": "workspace:*",
     "zod": "3.25.76"
   },
   "license": "BUSL-1.1",
@@ -50,12 +50,12 @@
   "author": "François Mawutô Aboudou ZINSOU <pro@aboudouzinsou.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aboudou-cto-bloko/pont.git",
+    "url": "git+https://github.com/pont-bj/pont.git",
     "directory": "packages/cli"
   },
-  "homepage": "https://github.com/aboudou-cto-bloko/pont#readme",
+  "homepage": "https://github.com/pont-bj/pont#readme",
   "bugs": {
-    "url": "https://github.com/aboudou-cto-bloko/pont/issues"
+    "url": "https://github.com/pont-bj/pont/issues"
   },
   "keywords": [
     "payments",

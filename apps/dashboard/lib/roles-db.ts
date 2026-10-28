@@ -1,5 +1,5 @@
 import type { DatabaseSync } from "node:sqlite";
-import { PRESETS, RoleSet, type PresetName } from "@pont/auth";
+import { PRESETS, RoleSet, type PresetName } from "@pont-bj/auth";
 import { env } from "./env";
 
 /** Le rôle « admin » existe toujours et garde l'accès total : on ne peut pas se verrouiller hors du dashboard. */

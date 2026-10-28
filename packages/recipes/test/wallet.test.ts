@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { MemoryIdempotencyStore, MemoryPaymentStore, PontEngine, type PontEvent } from "@pont/engine";
-import { SandboxAdapter } from "@pont/sandbox";
-import { createApp, matchRecipes, planRecipe } from "@pont/framework";
-import { Ledger, Limits, MemoryCustomerProfileStore, MemoryLedgerStore, Wallets, ledgerModule, limitsModule, walletsModule } from "@pont/ledger";
+import { MemoryIdempotencyStore, MemoryPaymentStore, PontEngine, type PontEvent } from "@pont-bj/engine";
+import { SandboxAdapter } from "@pont-bj/sandbox";
+import { createApp, matchRecipes, planRecipe } from "@pont-bj/framework";
+import { Ledger, Limits, MemoryCustomerProfileStore, MemoryLedgerStore, Wallets, ledgerModule, limitsModule, walletsModule } from "@pont-bj/ledger";
 import { LimitExceededError, RECIPES, WalletService, paymentsModule, walletRecipe } from "../src/index.js";
 
 const tiers = walletRecipe.config.limits!.tiers as Record<string, { maxBalance: number; maxSingle: number; maxDailyOut: number; maxMonthlyOut: number }>;
