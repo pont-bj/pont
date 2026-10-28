@@ -23,4 +23,4 @@ Source : [CGU](https://kkiapay.me/conditions-generales-dutilisation-2/?lang=en) 
 - **Art. 11** : les identifiants ne doivent en aucun cas être communiqués à un tiers ; le membre est seul responsable de l'usage par un tiers.
 - **Art. 13** : interdiction de modifier / reconfigurer / reproduire le logiciel.
 - **Art. 18** : contrat *intuitu personae*, non cessible.
-- **Conséquence :** Kkiapay n'est compatible ni avec le BYOK hébergé, ni avec le multi-agrégateurs, sans accord écrit. Voir [ADR-001](../decisions/ADR-001-cgu-et-modele-byok.md).
+- **Conséquence :** Kkiapay n'est compatible ni avec le BYOK hébergé, ni avec le multi-agrégateurs, sans accord écrit. Voir ADR-001.

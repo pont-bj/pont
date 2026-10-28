@@ -38,4 +38,4 @@ Source : [CGU](https://www.fedapay.com/general-terms-of-use) (pas de date de ver
 - **Art. 1.6** : la mise à disposition non autorisée des identifiants et clés d'API à un tiers est un manquement grave → suspension immédiate et **blocage des fonds**. Déléguer la gestion du compte est interdit.
 - **Art. 6** : interdit d'associer FedaPay à des programmes non autorisés ou non documentés par l'éditeur.
 - Pas de clause d'exclusivité : utiliser d'autres agrégateurs est permis.
-- **Conséquence : BYOK hébergé chez Pont = interdit sans accord écrit de FedaPay.** Voir [ADR-001](../decisions/ADR-001-cgu-et-modele-byok.md).
+- **Conséquence : BYOK hébergé chez Pont = interdit sans accord écrit de FedaPay.** Voir ADR-001.
