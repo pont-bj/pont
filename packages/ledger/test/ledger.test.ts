@@ -180,3 +180,30 @@ describe("modules du framework", () => {
     expect(await app.module<Wallets>("wallets").balance("awa", "XOF")).toMatchObject({ available: 0 });
   });
 });
+
+describe("listes (dashboard)", () => {
+  it("liste comptes et écritures, plus récents d'abord, avec filtre par préfixe", async () => {
+    let t = 1_000;
+    const { store, wallets } = setup(() => t++);
+    await wallets.open("awa", "XOF");
+    await wallets.deposit({ userId: "awa", currency: "XOF", amount: 4_000, provider: "fedapay", paymentId: "p1" });
+    await wallets.deposit({ userId: "awa", currency: "XOF", amount: 1_000, provider: "fedapay", paymentId: "p2" });
+    const mine = await store.listAccounts({ prefix: "wallet:awa:" });
+    expect(mine.map((a) => a.code).sort()).toEqual(["wallet:awa:XOF:available", "wallet:awa:XOF:held"]);
+    expect(mine.find((a) => a.code.endsWith(":available"))?.balance).toBe(5_000);
+    expect((await store.listAccounts({ prefix: "system:" })).every((a) => a.code.startsWith("system:"))).toBe(true);
+    expect(await store.listAccounts({ limit: 1 })).toHaveLength(1);
+    expect((await store.listEntries(10)).map((e) => e.idempotencyKey)).toEqual(["deposit:p2", "deposit:p1"]);
+    expect(await store.listEntries(1)).toHaveLength(1);
+  });
+
+  it("le profil modifiable gèle et dégèle sans toucher au palier", async () => {
+    const profiles = new MemoryCustomerProfileStore();
+    await profiles.setTier("awa", "basique");
+    await profiles.setFrozen("awa", true);
+    expect(await profiles.isFrozen("awa")).toBe(true);
+    await profiles.setFrozen("awa", false);
+    expect(await profiles.isFrozen("awa")).toBe(false);
+    expect(await profiles.getTier("awa")).toBe("basique");
+  });
+});

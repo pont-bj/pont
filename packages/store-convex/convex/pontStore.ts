@@ -114,6 +114,19 @@ export const recordListUnsettled = query({
   },
 });
 
+export const recordListRecent = query({
+  args: { secret: v.string(), kind, limit: v.number() },
+  handler: async (ctx, args) => {
+    assertSecret(args.secret);
+    const rows = (await ctx.db
+      .query("pontRecords")
+      .withIndex("by_kind_updated", (q) => q.eq("kind", args.kind))
+      .order("desc")
+      .take(Math.min(Math.max(args.limit, 1), 200)));
+    return rows.map((row) => row.data);
+  },
+});
+
 export const refundListByPayment = query({
   args: { secret: v.string(), paymentId: v.string() },
   handler: async (ctx, args) => {
@@ -188,5 +201,54 @@ export const deliveryDue = query({
       .withIndex("by_due", (q) => q.eq("status", "pending").lte("nextAttemptAt", args.now))
       .take(Math.min(Math.max(args.limit, 1), 200)));
     return rows.map((row) => row.data);
+  },
+});
+
+export const deliveryListRecent = query({
+  args: { secret: v.string(), limit: v.number() },
+  handler: async (ctx, args) => {
+    assertSecret(args.secret);
+    const rows = await ctx.db.query("pontDeliveries").order("desc").take(Math.min(Math.max(args.limit, 1), 200));
+    return rows.map((row) => row.data);
+  },
+});
+
+// Coffre de secrets : les valeurs arrivent déjà chiffrées (AES-256-GCM) par le serveur Pont.
+export const secretGet = query({
+  args: { secret: v.string(), key: v.string() },
+  handler: async (ctx, args) => {
+    assertSecret(args.secret);
+    return (await ctx.db.query("pontSecrets").withIndex("by_key", (q) => q.eq("key", args.key)).unique())?.value ?? null;
+  },
+});
+
+export const secretPut = mutation({
+  args: { secret: v.string(), key: v.string(), value: v.string(), updatedAt: v.number() },
+  handler: async (ctx, { secret, ...entry }) => {
+    assertSecret(secret);
+    const existing = await ctx.db.query("pontSecrets").withIndex("by_key", (q) => q.eq("key", entry.key)).unique();
+    if (existing) await ctx.db.replace(existing._id, entry);
+    else await ctx.db.insert("pontSecrets", entry);
+  },
+});
+
+export const secretDelete = mutation({
+  args: { secret: v.string(), key: v.string() },
+  handler: async (ctx, args) => {
+    assertSecret(args.secret);
+    const existing = await ctx.db.query("pontSecrets").withIndex("by_key", (q) => q.eq("key", args.key)).unique();
+    if (existing) await ctx.db.delete(existing._id);
+  },
+});
+
+export const secretList = query({
+  args: { secret: v.string(), prefix: v.string() },
+  handler: async (ctx, args) => {
+    assertSecret(args.secret);
+    const rows = await ctx.db
+      .query("pontSecrets")
+      .withIndex("by_key", (q) => q.gte("key", args.prefix).lt("key", `${args.prefix}\uffff`))
+      .take(500);
+    return rows.map((row) => ({ key: row.key, updatedAt: row.updatedAt }));
   },
 });

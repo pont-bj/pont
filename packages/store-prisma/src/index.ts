@@ -9,6 +9,7 @@ import {
   type PayoutStore,
   type RecordStore,
   type RefundStore,
+  type SecretStore,
 } from "@pont/engine";
 import type { WorkflowRun, WorkflowRunStore } from "@pont/framework";
 
@@ -25,7 +26,15 @@ interface Delegate {
   updateMany(args: { where: Record<string, unknown>; data: Record<string, unknown> }): Promise<{ count: number }>;
 }
 
+interface SecretDelegate {
+  findUnique(args: { where: Record<string, unknown> }): Promise<unknown>;
+  findMany(args: { where: Record<string, unknown> }): Promise<unknown[]>;
+  upsert(args: { where: Record<string, unknown>; create: Record<string, unknown>; update: Record<string, unknown> }): Promise<unknown>;
+  deleteMany(args: { where: Record<string, unknown> }): Promise<unknown>;
+}
+
 export interface PontPrismaClient {
+  pontSecret: SecretDelegate;
   pontRecord: Delegate;
   pontIdempotency: Delegate;
   pontDelivery: Delegate;
@@ -78,6 +87,15 @@ class PrismaRecordStore<T extends StoredRecord> implements RecordStore<T> {
     const rows = await this.client.pontRecord.findMany({
       where: { kind: this.kind, unsettled: true, updatedAt: { lte: BigInt(updatedBefore) } },
       orderBy: { updatedAt: "asc" },
+      take: limit,
+    });
+    return rows.map((row) => dataOf<T>(row)!);
+  }
+
+  async listRecent(limit: number): Promise<T[]> {
+    const rows = await this.client.pontRecord.findMany({
+      where: { kind: this.kind },
+      orderBy: { updatedAt: "desc" },
       take: limit,
     });
     return rows.map((row) => dataOf<T>(row)!);
@@ -163,8 +181,18 @@ export class PrismaDeliveryStore implements DeliveryStore {
     return rows.map((row) => dataOf<Delivery>(row)!);
   }
 
+  async listRecent(limit: number): Promise<Delivery[]> {
+    const rows = await this.client.pontDelivery.findMany({ where: {}, orderBy: { createdAt: "desc" }, take: limit });
+    return rows.map((row) => dataOf<Delivery>(row)!);
+  }
+
   private columns(delivery: Delivery): Record<string, unknown> {
-    return { status: delivery.status, nextAttemptAt: delivery.nextAttemptAt === null ? null : BigInt(delivery.nextAttemptAt), data: json(delivery) };
+    return {
+      status: delivery.status,
+      nextAttemptAt: delivery.nextAttemptAt === null ? null : BigInt(delivery.nextAttemptAt),
+      createdAt: BigInt(delivery.createdAt),
+      data: json(delivery),
+    };
   }
 }
 
@@ -213,6 +241,30 @@ export class PrismaWorkflowRunStore implements WorkflowRunStore {
   }
 }
 
+/** Coffre de secrets sur PostgreSQL. Les valeurs sont chiffrées avant d'arriver ici. */
+export class PrismaSecretStore implements SecretStore {
+  constructor(private readonly client: PontPrismaClient) {}
+
+  async get(key: string): Promise<string | null> {
+    const row = (await this.client.pontSecret.findUnique({ where: { key } })) as { value: string } | null;
+    return row?.value ?? null;
+  }
+
+  async put(key: string, value: string): Promise<void> {
+    const updatedAt = BigInt(Date.now());
+    await this.client.pontSecret.upsert({ where: { key }, create: { key, value, updatedAt }, update: { value, updatedAt } });
+  }
+
+  async delete(key: string): Promise<void> {
+    await this.client.pontSecret.deleteMany({ where: { key } });
+  }
+
+  async list(prefix: string): Promise<Array<{ key: string; updatedAt: number }>> {
+    const rows = (await this.client.pontSecret.findMany({ where: { key: { startsWith: prefix } } })) as Array<{ key: string; updatedAt: bigint }>;
+    return rows.map((row) => ({ key: row.key, updatedAt: Number(row.updatedAt) }));
+  }
+}
+
 /** Tous les stores Pont sur un même client Prisma. */
 export function createPrismaStores(client: PontPrismaClient) {
   return {
@@ -221,6 +273,7 @@ export function createPrismaStores(client: PontPrismaClient) {
     refunds: new PrismaRefundStore(client),
     idempotency: new PrismaIdempotencyStore(client),
     deliveries: new PrismaDeliveryStore(client),
+    secrets: new PrismaSecretStore(client),
     workflowRuns: new PrismaWorkflowRunStore(client),
   };
 }

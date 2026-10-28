@@ -41,8 +41,10 @@ model PontDelivery {
   deliveryId    String  @id @map("delivery_id")
   status        String
   nextAttemptAt BigInt? @map("next_attempt_at")
+  createdAt     BigInt  @default(0) @map("created_at")
   data          Json
 
+  @@index([createdAt])
   @@index([status, nextAttemptAt])
   @@map("pont_deliveries")
 }
@@ -85,6 +87,25 @@ model PontLedgerLine {
   @@index([accountId, createdAt])
   @@index([entryId])
   @@map("pont_ledger_lines")
+}
+
+// Coffre de secrets : valeurs déjà chiffrées par le serveur (AES-256-GCM), jamais de clair en base.
+model PontSecret {
+  key       String @id
+  value     String
+  updatedAt BigInt @map("updated_at")
+
+  @@map("pont_secrets")
+}
+
+// Palier KYC et gel de compte des utilisateurs de la fintech (plafonds du registre).
+model PontCustomerProfile {
+  userId    String  @id @map("user_id")
+  tier      String?
+  frozen    Boolean @default(false)
+  updatedAt BigInt  @map("updated_at")
+
+  @@map("pont_customer_profiles")
 }
 
 model PontWorkflowRun {

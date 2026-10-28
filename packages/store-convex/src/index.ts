@@ -10,6 +10,7 @@ import {
   type PayoutStore,
   type RecordStore,
   type RefundStore,
+  type SecretStore,
 } from "@pont/engine";
 
 /** Sous-ensemble de `ConvexHttpClient` (et de `convex-test`) utilisé par les stores. */
@@ -88,6 +89,10 @@ class ConvexRecordStore<T extends StoredRecord> implements RecordStore<T> {
 
   async listUnsettled(updatedBefore: number, limit: number): Promise<T[]> {
     return parseList<T>(await this.caller.query("recordListUnsettled", { kind: this.kind, updatedBefore, limit }));
+  }
+
+  async listRecent(limit: number): Promise<T[]> {
+    return parseList<T>(await this.caller.query("recordListRecent", { kind: this.kind, limit }));
   }
 
   private row(record: T): Record<string, unknown> {
@@ -170,6 +175,10 @@ export class ConvexDeliveryStore implements DeliveryStore {
     return parseList<Delivery>(await this.caller.query("deliveryDue", { now, limit }));
   }
 
+  async listRecent(limit: number): Promise<Delivery[]> {
+    return parseList<Delivery>(await this.caller.query("deliveryListRecent", { limit }));
+  }
+
   private row(delivery: Delivery): Record<string, unknown> {
     return {
       deliveryId: delivery.id,
@@ -177,6 +186,39 @@ export class ConvexDeliveryStore implements DeliveryStore {
       ...(delivery.nextAttemptAt !== null ? { nextAttemptAt: delivery.nextAttemptAt } : {}),
       data: JSON.stringify(delivery),
     };
+  }
+}
+
+/** Coffre de secrets sur Convex. Les valeurs sont chiffrées avant d'arriver ici. */
+export class ConvexSecretStore implements SecretStore {
+  private readonly caller: ConvexCaller;
+
+  constructor(options: ConvexStoreOptions) {
+    this.caller = new ConvexCaller(options);
+  }
+
+  async get(key: string): Promise<string | null> {
+    const value = await this.caller.query("secretGet", { key });
+    if (value !== null && typeof value !== "string") throw new PontError("configuration_error", "Réponse Convex inattendue.");
+    return value;
+  }
+
+  async put(key: string, value: string): Promise<void> {
+    await this.caller.mutation("secretPut", { key, value, updatedAt: Date.now() });
+  }
+
+  async delete(key: string): Promise<void> {
+    await this.caller.mutation("secretDelete", { key });
+  }
+
+  async list(prefix: string): Promise<Array<{ key: string; updatedAt: number }>> {
+    const rows = await this.caller.query("secretList", { prefix });
+    if (!Array.isArray(rows)) throw new PontError("configuration_error", "Réponse Convex inattendue.");
+    return rows.map((row) => {
+      const { key, updatedAt } = row as { key: unknown; updatedAt: unknown };
+      if (typeof key !== "string" || typeof updatedAt !== "number") throw new PontError("configuration_error", "Réponse Convex inattendue.");
+      return { key, updatedAt };
+    });
   }
 }
 
@@ -188,5 +230,6 @@ export function createConvexStores(options: ConvexStoreOptions) {
     refunds: new ConvexRefundStore(options),
     idempotency: new ConvexIdempotencyStore(options),
     deliveries: new ConvexDeliveryStore(options),
+    secrets: new ConvexSecretStore(options),
   };
 }

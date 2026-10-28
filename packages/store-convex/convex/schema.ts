@@ -20,12 +20,19 @@ export const pontTables = {
     .index("by_attempt", ["kind", "provider", "attemptId"])
     .index("by_provider_ref", ["kind", "provider", "providerRef"])
     .index("by_unsettled", ["kind", "unsettled", "updatedAt"])
-    .index("by_payment", ["kind", "paymentId"]),
+    .index("by_payment", ["kind", "paymentId"])
+    .index("by_kind_updated", ["kind", "updatedAt"]),
 
   pontIdempotency: defineTable({
     key: v.string(),
     fingerprint: v.string(),
     recordId: v.string(),
+  }).index("by_key", ["key"]),
+
+  pontSecrets: defineTable({
+    key: v.string(),
+    value: v.string(),
+    updatedAt: v.number(),
   }).index("by_key", ["key"]),
 
   pontDeliveries: defineTable({
