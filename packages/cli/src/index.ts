@@ -3,11 +3,15 @@ import { formatReport, runDoctor } from "./commands/doctor.js";
 import { runInit } from "./commands/init.js";
 import { SCENARIO_NAMES, runTrigger } from "./commands/trigger.js";
 import { addRecipe, listRecipes } from "./commands/recipe.js";
+import { runProviderNew } from "./commands/provider.js";
 
 export { runInit, sandboxPayment } from "./commands/init.js";
 export { runDoctor, formatReport } from "./commands/doctor.js";
 export { runTrigger, SCENARIO_NAMES } from "./commands/trigger.js";
 export { detectProject } from "./project.js";
+export { runProviderNew, type ProviderNewOptions, type ProviderNewResult } from "./commands/provider.js";
+export { parseProviderSpec, providerSpecSchema, type ProviderSpec } from "./provider/spec.js";
+export { renderProvider } from "./provider/render.js";
 export { addRecipe, listRecipes, type RecipeSummary, type AddRecipeResult } from "./commands/recipe.js";
 
 const HELP = `pont — intégration des paiements africains
@@ -18,6 +22,8 @@ Commandes :
   pont doctor [--ci] [--json]                    Audit de sécurité de l'intégration
   pont recipes [description]                     Liste les cas d'usage (classés si description)
   pont add recipe <id> [--dry-run]               Installe un cas d'usage (ex. wallet)
+  pont provider new [--from spec.json] [--out dossier] [--force] [--dry-run]
+                                                 Génère l'adaptateur d'un agrégateur que Pont ne connaît pas
   pont trigger <scénario>                        Rejoue un scénario du sandbox
                                                  (${SCENARIO_NAMES.join(", ")})
 `;
@@ -34,6 +40,9 @@ export async function main(argv: string[], cwd: string, log: (line: string) => v
       stores: { type: "string" },
       ci: { type: "boolean", default: false },
       json: { type: "boolean", default: false },
+      from: { type: "string" },
+      out: { type: "string" },
+      force: { type: "boolean", default: false },
       help: { type: "boolean", short: "h", default: false },
     },
   });
@@ -71,6 +80,15 @@ export async function main(argv: string[], cwd: string, log: (line: string) => v
       }
       const result = addRecipe({ cwd, recipeId: rest[1], dryRun: values["dry-run"], log });
       return result.recipe ? 0 : 1;
+    }
+    case "provider": {
+      if (rest[0] !== "new") {
+        log("Usage : pont provider new [--from spec.json] [--out dossier] [--force] [--dry-run]");
+        return 1;
+      }
+      const result = await runProviderNew({ cwd, ...(values.from ? { from: values.from } : {}), ...(values.out ? { out: values.out } : {}), force: values.force, dryRun: values["dry-run"], log });
+      for (const error of result.errors) log(`✖ ${error}`);
+      return result.ok ? 0 : 1;
     }
     case "trigger": {
       const scenario = rest[0];
