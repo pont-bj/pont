@@ -1,4 +1,4 @@
-import type { Account, Entry, LedgerStore, Movement, PostResult } from "@pont/ledger";
+import type { Account, AccountWithBalance, Entry, LedgerStore, ManagedProfileStore, Movement, PostResult } from "@pont/ledger";
 import type { Currency } from "@pont/core";
 
 interface LedgerDelegate {
@@ -154,6 +154,20 @@ export class PrismaLedgerStore implements LedgerStore {
     }));
   }
 
+  async listAccounts(options: { prefix?: string; limit?: number } = {}): Promise<AccountWithBalance[]> {
+    const rows = (await this.client.pontLedgerAccount.findMany({
+      where: options.prefix ? { code: { startsWith: options.prefix } } : {},
+      orderBy: { createdAt: "desc" },
+      ...(options.limit ? { take: options.limit } : {}),
+    })) as AccountRow[];
+    return rows.map((row) => ({ ...toAccount(row), balance: Number(row.balance) }));
+  }
+
+  async listEntries(limit: number): Promise<Entry[]> {
+    const rows = (await this.client.pontLedgerEntry.findMany({ where: {}, orderBy: { createdAt: "desc" }, take: limit })) as EntryRow[];
+    return Promise.all(rows.map((row) => this.hydrate(row)));
+  }
+
   private async hydrate(row: EntryRow): Promise<Entry> {
     const lines = (await this.client.pontLedgerLine.findMany({ where: { entryId: row.id }, orderBy: { id: "asc" } })) as LineRow[];
     return {
@@ -167,5 +181,49 @@ export class PrismaLedgerStore implements LedgerStore {
       createdAt: Number(row.createdAt),
       lines: lines.map((l) => ({ accountId: l.accountId, direction: l.direction === "debit" ? "debit" : "credit", amount: Number(l.amount) })),
     };
+  }
+}
+
+interface ProfileDelegate {
+  findUnique(args: { where: Record<string, unknown> }): Promise<unknown>;
+  upsert(args: { where: Record<string, unknown>; create: Record<string, unknown>; update: Record<string, unknown> }): Promise<unknown>;
+}
+
+export interface PontPrismaProfileClient {
+  pontCustomerProfile: ProfileDelegate;
+}
+
+type ProfileRow = { userId: string; tier: string | null; frozen: boolean };
+
+/** Palier KYC et gel de compte persistants, lus par `Limits` à chaque opération. */
+export class PrismaCustomerProfileStore implements ManagedProfileStore {
+  constructor(private readonly client: PontPrismaProfileClient) {}
+
+  async getTier(userId: string): Promise<string | null> {
+    return ((await this.row(userId))?.tier ?? null) as string | null;
+  }
+
+  async isFrozen(userId: string): Promise<boolean> {
+    return (await this.row(userId))?.frozen ?? false;
+  }
+
+  async setTier(userId: string, tier: string): Promise<void> {
+    await this.client.pontCustomerProfile.upsert({
+      where: { userId },
+      create: { userId, tier, frozen: false, updatedAt: BigInt(Date.now()) },
+      update: { tier, updatedAt: BigInt(Date.now()) },
+    });
+  }
+
+  async setFrozen(userId: string, frozen: boolean): Promise<void> {
+    await this.client.pontCustomerProfile.upsert({
+      where: { userId },
+      create: { userId, tier: null, frozen, updatedAt: BigInt(Date.now()) },
+      update: { frozen, updatedAt: BigInt(Date.now()) },
+    });
+  }
+
+  private async row(userId: string): Promise<ProfileRow | null> {
+    return (await this.client.pontCustomerProfile.findUnique({ where: { userId } })) as ProfileRow | null;
   }
 }

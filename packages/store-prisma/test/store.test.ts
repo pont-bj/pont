@@ -25,6 +25,7 @@ beforeEach(async () => {
     prisma.pontRecord.deleteMany(),
     prisma.pontIdempotency.deleteMany(),
     prisma.pontDelivery.deleteMany(),
+    prisma.pontSecret.deleteMany(),
     prisma.pontWorkflowRun.deleteMany(),
   ]);
 });
@@ -108,5 +109,32 @@ describe("stores Prisma Postgres", () => {
     const statuses = [first.status, second.status].sort();
     expect(statuses).toEqual(["fulfilled", "rejected"]);
     expect(calls).toEqual(["a1", "b1"]);
+  });
+});
+
+describe("livraisons et coffre sur Postgres", () => {
+  it("liste les livraisons récentes d'abord", async ({ skip }) => {
+    if (!available) skip();
+    const { deliveries } = createPrismaStores(client);
+    const make = (id: string, createdAt: number) => ({ id, eventId: "evt", endpointId: "app", url: "https://app.exemple.bj", body: "{}", status: "pending" as const, attempts: [], nextAttemptAt: createdAt, createdAt });
+    await deliveries.insert(make("whd_1", 1000));
+    await deliveries.insert(make("whd_2", 3000));
+    await deliveries.insert(make("whd_3", 2000));
+    expect((await deliveries.listRecent(2)).map((d) => d.id)).toEqual(["whd_2", "whd_3"]);
+  });
+
+  it("stocke, remplace, liste par préfixe et supprime les secrets", async ({ skip }) => {
+    if (!available) skip();
+    const { secrets } = createPrismaStores(client);
+    expect(await secrets.get("provider:fedapay")).toBeNull();
+    await secrets.put("provider:fedapay", "v1.a");
+    await secrets.put("provider:fedapay", "v1.b");
+    await secrets.put("endpoint:ep_1", "v1.c");
+    expect(await secrets.get("provider:fedapay")).toBe("v1.b");
+    expect((await secrets.list("provider:")).map((e) => e.key)).toEqual(["provider:fedapay"]);
+    await secrets.delete("provider:fedapay");
+    await secrets.delete("provider:absent");
+    expect(await secrets.get("provider:fedapay")).toBeNull();
+    expect(await secrets.list("endpoint:")).toHaveLength(1);
   });
 });

@@ -5,7 +5,8 @@
   "main": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./prisma/*": "./prisma/*"
+    "./prisma/*": "./prisma/*",
+    "./postgres": "./src/postgres.ts"
   },
   "license": "UNLICENSED",
   "files": [
@@ -25,7 +26,9 @@
     "@pont/core": "workspace:*",
     "@pont/engine": "workspace:*",
     "@pont/framework": "workspace:*",
-    "@pont/ledger": "workspace:*"
+    "@pont/ledger": "workspace:*",
+    "@prisma/adapter-pg": "7.10.1",
+    "@prisma/client": "7.10.1"
   },
   "publishConfig": {
     "main": "./dist/index.js",
@@ -40,8 +43,6 @@
     "access": "restricted"
   },
   "devDependencies": {
-    "@prisma/adapter-pg": "7.10.1",
-    "@prisma/client": "7.10.1",
     "prisma": "7.10.1",
     "@pont/sandbox": "workspace:*"
   }

@@ -38,6 +38,10 @@ export interface Entry {
   createdAt: number;
 }
 
+export interface AccountWithBalance extends Account {
+  balance: number;
+}
+
 export interface Movement extends EntryLine {
   entryId: string;
   createdAt: number;
@@ -60,6 +64,10 @@ export interface LedgerStore {
   getEntry(id: string): Promise<Entry | null>;
   balance(accountId: string): Promise<number>;
   movements(accountId: string, options?: { since?: number; limit?: number }): Promise<Movement[]>;
+  /** Comptes dont le code commence par `prefix` (tous si absent), les plus récents d'abord, avec leur solde. */
+  listAccounts(options?: { prefix?: string; limit?: number }): Promise<AccountWithBalance[]>;
+  /** Écritures les plus récentes d'abord (dashboard, audit). */
+  listEntries(limit: number): Promise<Entry[]>;
 }
 
 /** Variation du solde d'un compte pour une ligne, selon son sens normal. */
@@ -119,6 +127,18 @@ export class MemoryLedgerStore implements LedgerStore {
 
   async balance(accountId: string): Promise<number> {
     return this.balances.get(accountId) ?? 0;
+  }
+
+  async listAccounts(options: { prefix?: string; limit?: number } = {}): Promise<AccountWithBalance[]> {
+    return [...this.accounts.values()]
+      .filter((account) => account.code.startsWith(options.prefix ?? ""))
+      .sort((a, b) => b.createdAt - a.createdAt)
+      .slice(0, options.limit ?? Number.MAX_SAFE_INTEGER)
+      .map((account) => ({ ...account, balance: this.balances.get(account.id) ?? 0 }));
+  }
+
+  async listEntries(limit: number): Promise<Entry[]> {
+    return [...this.entries.values()].sort((a, b) => b.createdAt - a.createdAt).slice(0, limit);
   }
 
   async movements(accountId: string, options: { since?: number; limit?: number } = {}): Promise<Movement[]> {

@@ -30,12 +30,23 @@ export interface CustomerProfileStore {
   isFrozen(userId: string): Promise<boolean>;
 }
 
-export class MemoryCustomerProfileStore implements CustomerProfileStore {
+/** Profil modifiable : palier KYC et gel, gérés par la fintech (API ou dashboard). */
+export interface ManagedProfileStore extends CustomerProfileStore {
+  setTier(userId: string, tier: string): Promise<void>;
+  setFrozen(userId: string, frozen: boolean): Promise<void>;
+}
+
+export class MemoryCustomerProfileStore implements ManagedProfileStore {
   private readonly tiers = new Map<string, string>();
   private readonly frozen = new Set<string>();
 
-  setTier(userId: string, tier: string): void {
+  async setTier(userId: string, tier: string): Promise<void> {
     this.tiers.set(userId, tier);
+  }
+
+  async setFrozen(userId: string, frozen: boolean): Promise<void> {
+    if (frozen) this.frozen.add(userId);
+    else this.frozen.delete(userId);
   }
 
   freeze(userId: string): void {
