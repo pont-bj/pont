@@ -128,7 +128,8 @@ const FAQ = [
 const PIED = [
   ["Produit", [["Aperçu", "#apercu"], ["Ce qui est inclus", "#inclus"], ["Technologies", "#technos"], ["Cas d'usage", "#cas"], ["Self-host et Cloud", "#offres"]]],
   ["Apprendre", [["Documentation", "https://docs.pont.aboudouzinsou.com"], ["Démarrer en 5 minutes", "https://docs.pont.aboudouzinsou.com/guides"], ["Référence de l'API", "https://docs.pont.aboudouzinsou.com/api"], ["Visite du tableau de bord", "https://docs.pont.aboudouzinsou.com/guides/visite-du-dashboard"]]],
-  ["Confiance", [["Sécurité", "#securite"], ["Questions fréquentes", "#faq"], ["Mise en production", "https://docs.pont.aboudouzinsou.com/guides/mise-en-production"]]],
+  ["Confiance", [["Sécurité", "#securite"], ["Questions fréquentes", "#faq"], ["Mise en production", "https://docs.pont.aboudouzinsou.com/guides/mise-en-production"], ["Confidentialité", "/confidentialite"]]],
+  ["Contact", [["pro@aboudouzinsou.com", "mailto:pro@aboudouzinsou.com"], ["Une question, un partenariat", "mailto:pro@aboudouzinsou.com?subject=Pont"], ["Signaler une faille", "mailto:pro@aboudouzinsou.com?subject=Faille%20de%20s%C3%A9curit%C3%A9"]]],
 ] as const;
 
 function Drapeau({ children }: { children: React.ReactNode }) {
@@ -382,7 +383,7 @@ export default async function Page() {
         <section id="faq" className="mx-auto grid max-w-[1200px] scroll-mt-20 gap-10 px-4 py-20 sm:px-6 sm:py-28 lg:grid-cols-[340px_1fr] lg:gap-16">
           <div>
             <h2 className="font-titre text-3xl font-semibold tracking-tight">Questions fréquentes</h2>
-            <p className="mt-3 text-[15px] text-zinc-500">Une autre question ? Inscrivez-vous, nous répondons à chaque message.</p>
+            <p className="mt-3 text-[15px] text-zinc-500">Une autre question ? Écrivez à <a href="mailto:pro@aboudouzinsou.com" className="font-medium text-indigo hover:underline">pro@aboudouzinsou.com</a>, nous répondons à chaque message.</p>
           </div>
           <div>
             {FAQ.map(([q, r]) => (
@@ -408,7 +409,7 @@ export default async function Page() {
       </main>
 
       <footer className="overflow-hidden border-t border-bordure bg-zinc-50/60 px-4 pt-16 sm:px-8">
-        <div className="mx-auto grid max-w-[1400px] gap-12 lg:grid-cols-[1.4fr_repeat(3,1fr)] lg:gap-16">
+        <div className="mx-auto grid max-w-[1400px] gap-12 lg:grid-cols-[1.4fr_repeat(4,1fr)] lg:gap-16">
           <div>
             <Logotype taille="text-[30px]" />
             <p className="mt-4 max-w-[320px] text-[15px] leading-7 text-zinc-600">Le backend de ta fintech, en un clic. Paiements, portefeuilles et comptabilité pour l&apos;Afrique francophone.</p>
