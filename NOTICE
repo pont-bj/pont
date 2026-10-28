@@ -1,0 +1,19 @@
+Pont
+Copyright (c) 2026 François Mawutô Aboudou ZINSOU
+
+Ce logiciel est distribué sous la Business Source License 1.1 (BUSL-1.1),
+avec conversion en AGPL-3.0-only quatre ans après la publication de chaque
+version. Voir le fichier LICENSE. Licence commerciale pour produit dérivé :
+voir LICENSE-COMMERCIAL.md. Contact : pro@aboudouzinsou.com
+
+This software is distributed under the Business Source License 1.1 (BUSL-1.1),
+converting to AGPL-3.0-only four years after each version's publication.
+See the LICENSE file.
+
+Marque : le nom « Pont », le logo et l'identité visuelle ne sont pas couverts
+par la licence du code. Voir TRADEMARK.md.
+
+Licences tierces : ce projet utilise des dépendances libres soumises à leurs
+propres licences (MIT, ISC, Apache-2.0, BSD, MPL-2.0, LGPL-3.0, EPL-2.0,
+CC-BY-4.0, OFL-1.1, etc.). Le détail, avec les licences à examiner, est dans
+docs/licence/dependances.md. Ces licences restent applicables à ces composants.
