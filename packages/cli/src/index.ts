@@ -4,12 +4,15 @@ import { runInit } from "./commands/init.js";
 import { SCENARIO_NAMES, runTrigger } from "./commands/trigger.js";
 import { addRecipe, listRecipes } from "./commands/recipe.js";
 import { runProviderNew } from "./commands/provider.js";
+import { runProviderImport } from "./commands/provider-import.js";
 
 export { runInit, sandboxPayment } from "./commands/init.js";
 export { runDoctor, formatReport } from "./commands/doctor.js";
 export { runTrigger, SCENARIO_NAMES } from "./commands/trigger.js";
 export { detectProject } from "./project.js";
 export { runProviderNew, type ProviderNewOptions, type ProviderNewResult } from "./commands/provider.js";
+export { runProviderImport, type ProviderImportOptions, type ProviderImportResult } from "./commands/provider-import.js";
+export { importOpenApi } from "./provider/openapi.js";
 export { parseProviderSpec, providerSpecSchema, type ProviderSpec } from "./provider/spec.js";
 export { renderProvider } from "./provider/render.js";
 export { addRecipe, listRecipes, type RecipeSummary, type AddRecipeResult } from "./commands/recipe.js";
@@ -23,6 +26,7 @@ Commandes :
   pont recipes [description]                     Liste les cas d'usage (classés si description)
   pont add recipe <id> [--dry-run]               Installe un cas d'usage (ex. wallet)
   pont provider new [--from spec.json] [--out dossier] [--force] [--dry-run]
+  pont provider import <url|fichier OpenAPI> [--out brouillon.json] [--force]
                                                  Génère l'adaptateur d'un agrégateur que Pont ne connaît pas
   pont trigger <scénario>                        Rejoue un scénario du sandbox
                                                  (${SCENARIO_NAMES.join(", ")})
@@ -82,8 +86,17 @@ export async function main(argv: string[], cwd: string, log: (line: string) => v
       return result.recipe ? 0 : 1;
     }
     case "provider": {
+      if (rest[0] === "import") {
+        if (!rest[1]) {
+          log("Usage : pont provider import <url|fichier OpenAPI> [--out brouillon.json] [--force]");
+          return 1;
+        }
+        const imported = await runProviderImport({ cwd, source: rest[1], ...(values.out ? { out: values.out } : {}), force: values.force, log });
+        for (const error of imported.errors) log(`✖ ${error}`);
+        return imported.ok ? 0 : 1;
+      }
       if (rest[0] !== "new") {
-        log("Usage : pont provider new [--from spec.json] [--out dossier] [--force] [--dry-run]");
+        log("Usage : pont provider new [--from spec.json] [--out dossier] [--force] [--dry-run]\n        pont provider import <url|fichier OpenAPI> [--out brouillon.json] [--force]");
         return 1;
       }
       const result = await runProviderNew({ cwd, ...(values.from ? { from: values.from } : {}), ...(values.out ? { out: values.out } : {}), force: values.force, dryRun: values["dry-run"], log });

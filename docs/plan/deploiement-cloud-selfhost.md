@@ -63,7 +63,7 @@ Le développeur déclare les rôles de sa fintech (`pont.config.ts`, puis dashbo
 - [x] Coffre à clés chiffrées, clé maître unique (self-host), voir `docs/self-host/cles-et-webhooks.md`
 - [ ] Coffre par client en enveloppe + journal d'audit (Cloud)
 - [x] E-mail : SMTP configurable depuis le dashboard (mot de passe oublié) et alertes configurables avec historique, voir `docs/self-host/email-et-alertes.md`. Reste : e-mail de vérification, invitations, modèles personnalisables
-- [x] Outil CLI d'intégration d'agrégateur personnalisé : questions (endpoints, noms des clés, signature et format des webhooks, correspondance des statuts) puis génération d'un adaptateur `ProviderAdapter` branché sur le coffre et la page Clés — fait : `pont provider new` + chargement par `PONT_PLUGINS_DIR`, voir `docs/self-host/integration-agregateur.md`. Reste : essai contre un vrai sandbox d'agrégateur, signatures asymétriques, OAuth
+- [x] Outil CLI d'intégration d'agrégateur personnalisé : questions (endpoints, noms des clés, signature et format des webhooks, correspondance des statuts) puis génération d'un adaptateur `ProviderAdapter` branché sur le coffre et la page Clés — fait : `pont provider new` + chargement par `PONT_PLUGINS_DIR`, voir `docs/self-host/integration-agregateur.md`. `pont provider import` (OpenAPI) fait. Reste : voir « Ce qui reste à faire » dans `docs/self-host/integration-agregateur.md`
 - [ ] Détection de stack étendue et skills par stack
 - [x] Dashboard branché sur les données réelles (aperçu, paiements, utilisateurs, rôles, portefeuilles, registre, clés, webhooks)
 - [x] Mise en production self-host : profil Docker `prod` (Caddy, 80/443 seulement), `setup.sh --prod`, guide `docs/self-host/mise-en-production.md`

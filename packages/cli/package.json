@@ -17,12 +17,13 @@
   },
   "dependencies": {
     "@pont-bj/core": "workspace:*",
-    "@pont-bj/node": "workspace:*",
     "@pont-bj/engine": "workspace:*",
+    "@pont-bj/framework": "workspace:*",
+    "@pont-bj/node": "workspace:*",
+    "@pont-bj/recipes": "workspace:*",
     "@pont-bj/sandbox": "workspace:*",
     "@pont-bj/store-convex": "workspace:*",
-    "@pont-bj/recipes": "workspace:*",
-    "@pont-bj/framework": "workspace:*",
+    "yaml": "2.8.1",
     "zod": "3.25.76"
   },
   "license": "BUSL-1.1",

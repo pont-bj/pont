@@ -13,6 +13,37 @@ pont provider new --out ./adapters/mon-agregateur --force
 
 Le dossier créé s'appelle `pont-adapter-<id>` (ou `--out`). Un dossier existant n'est jamais remplacé sans `--force`.
 
+## Partir de la spécification de l'API (`pont provider import`)
+
+Les noms de paramètres ne doivent pas venir de la mémoire de quelqu'un. Quand l'agrégateur publie une spécification OpenAPI 3 (JSON ou YAML), Pont la lit :
+
+```bash
+pont provider import https://api.agregateur.com/openapi.json     # https:// seulement
+pont provider import ./openapi.yaml --out ./mon-agregateur.draft.json
+pont provider new --from ./mon-agregateur.draft.json              # après avoir complété le brouillon
+```
+
+La commande écrit un **brouillon** (`<id>.draft.json`) et un compte rendu en trois blocs :
+
+- **Lu dans la spécification** : noms exacts des champs, chemins, adresses de base (la sandbox n'est reprise que si elle est nommée comme telle), schéma d'authentification, valeurs de statut listées.
+- **À relire** : ce qui est déduit des noms (`msisdn` devient `{phone}`, `merchant_reference` devient `{attemptId}`…), les opérations candidates écartées, les statuts ambigus.
+- **À renseigner à la main** : ce que la spécification ne dit pas (signature des webhooks, pays, champs obligatoires sans équivalent Pont, valeurs de statut non listées).
+
+Garde-fous : un statut ambigu (`ACCEPTED`, `APPROVED`…) n'est jamais classé en succès, il reste `pending` ; les champs obligatoires inconnus reçoivent la valeur `A_COMPLETER_<champ>` et `pont provider new --from` refuse le fichier tant qu'il en reste un ; une adresse sandbox absente n'est pas remplacée par l'adresse live.
+
+## Ce qui reste à faire (suite de l'import)
+
+| Chantier | Pourquoi |
+|---|---|
+| Documentation sans OpenAPI (`llms.txt`, pages web) | Texte libre : lecture assistée par l'agent IA via le MCP, avec validation humaine de la table de correspondance |
+| Tests de contrat générés | Exemples de requêtes et de réponses (tirés de la spécification ou d'un sandbox) qui vérifient le mapping |
+| `pont provider check` | Appeler le sandbox avec une clé de test et confirmer que les champs et les statuts existent vraiment |
+| Swagger 2.0, collections Postman | Aujourd'hui : conversion préalable en OpenAPI 3 |
+| `$ref` externes, `oneOf` / `anyOf` | Seuls les `$ref` locaux (`#/...`) et `allOf` sont suivis |
+| Signatures de webhooks asymétriques, OAuth2, requêtes signées | Absents du schéma de description |
+| Plusieurs paramètres de chemin | Seul `{providerRef}` est géré |
+| Essai contre un vrai sandbox d'agrégateur | La spécification dit comment l'API doit marcher, pas comment elle se comporte |
+
 ## Ce que le générateur demande
 
 | Information | Exemple |

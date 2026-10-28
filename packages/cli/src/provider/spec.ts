@@ -105,6 +105,14 @@ export const providerSpecSchema = z
     if (spec.payout && !spec.verifyPayout) issue(["verifyPayout"], "Un retrait exige son endpoint de vérification.");
     if (spec.refund && !spec.verifyRefund) issue(["verifyRefund"], "Un remboursement exige son endpoint de vérification.");
     if ((spec.payout || spec.refund) && !spec.transferStatusMap) issue(["transferStatusMap"], "Table de statuts des retraits et remboursements requise.");
+    // Brouillon issu de `pont provider import` : refuser tant qu'une valeur est marquée « à compléter ».
+    const unfinished = (value: unknown, path: (string | number)[]): void => {
+      if (typeof value === "string") {
+        if (value.includes("A_COMPLETER")) issue(path, "À compléter : renseignez cette valeur d'après la documentation de l'agrégateur.");
+      } else if (Array.isArray(value)) value.forEach((item, i) => unfinished(item, [...path, i]));
+      else if (typeof value === "object" && value !== null) for (const [k, v] of Object.entries(value)) unfinished(v, [...path, k]);
+    };
+    unfinished(spec, []);
     const check = (value: unknown, kind: keyof typeof PLACEHOLDERS, path: (string | number)[]): void => {
       const allowed: readonly string[] = PLACEHOLDERS[kind];
       if (typeof value === "string") {
