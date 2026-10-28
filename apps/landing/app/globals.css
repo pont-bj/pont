@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+@theme {
+  --color-indigo: #4f46e5;
+  --color-indigo-clair: #6366f1;
+  --color-indigo-fonce: #3730a3;
+  --color-indigo-50: #eef2ff;
+  --color-indigo-100: #e0e7ff;
+  --color-encre: #09090b;
+  --color-bordure: #ededf0;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-titre: var(--font-outfit), var(--font-inter), sans-serif;
+}
+
+body { @apply bg-white text-encre antialiased; }
+::selection { background: var(--color-indigo-100); }
+
+@keyframes flotte { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-8px) } }
+.flotte { animation: flotte 6s ease-in-out infinite; }
+.flotte-2 { animation: flotte 7s ease-in-out infinite 1s; }
+.flotte-3 { animation: flotte 8s ease-in-out infinite 2s; }
+@media (prefers-reduced-motion: reduce) { .flotte, .flotte-2, .flotte-3 { animation: none; } }
+
+@keyframes remplir { from { transform: scaleX(0) } to { transform: scaleX(1) } }
