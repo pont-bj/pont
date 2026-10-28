@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="400" height="400" viewBox="0 0 400 400">
+  <title>photo-profil-400.svg</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M0 0 L400 0 L400 400 L0 400 Z" fill="#4f46e5"/>
+    <path d="M85.538 76 L247.692 76 C284.568 76 314.462 105.894 314.462 142.769 L314.462 190.462 C314.462 227.337 284.568 257.231 247.692 257.231 L152.308 257.231 L152.308 324 L85.538 324 Z M152.308 209.538 L247.692 209.538 L247.692 152.308 C247.692 125.968 226.34 104.615 200 104.615 C173.66 104.615 152.308 125.968 152.308 152.308 Z" fill="#ffffff" fill-rule="evenodd"/>
+  </g>
+</svg>
