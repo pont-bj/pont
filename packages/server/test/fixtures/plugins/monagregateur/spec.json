@@ -1,0 +1,62 @@
+{
+  "id": "monagregateur",
+  "label": "MonAgrégateur",
+  "countries": [
+    "BJ",
+    "TG"
+  ],
+  "currencies": [
+    "XOF"
+  ],
+  "baseUrl": {
+    "test": "https://sandbox.mon.test/v1",
+    "live": "https://api.mon.test/v1"
+  },
+  "keys": [
+    "secretKey"
+  ],
+  "auth": {
+    "type": "bearer",
+    "key": "secretKey"
+  },
+  "deposit": {
+    "method": "POST",
+    "path": "/payments",
+    "body": {
+      "amount": "{amount}",
+      "currency": "{currency}",
+      "phone": "{phone}",
+      "merchant_ref": "{attemptId}",
+      "callback": "{callbackUrl}"
+    },
+    "response": {
+      "providerRef": "data.id"
+    }
+  },
+  "verify": {
+    "method": "GET",
+    "path": "/payments/{providerRef}",
+    "response": {
+      "status": "data.status",
+      "amount": "data.amount",
+      "currency": "data.currency",
+      "attemptRef": "data.merchant_ref"
+    }
+  },
+  "statusMap": {
+    "PAID": "succeeded",
+    "FAILED": "failed",
+    "WAITING": "pending"
+  },
+  "webhook": {
+    "header": "X-Mon-Signature",
+    "algorithm": "sha256",
+    "encoding": "hex",
+    "prefix": "sha256=",
+    "payload": "body",
+    "lookup": {
+      "path": "data.id",
+      "by": "providerRef"
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "name": "@pont/server",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Serveur Pont autonome (self-host) : API HTTP, webhooks des agrégateurs, planificateur.",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "bin": {
+    "pont-server": "./src/main.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p .",
+    "test": "vitest run",
+    "start": "tsx src/main.ts",
+    "build": "tsup src/index.ts src/main.ts --format esm --clean --target node20"
+  },
+  "dependencies": {
+    "@pont/core": "workspace:*",
+    "@pont/engine": "workspace:*",
+    "@pont/framework": "workspace:*",
+    "@pont/ledger": "workspace:*",
+    "@pont/node": "workspace:*",
+    "@pont/recipes": "workspace:*",
+    "@pont/store-convex": "workspace:*",
+    "@pont/store-prisma": "workspace:*",
+    "convex": "1.48.0",
+    "nodemailer": "10.1.0",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@types/nodemailer": "^8.0.2",
+    "tsx": "4.19.2"
+  },
+  "license": "UNLICENSED"
+}
