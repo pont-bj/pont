@@ -1,6 +1,7 @@
 {
   "name": "@pont/store-convex",
   "version": "0.1.0",
+  "description": "Stockage Convex pour Pont.",
   "type": "module",
   "main": "./src/index.ts",
   "exports": {
@@ -22,10 +23,11 @@
     "@edge-runtime/vm": "5.0.0",
     "@pont/sandbox": "workspace:*"
   },
-  "license": "UNLICENSED",
+  "license": "BUSL-1.1",
   "files": [
     "dist",
-    "convex"
+    "convex",
+    "README.md"
   ],
   "publishConfig": {
     "main": "./dist/index.js",
@@ -37,9 +39,33 @@
       },
       "./convex/*": "./convex/*"
     },
-    "access": "restricted"
+    "access": "public"
   },
   "engines": {
     "node": ">=20"
-  }
+  },
+  "author": "François Mawutô Aboudou ZINSOU <pro@aboudouzinsou.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aboudou-cto-bloko/pont.git",
+    "directory": "packages/store-convex"
+  },
+  "homepage": "https://github.com/aboudou-cto-bloko/pont#readme",
+  "bugs": {
+    "url": "https://github.com/aboudou-cto-bloko/pont/issues"
+  },
+  "keywords": [
+    "payments",
+    "paiement",
+    "mobile-money",
+    "byok",
+    "africa",
+    "benin",
+    "xof",
+    "fedapay",
+    "kkiapay",
+    "cinetpay",
+    "paydunya",
+    "pawapay"
+  ]
 }

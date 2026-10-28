@@ -1,6 +1,7 @@
 {
   "name": "@pont/core",
   "version": "0.1.0",
+  "description": "Contrat partagé de Pont : modèle de paiement normalisé, statuts et interface ProviderAdapter.",
   "type": "module",
   "main": "./src/index.ts",
   "scripts": {
@@ -14,9 +15,10 @@
   "exports": {
     ".": "./src/index.ts"
   },
-  "license": "UNLICENSED",
+  "license": "BUSL-1.1",
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "publishConfig": {
     "main": "./dist/index.js",
@@ -27,9 +29,33 @@
         "default": "./dist/index.js"
       }
     },
-    "access": "restricted"
+    "access": "public"
   },
   "engines": {
     "node": ">=20"
-  }
+  },
+  "author": "François Mawutô Aboudou ZINSOU <pro@aboudouzinsou.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aboudou-cto-bloko/pont.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/aboudou-cto-bloko/pont#readme",
+  "bugs": {
+    "url": "https://github.com/aboudou-cto-bloko/pont/issues"
+  },
+  "keywords": [
+    "payments",
+    "paiement",
+    "mobile-money",
+    "byok",
+    "africa",
+    "benin",
+    "xof",
+    "fedapay",
+    "kkiapay",
+    "cinetpay",
+    "paydunya",
+    "pawapay"
+  ]
 }

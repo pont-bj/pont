@@ -1,14 +1,16 @@
 {
   "name": "@pont/recipes",
   "version": "0.1.0",
+  "description": "Recettes prêtes à l'emploi pour Pont (par exemple la recette « portefeuille »).",
   "type": "module",
   "main": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts"
   },
-  "license": "UNLICENSED",
+  "license": "BUSL-1.1",
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "engines": {
     "node": ">=20"
@@ -37,6 +39,30 @@
         "default": "./dist/index.js"
       }
     },
-    "access": "restricted"
-  }
+    "access": "public"
+  },
+  "author": "François Mawutô Aboudou ZINSOU <pro@aboudouzinsou.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aboudou-cto-bloko/pont.git",
+    "directory": "packages/recipes"
+  },
+  "homepage": "https://github.com/aboudou-cto-bloko/pont#readme",
+  "bugs": {
+    "url": "https://github.com/aboudou-cto-bloko/pont/issues"
+  },
+  "keywords": [
+    "payments",
+    "paiement",
+    "mobile-money",
+    "byok",
+    "africa",
+    "benin",
+    "xof",
+    "fedapay",
+    "kkiapay",
+    "cinetpay",
+    "paydunya",
+    "pawapay"
+  ]
 }
