@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="52" viewBox="0 0 48 52">
+  <title>pont-symbole-blanc.svg</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M0 0 L34 0 C41.732 0 48 6.268 48 14 L48 24 C48 31.732 41.732 38 34 38 L14 38 L14 52 L0 52 Z M14 28 L34 28 L34 16 C34 10.477 29.523 6 24 6 C18.477 6 14 10.477 14 16 Z" fill="#ffffff" fill-rule="evenodd"/>
+  </g>
+</svg>
