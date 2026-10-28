@@ -46,7 +46,7 @@ async function interview(ask: Ask, log: (line: string) => void): Promise<unknown
   else if (authType === "header") auth = { type: "header", header: await ask("Nom de l'en-tête (ex. X-Api-Key)", "X-Api-Key"), key: await ask("Clé à y mettre", keys[0]) };
   else auth = { type: "bearer", key: await ask("Clé envoyée en Bearer", keys[0]) };
 
-  const bodyVars = "{amount} {currency} {reference} {attemptId} {callbackUrl} {phone} {country} {description} {customerName} {customerEmail} {operator}";
+  const bodyVars = "{amount} {currency} {reference} {attemptId} {callbackUrl} {returnUrl} {phone} {country} {description} {customerName} {customerEmail} {operator}";
   const endpoint = async (title: string, defaults: { method: string; path: string }, withBody: boolean, vars = bodyVars) => {
     const method = (await ask(`${title} : méthode HTTP`, defaults.method)).toUpperCase();
     const path = await ask(`${title} : chemin (ex. ${defaults.path})`, defaults.path);

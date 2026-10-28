@@ -123,7 +123,8 @@ function render(value: Template, vars: Vars): Template {
     return value.replace(/\\{(\\w+)\\}/g, (_match, name: string) => String(vars[name] ?? ""));
   }
   if (Array.isArray(value)) return value.map((item) => render(item, vars));
-  if (typeof value === "object") return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, render(item, vars)]));
+  // Sans adresse de retour fournie par le marchand, le champ est omis (jamais remplacé par l'adresse du webhook).
+  if (typeof value === "object") return Object.fromEntries(Object.entries(value).filter(([, item]) => !(item === "{returnUrl}" && vars["returnUrl"] === undefined)).map(([key, item]) => [key, render(item, vars)]));
   return value;
 }
 
@@ -160,7 +161,8 @@ export class ${className} implements ProviderAdapter {
       currency: input.currency,
       reference: input.reference,
       attemptId,
-      callbackUrl: input.returnUrl ?? request.callbackUrl,
+      callbackUrl: request.callbackUrl,
+      returnUrl: input.returnUrl,
       phone: phone.e164,
       country: input.country,
       description: input.description ?? \`Commande \${input.reference}\`,

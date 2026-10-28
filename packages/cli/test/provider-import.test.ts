@@ -2,7 +2,7 @@ import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { importOpenApi, parseProviderSpec, runProviderImport } from "../src/index.js";
+import { importOpenApi, parseProviderSpec, renderProvider, runProviderImport } from "../src/index.js";
 
 const openapi = {
   openapi: "3.0.3",
@@ -47,6 +47,7 @@ const openapi = {
                   msisdn: { type: "string" },
                   merchant_reference: { type: "string" },
                   callback_url: { type: "string" },
+                  return_url: { type: "string" },
                   channel_code: { type: "string" },
                   tax_id: { type: "string" },
                   note: { type: "string" },
@@ -79,6 +80,7 @@ describe("pont provider import — OpenAPI", () => {
     expect(deposit.body["msisdn"]).toBe("{phone}");
     expect(deposit.body["merchant_reference"]).toBe("{attemptId}");
     expect(deposit.body["callback_url"]).toBe("{callbackUrl}");
+    expect(deposit.body["return_url"]).toBe("{returnUrl}");
     expect(deposit.response.providerRef).toBe("data.id");
     expect(draft["verify"]).toMatchObject({ method: "GET", path: "/payments/{providerRef}", response: { status: "data.status", amount: "data.amount", attemptRef: "data.merchant_reference" } });
   });
@@ -113,5 +115,30 @@ describe("pont provider import — OpenAPI", () => {
     expect(refused.ok).toBe(false);
     const again = await runProviderImport({ cwd: dir, source: "spec.yaml", force: false, log: () => {} });
     expect(again.errors.join()).toMatch(/existe déjà/);
+  });
+});
+
+describe("adresse de retour et adresse du webhook", () => {
+  it("ne confond jamais returnUrl et callbackUrl dans l'adaptateur généré", () => {
+    const parsed = parseProviderSpec({
+      id: "retour",
+      label: "Retour",
+      countries: ["BJ"],
+      currencies: ["XOF"],
+      baseUrl: { test: "https://sandbox.retour.example", live: "https://api.retour.example" },
+      keys: ["secretKey"],
+      auth: { type: "bearer", key: "secretKey" },
+      deposit: { method: "POST", path: "/p", body: { notify: "{callbackUrl}", back: "{returnUrl}" }, response: { providerRef: "id" } },
+      verify: { method: "GET", path: "/p/{providerRef}", response: { status: "status" } },
+      statusMap: { OK: "succeeded" },
+      webhook: { header: "X-Sig", algorithm: "sha256", encoding: "hex", payload: "body", lookup: { path: "id", by: "providerRef" } },
+    });
+    expect(parsed.ok).toBe(true);
+    if (!parsed.ok) return;
+    const source = renderProvider(parsed.spec).find((f) => f.path === "src/index.ts")!.content;
+    expect(source).toContain("callbackUrl: request.callbackUrl,");
+    expect(source).toContain("returnUrl: input.returnUrl,");
+    expect(source).not.toMatch(/returnUrl\s*\?\?\s*request\.callbackUrl/);
+    expect(source).toContain('item === "{returnUrl}"');
   });
 });

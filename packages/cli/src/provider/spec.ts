@@ -2,7 +2,7 @@ import { z } from "zod";
 
 /** Variables que le gabarit de chaque appel peut utiliser (`{amount}`, `{phone}`…). */
 export const PLACEHOLDERS = {
-  deposit: ["amount", "currency", "reference", "attemptId", "callbackUrl", "phone", "country", "description", "customerName", "customerEmail", "operator"],
+  deposit: ["amount", "currency", "reference", "attemptId", "callbackUrl", "returnUrl", "phone", "country", "description", "customerName", "customerEmail", "operator"],
   payout: ["amount", "currency", "reference", "attemptId", "callbackUrl", "phone", "country", "description", "recipientName", "recipientEmail", "operator"],
   refund: ["amount", "currency", "attemptId", "paymentRef", "paymentAttemptId"],
   verify: ["providerRef", "attemptId"],

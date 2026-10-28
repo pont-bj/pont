@@ -44,6 +44,13 @@ Garde-fous : un statut ambigu (`ACCEPTED`, `APPROVED`…) n'est jamais classé e
 | Plusieurs paramètres de chemin | Seul `{providerRef}` est géré |
 | Essai contre un vrai sandbox d'agrégateur | La spécification dit comment l'API doit marcher, pas comment elle se comporte |
 
+## Deux adresses à ne pas confondre
+
+- `{callbackUrl}` : l'adresse du webhook de Pont, où l'agrégateur notifie le résultat.
+- `{returnUrl}` : la page où le client revient après avoir payé (celle que le marchand passe dans `returnUrl`). Disponible à la création d'un paiement ; omise quand le marchand n'en fournit pas.
+
+La page de paiement que l'agrégateur renvoie au client se récupère avec `deposit.response.redirectUrl`.
+
 ## Ce que le générateur demande
 
 | Information | Exemple |

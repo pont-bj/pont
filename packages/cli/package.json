@@ -1,6 +1,6 @@
 {
   "name": "@pont-bj/cli",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "CLI Pont : sandbox, essais de paiement et outils de développement en ligne de commande.",
   "type": "module",
   "bin": {

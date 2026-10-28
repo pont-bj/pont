@@ -4,6 +4,14 @@ Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Ver
 
 ## [Non publié]
 
+## [0.3.0] - à venir
+
+Seul `@pont-bj/cli` change de version.
+
+### Modifié (incompatible pour les adaptateurs générés)
+- `pont provider new` : `{callbackUrl}` est désormais uniquement l'adresse du webhook de Pont. L'adresse de retour du client a sa propre variable `{returnUrl}` (création de paiement). Avant, `{callbackUrl}` valait `returnUrl` quand il était fourni, ce qui pouvait envoyer le webhook vers la page de retour du client. Un champ `{returnUrl}` est omis quand le marchand ne fournit pas d'adresse de retour. Régénérez vos adaptateurs et remplacez `{callbackUrl}` par `{returnUrl}` là où l'agrégateur attend la page de retour.
+- `pont provider import` distingue les champs webhook (`callback`, `webhook`, `notif`, `ipn`) des champs de retour (`return`, `redirect`, `success`, `cancel`).
+
 ## [0.2.0] - 2026-10-28
 
 Seul `@pont-bj/cli` change de version.

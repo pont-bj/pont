@@ -74,7 +74,8 @@ const leaf = (path: string): string => path.split(".").pop() ?? path;
 
 /** Champ de la requête → variable Pont. L'ordre compte : le premier motif qui correspond gagne. */
 const PLACEHOLDER_RULES: Array<[RegExp, string]> = [
-  [/(callback|webhook|notif|returnurl|redirecturl|successurl)/, "callbackUrl"],
+  [/(callback|webhook|notif|ipn)/, "callbackUrl"],
+  [/(return|redirect|success|cancel|back)url|^(return|redirect|success|cancel)/, "returnUrl"],
   [/(msisdn|phone|mobile|payerphone|walletnumber|accountnumber)/, "phone"],
   [/(operator|correspondent|provider|network|paymentmethod|channel)/, "operator"],
   [/(email|mail)/, "customerEmail"],
