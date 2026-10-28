@@ -1,0 +1,55 @@
+name: Publication npm
+
+# Déclenché à la main (workflow_dispatch) ou par un tag de version `v*`.
+# Aucune publication tant que le secret NPM_TOKEN n'est pas créé par l'humain
+# (Settings > Secrets and variables > Actions) et que l'environnement `npm-publication`
+# n'est pas validé. Voir docs/open-source/publication-npm.md.
+
+on:
+  workflow_dispatch:
+    inputs:
+      simulation:
+        description: "Simulation (--dry-run) : ne publie rien"
+        type: boolean
+        default: true
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  publier:
+    runs-on: ubuntu-latest
+    # Environnement GitHub avec validation manuelle obligatoire (à créer par l'humain).
+    environment: npm-publication
+    permissions:
+      contents: read
+      id-token: write # requis pour la provenance npm (--provenance)
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm -r typecheck
+      - run: pnpm -r build
+      - name: Vérifier la présence du jeton
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: test -n "$NODE_AUTH_TOKEN" || { echo "NPM_TOKEN absent : créer le secret (voir docs/open-source/publication-npm.md)"; exit 1; }
+      - name: Publier (pnpm applique publishConfig et remplace workspace:*)
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: "true"
+          SIMULATION: ${{ github.event_name == 'workflow_dispatch' && inputs.simulation }}
+        run: |
+          if [ "$SIMULATION" = "true" ]; then
+            pnpm -r publish --access public --no-git-checks --dry-run
+          else
+            pnpm -r publish --access public --no-git-checks
+          fi

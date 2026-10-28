@@ -1,6 +1,7 @@
 {
   "name": "@pont/adapter-cinetpay",
   "version": "0.1.0",
+  "description": "Adaptateur CinetPay pour Pont (implémente ProviderAdapter).",
   "type": "module",
   "main": "./src/index.ts",
   "exports": {
@@ -13,9 +14,10 @@
   "dependencies": {
     "@pont/core": "workspace:*"
   },
-  "license": "UNLICENSED",
+  "license": "BUSL-1.1",
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "publishConfig": {
     "main": "./dist/index.js",
@@ -26,9 +28,33 @@
         "default": "./dist/index.js"
       }
     },
-    "access": "restricted"
+    "access": "public"
   },
   "engines": {
     "node": ">=20"
-  }
+  },
+  "author": "François Mawutô Aboudou ZINSOU <pro@aboudouzinsou.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aboudou-cto-bloko/pont.git",
+    "directory": "packages/adapters/cinetpay"
+  },
+  "homepage": "https://github.com/aboudou-cto-bloko/pont#readme",
+  "bugs": {
+    "url": "https://github.com/aboudou-cto-bloko/pont/issues"
+  },
+  "keywords": [
+    "payments",
+    "paiement",
+    "mobile-money",
+    "byok",
+    "africa",
+    "benin",
+    "xof",
+    "fedapay",
+    "kkiapay",
+    "cinetpay",
+    "paydunya",
+    "pawapay"
+  ]
 }

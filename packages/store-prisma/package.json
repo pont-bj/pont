@@ -1,6 +1,7 @@
 {
   "name": "@pont/store-prisma",
   "version": "0.1.0",
+  "description": "Stockage PostgreSQL (Prisma) pour Pont, y compris registre et portefeuilles.",
   "type": "module",
   "main": "./src/index.ts",
   "exports": {
@@ -8,10 +9,11 @@
     "./prisma/*": "./prisma/*",
     "./postgres": "./src/postgres.ts"
   },
-  "license": "UNLICENSED",
+  "license": "BUSL-1.1",
   "files": [
     "dist",
-    "prisma"
+    "prisma",
+    "README.md"
   ],
   "engines": {
     "node": ">=20"
@@ -40,10 +42,34 @@
       },
       "./prisma/*": "./prisma/*"
     },
-    "access": "restricted"
+    "access": "public"
   },
   "devDependencies": {
     "prisma": "7.10.1",
     "@pont/sandbox": "workspace:*"
-  }
+  },
+  "author": "François Mawutô Aboudou ZINSOU <pro@aboudouzinsou.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aboudou-cto-bloko/pont.git",
+    "directory": "packages/store-prisma"
+  },
+  "homepage": "https://github.com/aboudou-cto-bloko/pont#readme",
+  "bugs": {
+    "url": "https://github.com/aboudou-cto-bloko/pont/issues"
+  },
+  "keywords": [
+    "payments",
+    "paiement",
+    "mobile-money",
+    "byok",
+    "africa",
+    "benin",
+    "xof",
+    "fedapay",
+    "kkiapay",
+    "cinetpay",
+    "paydunya",
+    "pawapay"
+  ]
 }

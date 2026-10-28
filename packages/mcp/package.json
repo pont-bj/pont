@@ -1,6 +1,7 @@
 {
   "name": "@pont/mcp",
   "version": "0.1.0",
+  "description": "Serveur MCP d'intégration de Pont, pour brancher un assistant IA sur le sandbox.",
   "type": "module",
   "bin": {
     "pont-mcp": "./src/bin.ts"
@@ -28,9 +29,10 @@
     "zod": "3.25.76",
     "@pont/engine": "workspace:*"
   },
-  "license": "UNLICENSED",
+  "license": "BUSL-1.1",
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "publishConfig": {
     "main": "./dist/index.js",
@@ -41,12 +43,36 @@
         "default": "./dist/index.js"
       }
     },
-    "access": "restricted",
+    "access": "public",
     "bin": {
       "pont-mcp": "./dist/bin.js"
     }
   },
   "engines": {
     "node": ">=20"
-  }
+  },
+  "author": "François Mawutô Aboudou ZINSOU <pro@aboudouzinsou.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aboudou-cto-bloko/pont.git",
+    "directory": "packages/mcp"
+  },
+  "homepage": "https://github.com/aboudou-cto-bloko/pont#readme",
+  "bugs": {
+    "url": "https://github.com/aboudou-cto-bloko/pont/issues"
+  },
+  "keywords": [
+    "payments",
+    "paiement",
+    "mobile-money",
+    "byok",
+    "africa",
+    "benin",
+    "xof",
+    "fedapay",
+    "kkiapay",
+    "cinetpay",
+    "paydunya",
+    "pawapay"
+  ]
 }

@@ -1,22 +1,62 @@
 {
   "name": "@pont/framework",
   "version": "0.1.0",
+  "description": "Briques communes de Pont (validation, erreurs, utilitaires).",
   "type": "module",
   "main": "./src/index.ts",
-  "exports": { ".": "./src/index.ts" },
-  "license": "UNLICENSED",
-  "files": ["dist"],
-  "engines": { "node": ">=20" },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "license": "BUSL-1.1",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "typecheck": "tsc --noEmit -p .",
     "test": "vitest run",
     "build": "tsup src/index.ts --format esm --dts --clean --target node20"
   },
-  "dependencies": { "@pont/core": "workspace:*", "zod": "3.25.76" },
+  "dependencies": {
+    "@pont/core": "workspace:*",
+    "zod": "3.25.76"
+  },
   "publishConfig": {
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
-    "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" } },
-    "access": "restricted"
-  }
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    },
+    "access": "public"
+  },
+  "author": "François Mawutô Aboudou ZINSOU <pro@aboudouzinsou.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aboudou-cto-bloko/pont.git",
+    "directory": "packages/framework"
+  },
+  "homepage": "https://github.com/aboudou-cto-bloko/pont#readme",
+  "bugs": {
+    "url": "https://github.com/aboudou-cto-bloko/pont/issues"
+  },
+  "keywords": [
+    "payments",
+    "paiement",
+    "mobile-money",
+    "byok",
+    "africa",
+    "benin",
+    "xof",
+    "fedapay",
+    "kkiapay",
+    "cinetpay",
+    "paydunya",
+    "pawapay"
+  ]
 }
