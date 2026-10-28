@@ -1,0 +1,196 @@
+# Pont self-host : backend Convex + serveur Pont. Lancer d'abord ./setup.sh (une seule fois).
+name: pont
+
+x-pont-env: &pont-env
+  PONT_MODE: ${PONT_MODE:-test}
+  PONT_SANDBOX: ${PONT_SANDBOX:-true}
+  PONT_PUBLIC_URL: ${PONT_PUBLIC_URL:-http://localhost:${PONT_PORT:-8787}}
+  PONT_API_KEY: ${PONT_API_KEY:?lancer ./setup.sh}
+  PONT_ADMIN_TOKEN: ${PONT_ADMIN_TOKEN:?lancer ./setup.sh}
+  PONT_STORE: ${PONT_STORE:-postgres}
+  CONVEX_URL: http://backend:3210
+  PONT_STORE_SECRET: ${PONT_STORE_SECRET:-}
+  DATABASE_URL: ${DATABASE_URL:-postgresql://pont:${POSTGRES_PASSWORD:-}@postgres:5432/pont}
+  PONT_ENCRYPTION_KEY: ${PONT_ENCRYPTION_KEY:-}
+  PONT_WEBHOOK_URL: ${PONT_WEBHOOK_URL:-}
+  PONT_WEBHOOK_SECRET: ${PONT_WEBHOOK_SECRET:-}
+  FEDAPAY_SECRET_KEY: ${FEDAPAY_SECRET_KEY:-}
+  FEDAPAY_WEBHOOK_SECRET: ${FEDAPAY_WEBHOOK_SECRET:-}
+  PAWAPAY_API_TOKEN: ${PAWAPAY_API_TOKEN:-}
+  PAWAPAY_CALLBACK_PUBLIC_KEYS: ${PAWAPAY_CALLBACK_PUBLIC_KEYS:-}
+  PAYDUNYA_MASTER_KEY: ${PAYDUNYA_MASTER_KEY:-}
+  PAYDUNYA_PRIVATE_KEY: ${PAYDUNYA_PRIVATE_KEY:-}
+  PAYDUNYA_TOKEN: ${PAYDUNYA_TOKEN:-}
+  PAYDUNYA_STORE_NAME: ${PAYDUNYA_STORE_NAME:-}
+  KKIAPAY_PUBLIC_KEY: ${KKIAPAY_PUBLIC_KEY:-}
+  KKIAPAY_PRIVATE_KEY: ${KKIAPAY_PRIVATE_KEY:-}
+  KKIAPAY_SECRET_KEY: ${KKIAPAY_SECRET_KEY:-}
+  KKIAPAY_WEBHOOK_SECRET: ${KKIAPAY_WEBHOOK_SECRET:-}
+
+services:
+  # Boîte mail de test locale (profil `mail`) : rien ne sort de la machine. SMTP : mailpit:1025, interface : http://localhost:8025
+  mailpit:
+    profiles: ["mail"]
+    image: axllent/mailpit:latest
+    ports:
+      - "127.0.0.1:1025:1025"
+      - "127.0.0.1:8025:8025"
+    restart: unless-stopped
+
+  # Reverse proxy de production (profil `prod`, activé par ./setup.sh --prod) : seul service exposé sur Internet (80/443).
+  # Expose /hooks, /v1 et /health du serveur Pont, et le dashboard sur son propre domaine. /admin n'est jamais public.
+  caddy:
+    profiles: ["prod"]
+    image: caddy:2-alpine
+    ports:
+      - "${CADDY_HTTP_PORT:-80}:80"
+      - "${CADDY_HTTPS_PORT:-443}:443"
+      - "${CADDY_HTTPS_PORT:-443}:443/udp"
+    environment:
+      PONT_DOMAIN: ${PONT_DOMAIN:-}
+      DASHBOARD_DOMAIN: ${DASHBOARD_DOMAIN:-}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      pont:
+        condition: service_healthy
+      dashboard:
+        condition: service_healthy
+    restart: unless-stopped
+
+  backend:
+    profiles: ["convex"]
+    image: ghcr.io/convex/convex-backend:latest
+    stop_grace_period: 10s
+    stop_signal: SIGINT
+    ports:
+      - "127.0.0.1:3210:3210"
+      - "127.0.0.1:3211:3211"
+    volumes:
+      - convex-data:/convex/data
+    environment:
+      INSTANCE_NAME: pont
+      INSTANCE_SECRET: ${INSTANCE_SECRET:-}
+      CONVEX_CLOUD_ORIGIN: http://127.0.0.1:3210
+      CONVEX_SITE_ORIGIN: http://127.0.0.1:3211
+      DISABLE_BEACON: "true"
+    healthcheck:
+      test: curl -f http://localhost:3210/version
+      interval: 5s
+      start_period: 10s
+    restart: unless-stopped
+
+  convex-dashboard:
+    profiles: ["convex"]
+    image: ghcr.io/convex/convex-dashboard:latest
+    stop_grace_period: 10s
+    stop_signal: SIGINT
+    ports:
+      - "127.0.0.1:6791:6791"
+    environment:
+      NEXT_PUBLIC_DEPLOYMENT_URL: http://127.0.0.1:3210
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+  pont:
+    build:
+      context: ../..
+      dockerfile: deploy/self-host/Dockerfile
+    ports:
+      # PONT_BIND=127.0.0.1 en production : seul le proxy Caddy est public.
+      - "${PONT_BIND:-0.0.0.0}:${PONT_PORT:-8787}:8080"
+    environment:
+      <<: *pont-env
+      PONT_PLUGINS_DIR: /app/packages/server/plugins
+    volumes:
+      # Agrégateurs personnalisés (pont provider new) : un sous-dossier par agrégateur. Voir docs/self-host/integration-agregateur.md.
+      - ./plugins:/app/packages/server/plugins:ro
+    depends_on:
+      backend:
+        condition: service_healthy
+        required: false
+      postgres:
+        condition: service_healthy
+        required: false
+    healthcheck:
+      test: curl -f http://localhost:8080/health
+      interval: 10s
+      start_period: 15s
+    restart: unless-stopped
+
+  # Base PostgreSQL fournie (profil « postgres »). Pour utiliser la vôtre, renseignez DATABASE_URL.
+  postgres:
+    profiles: ["postgres"]
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: pont
+      POSTGRES_DB: pont
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -U pont -d pont
+      interval: 5s
+      start_period: 5s
+    restart: unless-stopped
+
+  dashboard:
+    build:
+      context: ../..
+      dockerfile: deploy/self-host/Dockerfile.dashboard
+    ports:
+      - "${DASHBOARD_BIND:-0.0.0.0}:${DASHBOARD_PORT:-3300}:3000"
+    environment:
+      PONT_URL: http://pont:8080
+      PONT_ADMIN_TOKEN: ${PONT_ADMIN_TOKEN:?lancer ./setup.sh}
+      PONT_API_KEY: ${PONT_API_KEY:?lancer ./setup.sh}
+      PONT_ROLES_PRESET: ${PONT_ROLES_PRESET:-portefeuille}
+      PONT_SIGNUP_ROLE: ${PONT_SIGNUP_ROLE:-}
+      PONT_TRUSTED_ORIGINS: ${PONT_TRUSTED_ORIGINS:-}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?lancer ./setup.sh}
+      BETTER_AUTH_URL: ${DASHBOARD_URL:-http://localhost:${DASHBOARD_PORT:-3300}}
+    volumes:
+      - dashboard-data:/data
+    depends_on:
+      pont:
+        condition: service_healthy
+    healthcheck:
+      test: curl -f http://localhost:3000/login || curl -f http://localhost:3000/setup
+      interval: 10s
+      start_period: 20s
+    restart: unless-stopped
+
+  # Crée les tables Pont dans Convex (lancé par setup.sh).
+  deploy-convex:
+    profiles: ["setup"]
+    build:
+      context: ../..
+      dockerfile: deploy/self-host/Dockerfile
+    working_dir: /app/packages/store-convex
+    environment:
+      CONVEX_SELF_HOSTED_URL: http://backend:3210
+      CONVEX_SELF_HOSTED_ADMIN_KEY: ${CONVEX_SELF_HOSTED_ADMIN_KEY:-}
+      PONT_STORE_SECRET: ${PONT_STORE_SECRET:-}
+    command: sh -c 'npx convex env set PONT_STORE_SECRET "$$PONT_STORE_SECRET" && npx convex deploy --yes'
+
+  # Crée les tables Pont dans PostgreSQL (lancé par setup.sh).
+  deploy-postgres:
+    profiles: ["setup"]
+    build:
+      context: ../..
+      dockerfile: deploy/self-host/Dockerfile
+    working_dir: /app/packages/store-prisma
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql://pont:${POSTGRES_PASSWORD:-}@postgres:5432/pont}
+    command: npx prisma db push
+
+volumes:
+  convex-data:
+  postgres-data:
+  dashboard-data:
+  caddy-data:
+  caddy-config:
