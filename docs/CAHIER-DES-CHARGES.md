@@ -392,7 +392,7 @@ Self-host gratuit. Pont ne perçoit pas de commission sur le volume : cela pouss
 
 | Risque | Mitigation |
 |---|---|
-| **Confirmé le 2026-10-26 :** FedaPay et Kkiapay interdisent de confier les clés à un tiers ; Kkiapay interdit le multi-agrégateurs | Voir `docs/metier/decisions/ADR-001-cgu-et-modele-byok.md` (décision en attente) |
+| **Confirmé le 2026-10-26 :** FedaPay et Kkiapay interdisent de confier les clés à un tiers ; Kkiapay interdit le multi-agrégateurs | Voir ADR-001 (décision en attente) |
 | Qualification réglementaire de Pont (prestataire technique vs service de paiement) | Avis juridique BCEAO avant le live |
 | Fuite de clés agrégateurs | Chiffrement enveloppe, accès minimal, audit, pentest |
 | API agrégateurs instables ou non documentées | Tests de contrat quotidiens contre les sandboxes ; alertes |

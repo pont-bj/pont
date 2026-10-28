@@ -4,7 +4,7 @@ Tenue par l'agent `metier`. Source de vérité pour toute règle métier.
 
 - [regles.md](regles.md) : règles numérotées R-xxx
 - [agregateurs/](agregateurs/) : fiches vérifiées ([FedaPay](agregateurs/fedapay.md), [Kkiapay](agregateurs/kkiapay.md), [PayDunya](agregateurs/paydunya.md), [CinetPay](agregateurs/cinetpay.md), [PawaPay](agregateurs/pawapay.md))
-- [decisions/](decisions/) : [ADR-001 — CGU et modèle BYOK](decisions/ADR-001-cgu-et-modele-byok.md) · [ADR-002 — Registre pour fintechs](decisions/ADR-002-registre-fintech.md) · [ADR-003 — Framework des fintechs](decisions/ADR-003-framework-fintech.md)
+- [decisions/](decisions/) : [ADR-002 — Registre pour fintechs](decisions/ADR-002-registre-fintech.md) · [ADR-003 — Framework des fintechs](decisions/ADR-003-framework-fintech.md)
 - À créer : `glossaire.md`, `cycle-de-vie.md`, `couverture.md`
 
 ## Synthèse de la tâche 0 (2026-10-26)
