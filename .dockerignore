@@ -1,0 +1,8 @@
+**/node_modules
+**/dist
+**/.next
+**/.turbo
+.git
+deploy/self-host/.env
+apps/landing
+docs
