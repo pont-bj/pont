@@ -3,7 +3,7 @@ import { api } from "@/convex/_generated/api";
 import { Formulaire } from "@/components/formulaire";
 import { Logotype, Symbole } from "@/components/logo";
 import { Compte, Mouvement, MotsReveles, Revele } from "@/components/anim";
-import { DashboardVivant } from "@/components/dashboard-vivant";
+import { ProduitOnglets } from "@/components/produit-onglets";
 import { Defilement, Etapes, Logos, PontRecit, TerminalAnime } from "@/components/recit";
 import { Icone } from "@/components/icones";
 import { CodeLangages, LogoTechno } from "@/components/langages";
@@ -82,11 +82,20 @@ const INCLUS = [
   ["livre", "Documentation complète", "Guides pas à pas, référence de l'API, schémas et visite du tableau de bord."],
 ] as const;
 
+const DOCS = "https://docs.pont.aboudouzinsou.com";
+
 const CAS = [
-  ["portefeuille", "Portefeuille mobile", "Dépôts, retraits, transferts, frais et plafonds par niveau de vérification.", "Disponible"],
-  ["liste", "Paiement de factures", "Encaissez et remboursez des paiements simples.", "Disponible"],
-  ["equipe", "Tontine", "Cotisations régulières et tours de versement.", "Bientôt"],
-  ["bouclier", "Marketplace avec séquestre", "L'argent attend la livraison avant d'être versé au vendeur.", "Bientôt"],
+  ["portefeuille", "Portefeuille mobile", "Dépôts, retraits, transferts, frais et plafonds par niveau de vérification. Nécessite PostgreSQL (aperçu).", "Disponible", `${DOCS}/tutoriels/portefeuille-mobile`],
+  ["liste", "Paiement de factures", "Encaissez par mobile money et remboursez des paiements simples.", "Disponible", `${DOCS}/tutoriels/paiement-de-factures`],
+  ["equipe", "Tontine", "Cotisations régulières et tours de versement.", "Bientôt", ""],
+  ["bouclier", "Marketplace avec séquestre", "L'argent attend la livraison avant d'être versé au vendeur.", "Bientôt", ""],
+] as const;
+
+const MODULES = [
+  ["@pont-bj/node", "Encaisser, décaisser, rembourser et réconcilier dans votre processus.", "/modules/moteur-embarque"],
+  ["@pont-bj/ledger", "Registre en partie double, portefeuilles et plafonds par palier.", "/modules/registre-et-portefeuilles"],
+  ["@pont-bj/auth", "Rôles et permissions de votre fintech.", "/guides/roles-et-authentification"],
+  ["@pont-bj/cli", "init, doctor, trigger, importer un agrégateur.", "/reference/cli"],
 ] as const;
 
 const GARANTIES = [
@@ -112,7 +121,7 @@ const TECHNOS = {
 } as const;
 
 const OFFRES = {
-  selfhost: ["Paiements, portefeuilles et registre", "Tableau de bord, rôles, e-mail et alertes", "Webhooks fiables et mode test", "Assistant IA (MCP) et CLI", "Vos clés et vos données chez vous", "Open source"],
+  selfhost: ["Paiements, portefeuilles et registre", "Tableau de bord, rôles, e-mail et alertes", "Webhooks fiables et mode test", "Assistant IA (MCP) et CLI", "Vos clés et vos données chez vous", "Code source disponible (BUSL-1.1)"],
   cloud: ["Rien à installer ni à maintenir", "Sauvegardes et surveillance", "Clés chiffrées, une clé par client", "Mises à jour automatiques", "Support"],
 };
 
@@ -121,15 +130,17 @@ const FAQ = [
   ["Le self-host est-il vraiment gratuit ?", "Oui, à vie. C'est le même logiciel que la version hébergée : vous l'installez sur votre serveur, sans limite ni carte bancaire."],
   ["Quelle différence avec Pont Cloud ?", "Avec Pont Cloud, nous hébergeons et maintenons Pont pour vous. Les tarifs seront annoncés au lancement. Inscrivez-vous pour être prévenu."],
   ["Faut-il un compte chez un agrégateur ?", "Oui, pour recevoir de vrais paiements : Pont utilise vos propres comptes. Pour essayer, le mode test suffit, sans attendre votre dossier KYC."],
+  ["Pont est-il open source ?", "Le code source est disponible sous licence BUSL-1.1, puis AGPL-3.0 au bout de quatre ans. Ce n'est pas de l'open source au sens OSI : vous pouvez l'auto-héberger gratuitement, sans pouvoir revendre Pont comme service concurrent."],
+  ["Est-ce testé avec de vrais agrégateurs ?", "Pas encore. Les adaptateurs sont vérifiés contre leur documentation et le mode test, sans compte réel. Le détail est sur la page « Ce qui est testé » de la documentation."],
   ["Mon agrégateur n'est pas dans la liste.", "Une commande (`pont provider new`) vous pose quelques questions et génère son adaptateur. Il apparaît ensuite dans le tableau de bord."],
   ["Avec quelles technologies ça marche ?", "Node.js, Next.js et Convex ont un SDK ou un modèle prêt à l'emploi. Tous les autres langages passent par l'API HTTP. PHP, Laravel et WooCommerce arrivent ensuite."],
 ] as const;
 
 const PIED = [
-  ["Produit", [["Aperçu", "#apercu"], ["Ce qui est inclus", "#inclus"], ["Technologies", "#technos"], ["Cas d'usage", "#cas"], ["Self-host et Cloud", "#offres"]]],
-  ["Apprendre", [["Documentation", "https://docs.pont.aboudouzinsou.com"], ["Démarrer en 5 minutes", "https://docs.pont.aboudouzinsou.com/guides"], ["Référence de l'API", "https://docs.pont.aboudouzinsou.com/api"], ["Visite du tableau de bord", "https://docs.pont.aboudouzinsou.com/guides/visite-du-dashboard"]]],
-  ["Confiance", [["Sécurité", "#securite"], ["Questions fréquentes", "#faq"], ["Mise en production", "https://docs.pont.aboudouzinsou.com/guides/mise-en-production"], ["Confidentialité", "/confidentialite"]]],
-  ["Contact", [["pro@aboudouzinsou.com", "mailto:pro@aboudouzinsou.com"], ["Une question, un partenariat", "mailto:pro@aboudouzinsou.com?subject=Pont"], ["Signaler une faille", "mailto:pro@aboudouzinsou.com?subject=Faille%20de%20s%C3%A9curit%C3%A9"]]],
+  ["Produit", [["Aperçu", "#apercu"], ["Ce qui est inclus", "#inclus"], ["Modules", "#modules"], ["Cas d'usage", "#cas"], ["Self-host et Cloud", "#offres"]]],
+  ["Apprendre", [["Documentation", "https://docs.pont.aboudouzinsou.com"], ["Démarrer en 5 minutes", "https://docs.pont.aboudouzinsou.com/demarrer/installation"], ["Tutoriels", "https://docs.pont.aboudouzinsou.com/tutoriels/paiement-de-factures"], ["Référence de l'API", "https://docs.pont.aboudouzinsou.com/reference/api"], ["Pourquoi Pont", "https://docs.pont.aboudouzinsou.com/pourquoi-pont"]]],
+  ["Confiance", [["Sécurité", "#securite"], ["Ce qui est testé", "https://docs.pont.aboudouzinsou.com/etat-des-tests"], ["Questions fréquentes", "#faq"], ["Mise en production", "https://docs.pont.aboudouzinsou.com/guides/mise-en-production"], ["Confidentialité", "/confidentialite"]]],
+  ["Contact", [["Code sur GitHub", "https://github.com/pont-bj/pont"], ["pro@aboudouzinsou.com", "mailto:pro@aboudouzinsou.com"], ["Une question, un partenariat", "mailto:pro@aboudouzinsou.com?subject=Pont"], ["Signaler une faille", "mailto:pro@aboudouzinsou.com?subject=Faille%20de%20s%C3%A9curit%C3%A9"]]],
 ] as const;
 
 function Drapeau({ children }: { children: React.ReactNode }) {
@@ -162,38 +173,39 @@ export default async function Page() {
   const n = await nombreInscrits();
   return (
     <Mouvement>
-      <header className="sticky top-0 z-30 border-b border-transparent bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/70">
-        <nav className="mx-auto flex max-w-[1200px] items-center gap-8 px-4 py-4 sm:px-6" aria-label="Navigation principale">
+      <a href="#rejoindre" className="block bg-encre px-4 py-2.5 text-center text-[13px] font-medium text-white hover:bg-zinc-800">Pont Cloud arrive bientôt : rejoignez la liste d&apos;attente&nbsp;&rarr;</a>
+      <header className="sticky top-0 z-30 border-b border-bordure bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/70">
+        <nav className="mx-auto flex max-w-[1248px] items-center gap-8 px-4 py-3.5 sm:px-6" aria-label="Navigation principale">
           <a href="#" aria-label="Pont, accueil"><Logotype taille="text-[26px]" /></a>
-          <div className="hidden flex-1 justify-center gap-7 text-sm font-medium text-zinc-600 md:flex">
-            <a href="#apercu" className="hover:text-encre">Aperçu</a>
-            <a href="#inclus" className="hover:text-encre">Ce qui est inclus</a>
-            <a href="#technos" className="hover:text-encre">Technologies</a>
-            <a href="#offres" className="hover:text-encre">Self-host et Cloud</a>
-            <a href="#faq" className="hover:text-encre">FAQ</a>
+          <div className="hidden flex-1 gap-7 text-sm font-medium text-zinc-600 md:flex">
+            <a href="#apercu" className="hover:text-encre">Produit</a>
+            <a href="#modules" className="hover:text-encre">Modules</a>
+            <a href="#cas" className="hover:text-encre">Tutoriels</a>
+            <a href="#offres" className="hover:text-encre">Tarifs</a>
             <a href="https://docs.pont.aboudouzinsou.com" className="hover:text-encre">Documentation</a>
           </div>
-          <a href="#rejoindre" className="ml-auto rounded-lg bg-encre px-4 py-2 text-[13px] font-medium text-white hover:bg-zinc-800 md:ml-0">Rejoindre la liste</a>
+          <div className="ml-auto flex items-center gap-2.5 md:ml-0">
+            <a href="https://github.com/pont-bj/pont" className="hidden rounded-lg border border-zinc-300 px-3.5 py-2 text-[13px] font-medium hover:bg-zinc-50 sm:block">GitHub</a>
+            <a href="https://docs.pont.aboudouzinsou.com/demarrer/installation" className="rounded-lg bg-encre px-4 py-2 text-[13px] font-medium text-white hover:bg-zinc-800">Démarrer</a>
+          </div>
         </nav>
       </header>
 
       <main>
         {/* Hero */}
-        <section className="mx-auto flex max-w-[1200px] flex-col items-center px-4 pb-12 pt-12 text-center sm:px-6 sm:pt-20">
-          <Revele><span className="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-3.5 py-1.5 text-[13px] font-medium text-indigo-fonce">
-            <span className="h-1.5 w-1.5 rounded-full bg-indigo" /> Self-host gratuit à vie · Pont Cloud bientôt
-          </span></Revele>
-          <MotsReveles delai={0.15} texte="Le backend de ta fintech, en un clic." className="mt-6 max-w-[900px] font-titre text-[40px] font-semibold leading-[1.08] tracking-tight sm:text-6xl" />
-          <Revele delai={0.7}><p className="mt-6 max-w-[700px] text-base leading-7 text-zinc-600 sm:text-lg">
-            Paiements mobile money, portefeuilles, comptabilité, équipe et tableau de bord : tout ce que chaque fintech africaine finit par recoder,
-            installé sur votre serveur.
+        <section className="mx-auto flex max-w-[1248px] flex-col items-start px-4 pb-16 pt-14 text-left sm:px-6 sm:pt-20">
+          <MotsReveles delai={0.1} texte="Le backend de ta fintech, en un clic." className="max-w-[900px] text-balance font-titre text-[40px] font-semibold leading-[1.06] tracking-tight sm:text-[68px]" />
+          <Revele delai={0.6}><p className="mt-6 max-w-[680px] text-base leading-7 text-zinc-600 sm:text-xl sm:leading-8">
+            Encaissez, décaissez et tenez des soldes par mobile money avec une seule API. Vos clés restent chez vous. Self-host gratuit à vie.
           </p></Revele>
-          <Revele delai={0.9} className="relative z-20 mt-8 flex w-full scroll-mt-28 flex-col items-center gap-4"><div id="rejoindre" className="flex w-full flex-col items-center gap-4">
-            <Formulaire id="hero" />
-            <Compteur n={n} />
-          </div></Revele>
-
-          <DashboardVivant />
+          <Revele delai={0.8} className="mt-8 flex flex-wrap items-center gap-3">
+            <a href="https://docs.pont.aboudouzinsou.com/demarrer/installation" className="rounded-[10px] bg-encre px-6 py-3.5 text-sm font-medium text-white hover:bg-zinc-800">Démarrer en 5 minutes</a>
+            <code className="rounded-[10px] border border-zinc-200 bg-zinc-50 px-5 py-3.5 text-sm text-zinc-700"><span className="text-zinc-400">$</span> npx @pont-bj/cli init</code>
+          </Revele>
+          <Revele delai={0.9}><p className="mt-4 max-w-[680px] text-[13px] leading-5 text-zinc-500">
+            Le mode test suffit pour essayer, sans compte d&apos;agrégateur. Les adaptateurs n&apos;ont pas encore été éprouvés avec de vrais agrégateurs : <a href="https://docs.pont.aboudouzinsou.com/etat-des-tests" className="underline hover:text-encre">voir ce qui est testé</a>.
+          </p></Revele>
+          <ProduitOnglets />
         </section>
 
         {/* Compatibilité */}
@@ -214,7 +226,7 @@ export default async function Page() {
 
         {/* Aperçu : vraies captures du tableau de bord */}
         <section id="apercu" className="scroll-mt-20">
-          <div className="mx-auto max-w-[1200px] px-4 pb-10 pt-20 text-center sm:px-6 sm:pt-28">
+          <div className="mx-auto max-w-[1248px] px-4 pb-10 pt-20 text-center sm:px-6 sm:pt-28">
             <Etiquette>Aperçu</Etiquette>
             <Revele><h2 className="mx-auto mt-2 max-w-[760px] font-titre text-3xl font-semibold tracking-tight sm:text-[40px] sm:leading-tight">Un tableau de bord prêt dès l&apos;installation.</h2></Revele>
             <Revele delai={0.1}><p className="mx-auto mt-4 max-w-[620px] text-base leading-7 text-zinc-600">Voici ce que vous voyez après <code className="rounded bg-zinc-100 px-1.5 py-0.5 text-[0.9em]">./setup.sh</code>. Ces écrans sont de vraies captures, prises en mode test.</p></Revele>
@@ -252,7 +264,7 @@ export default async function Page() {
         </section>
 
         {/* Méthode */}
-        <section id="methode" className="mx-auto max-w-[1200px] scroll-mt-20 px-4 py-20 sm:px-6 sm:py-28">
+        <section id="methode" className="mx-auto max-w-[1248px] scroll-mt-20 px-4 py-20 sm:px-6 sm:py-28">
           <Etiquette>En quatre étapes</Etiquette>
           <Revele><h2 className="mt-2 font-titre text-3xl font-semibold tracking-tight sm:text-[40px]">De zéro au premier paiement en quelques minutes.</h2></Revele>
           <Etapes etapes={ETAPES} />
@@ -283,7 +295,7 @@ export default async function Page() {
         </section>
 
         {/* Langages et frameworks */}
-        <section id="technos" className="mx-auto max-w-[1200px] scroll-mt-20 px-4 py-20 sm:px-6 sm:py-28">
+        <section id="technos" className="mx-auto max-w-[1248px] scroll-mt-20 px-4 py-20 sm:px-6 sm:py-28">
           <Etiquette>Langages et frameworks</Etiquette>
           <Revele><h2 className="mt-2 max-w-[760px] font-titre text-3xl font-semibold tracking-tight sm:text-[40px] sm:leading-tight">Utilisez Pont avec ce que vous connaissez déjà.</h2></Revele>
           <p className="mt-3 max-w-[640px] text-base leading-7 text-zinc-600">Pont est un serveur avec une API HTTP : tout langage qui envoie une requête peut s&apos;en servir. Pour Node.js, Next.js et Convex, un SDK ou un modèle prêt à l&apos;emploi existe déjà ; PHP, Laravel et WooCommerce arrivent ensuite.</p>
@@ -316,17 +328,38 @@ export default async function Page() {
           </div>
         </section>
 
+        {/* Modules */}
+        <section id="modules" className="mx-auto max-w-[1248px] scroll-mt-20 px-4 pb-4 pt-20 sm:px-6 sm:pt-28">
+          <Etiquette>Modules</Etiquette>
+          <Revele><h2 className="mt-2 font-titre text-3xl font-semibold tracking-tight sm:text-[44px] sm:leading-tight">Prenez seulement ce dont vous avez besoin.</h2></Revele>
+          <p className="mt-3 max-w-[640px] text-base leading-7 text-zinc-600">Chaque brique est un paquet npm indépendant. Pas de serveur à cloner pour commencer.</p>
+          <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {MODULES.map(([nom, d, h], i) => (
+              <Revele as="li" key={nom} delai={i * 0.08} className="rounded-2xl border border-bordure bg-white transition duration-300 hover:border-zinc-400">
+                <a href={`${DOCS}${h}`} className="flex h-full flex-col p-5">
+                  <code className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs text-zinc-700">npm i {nom}</code>
+                  <h3 className="mt-5 font-titre text-base font-semibold">{nom}</h3>
+                  <p className="mt-2 flex-1 text-sm leading-[21px] text-zinc-500">{d}</p>
+                  <span className="mt-4 text-[13px] font-medium text-indigo">Voir le module &rarr;</span>
+                </a>
+              </Revele>
+            ))}
+          </ul>
+        </section>
+
         {/* Cas d'usage */}
         <section id="cas" className="scroll-mt-20 px-4 py-20 sm:px-6 sm:py-28">
           <div className="mx-auto max-w-[1200px]">
-            <Etiquette>Cas d&apos;usage</Etiquette>
-            <Revele><h2 className="mt-2 font-titre text-3xl font-semibold tracking-tight sm:text-[40px]">Décrivez votre fintech. Pont installe le reste.</h2></Revele>
+            <Etiquette>Tutoriels</Etiquette>
+            <Revele><h2 className="mt-2 font-titre text-3xl font-semibold tracking-tight sm:text-[44px] sm:leading-tight">Un tutoriel de bout en bout par cas d&apos;usage.</h2></Revele>
+            <p className="mt-3 max-w-[640px] text-base leading-7 text-zinc-600">Une application type, le back-end en TypeScript, de la première commande au déploiement.</p>
             <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {CAS.map(([, t, d, s], i) => (
+              {CAS.map(([, t, d, s, h], i) => (
                 <Revele as="li" key={t} delai={i * 0.1} className={`group flex flex-col rounded-2xl border bg-white p-6 ${s === "Disponible" ? "border-indigo-100 ring-1 ring-indigo-100" : "border-bordure"}`}>
                   <h3 className="font-titre text-lg font-semibold">{t}</h3>
                   <p className="mt-2 flex-1 text-sm leading-[21px] text-zinc-500">{d}</p>
                   <p className={`mt-4 inline-flex w-fit rounded-full px-2.5 py-1 text-xs font-medium ${s === "Disponible" ? "bg-emerald-50 text-emerald-700" : "bg-zinc-100 text-zinc-500"}`}>{s}</p>
+                  {h && <a href={h} className="mt-3 text-[13px] font-medium text-indigo hover:underline">Lire le tutoriel &rarr;</a>}
                 </Revele>
               ))}
             </ul>
@@ -372,7 +405,7 @@ export default async function Page() {
               ))}
             </ul>
             <dl className="mt-12 grid grid-cols-2 gap-8 border-t border-zinc-800 pt-10 lg:grid-cols-4">
-              {[["4", "agrégateurs"], ["8", "pays couverts"], ["1", "commande pour installer"], ["0", "franc gardé par Pont"]].map(([v, l]) => (
+              {[["4", "agrégateurs"], ["16", "paquets npm"], ["8", "scénarios de test"], ["0", "franc gardé par Pont"]].map(([v, l]) => (
                 <div key={l}><dt className="sr-only">{l}</dt><dd className="font-titre text-4xl font-semibold"><Compte vers={Number(v)} /></dd><dd className="mt-1 text-sm text-zinc-400">{l}</dd></div>
               ))}
             </dl>
@@ -380,7 +413,7 @@ export default async function Page() {
         </section>
 
         {/* FAQ */}
-        <section id="faq" className="mx-auto grid max-w-[1200px] scroll-mt-20 gap-10 px-4 py-20 sm:px-6 sm:py-28 lg:grid-cols-[340px_1fr] lg:gap-16">
+        <section id="faq" className="mx-auto grid max-w-[1248px] scroll-mt-20 gap-10 px-4 py-20 sm:px-6 sm:py-28 lg:grid-cols-[340px_1fr] lg:gap-16">
           <div>
             <h2 className="font-titre text-3xl font-semibold tracking-tight">Questions fréquentes</h2>
             <p className="mt-3 text-[15px] text-zinc-500">Une autre question ? Écrivez à <a href="mailto:pro@aboudouzinsou.com" className="font-medium text-indigo hover:underline">pro@aboudouzinsou.com</a>, nous répondons à chaque message.</p>
