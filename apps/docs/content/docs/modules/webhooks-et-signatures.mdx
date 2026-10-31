@@ -1,0 +1,53 @@
+---
+title: "Webhooks et signatures"
+description: "Vérifier un webhook Pont, signer le vôtre et livrer les événements avec reprise automatique."
+---
+
+## Vérifier un webhook Pont reçu
+
+L'en-tête `Pont-Signature: t=<unix>,v1=<hmac>` signe `t + "." + corps brut`. `@pont-bj/node` fournit la vérification (tolérance 300 s par défaut, rotation de secret acceptée) :
+
+```ts
+import { verifyPontSignature } from "@pont-bj/node";
+
+export async function POST(request: Request) {
+  const brut = await request.text(); // le corps BRUT, avant tout JSON.parse
+  if (!verifyPontSignature(process.env.PONT_WEBHOOK_SECRET!, brut, request.headers.get("pont-signature"))) {
+    return new Response(null, { status: 401 });
+  }
+  const evenement: unknown = JSON.parse(brut);
+  // dédoublonnez sur l'en-tête Pont-Event-Id
+  return new Response(null, { status: 200 });
+}
+```
+
+Une signature falsifiée, ou un corps modifié d'un seul octet, est refusée.
+
+## Signer vos propres webhooks
+
+`@pont-bj/core` expose l'inverse, utile pour vos tests ou pour notifier vos clients de la même façon :
+
+```ts
+import { signPontWebhook, verifyPontWebhook } from "@pont-bj/core";
+
+const entete = signPontWebhook("whsec_exemple", '{"a":1}');
+verifyPontWebhook("whsec_exemple", '{"a":1}', entete); // true
+```
+
+## Livrer avec reprise automatique
+
+`WebhookRelay` met les événements en file et réessaie sur environ trois jours (0 s, 1 min, 5 min, 30 min, 2 h, 6 h, 12 h, 1 j, 2 j, 3 j). Branchez-le sur le moteur et faites tourner `processDue` depuis le job planifié :
+
+```ts
+import { createPontFromEnv, type WebhookRelay } from "@pont-bj/node";
+
+declare const relay: WebhookRelay;
+
+export const pont = createPontFromEnv({ onEvent: (e) => relay.enqueue(e) });
+```
+
+Le job de [réconciliation](/modules/moteur-embarque) appelle `relay.processDue()` pour vous si vous passez `relay` à `createCronRoute`.
+
+## Référence
+
+- [Webhooks sortants](/reference/api/webhooks-sortants) : événements et format.

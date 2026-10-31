@@ -1,0 +1,118 @@
+---
+title: "Moteur embarqué"
+description: "Encaisser, décaisser, rembourser et réconcilier avec @pont-bj/node, sans serveur Pont."
+---
+
+`@pont-bj/node` embarque le moteur dans votre application. Vous obtenez un objet `PontEngine` qui crée des paiements, vérifie leur statut auprès de l'agrégateur et gère l'idempotence.
+
+## Installer
+
+```bash
+npm install @pont-bj/node
+```
+
+## Créer le moteur
+
+```ts
+import { createPontFromEnv } from "@pont-bj/node";
+
+export const pont = createPontFromEnv();
+```
+
+Les agrégateurs s'activent via les variables d'environnement : un agrégateur est actif dès que ses variables sont présentes ([liste](/reference/variables-environnement)). Pour essayer sans compte d'agrégateur, utilisez le sandbox :
+
+```bash
+PONT_SANDBOX=true
+PONT_PUBLIC_URL=http://localhost:3000   # sert à construire les URL de webhooks
+```
+
+<Callout type="warn">
+Sans `stores`, tout est **en mémoire** : parfait pour essayer, perdu au redémarrage. En `PONT_MODE=live`, le moteur refuse de démarrer sans stockage persistant. Branchez PostgreSQL ou Convex ([Stockage](/guides/stockage)).
+</Callout>
+
+## Encaisser
+
+```ts
+const paiement = await pont.createPayment(
+  {
+    amount: 5000,            // entier, XOF
+    currency: "XOF",
+    country: "BJ",
+    customer: { phone: "+2290100000001" },
+    reference: "commande-42",
+  },
+  "commande-42-essai-1",      // clé d'idempotence : 8 à 255 caractères
+);
+
+console.log(paiement.status);      // "pending"
+console.log(paiement.nextAction);  // { type: "await_customer", ... }
+```
+
+La même clé d'idempotence avec le même contenu renvoie le même paiement ; avec un contenu différent, elle échoue (`idempotency_conflict`). Voir [Idempotence](/concepts/idempotence).
+
+## Vérifier le statut
+
+Un paiement ne passe à `succeeded` qu'après vérification auprès de l'agrégateur. `refreshPayment` déclenche cette vérification :
+
+```ts
+const maj = await pont.refreshPayment(paiement.id);
+console.log(maj.status); // "succeeded" avec le numéro +2290100000001 du sandbox
+```
+
+## Décaisser et rembourser
+
+```ts
+await pont.createPayout(
+  { amount: 3000, currency: "XOF", country: "BJ", operator: "mtn_bj", recipient: { phone: "+2290100000001" }, reference: "paie-7" },
+  "paie-7-essai-1",
+);
+
+await pont.createRefund(paiement.id, { amount: 1000 }, "remb-42-1"); // seulement un paiement succeeded
+```
+
+Le sandbox ne supporte pas les remboursements.
+
+## Recevoir les webhooks des agrégateurs (Next.js)
+
+Fichier `app/api/pont/hooks/[provider]/route.ts` :
+
+```ts
+import { createWebhookRoute } from "@pont-bj/node";
+import { pont } from "@/lib/pont";
+
+export const { POST } = createWebhookRoute(pont);
+```
+
+La signature est vérifiée sur le corps brut ; une signature invalide donne `401`. Pour tout autre framework (Hono, Bun, Deno, Workers), `handleProviderRequest(pont, provider, request)` accepte une `Request` standard.
+
+## Réconcilier régulièrement
+
+Un webhook peut se perdre. Un job planifié vérifie les opérations non réglées :
+
+```ts
+// app/api/pont/cron/route.ts
+import { createCronRoute } from "@pont-bj/node";
+import { pont } from "@/lib/pont";
+
+export const { GET } = createCronRoute(pont, { secret: process.env.CRON_SECRET });
+```
+
+`CRON_SECRET` fait au moins 16 caractères. Sur Vercel, déclarez-le dans `vercel.json` (`crons`).
+
+## Réagir aux événements
+
+```ts
+export const pont = createPontFromEnv({
+  onEvent: async (evenement) => {
+    if (evenement.type === "payment.succeeded") {
+      // marquez la commande comme payée
+    }
+  },
+});
+```
+
+## Aller plus loin
+
+- [Webhooks et signatures](/modules/webhooks-et-signatures) pour envoyer les événements à d'autres services
+- [Statuts](/concepts/statuts)
+- [Tutoriel : paiement de factures](/tutoriels/paiement-de-factures)

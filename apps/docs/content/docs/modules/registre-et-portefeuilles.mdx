@@ -1,0 +1,84 @@
+---
+title: "Registre et portefeuilles"
+description: "Un registre comptable en partie double, des portefeuilles et des plafonds KYC avec @pont-bj/ledger, utilisables sans serveur."
+---
+
+`@pont-bj/ledger` contient trois briques : `Ledger` (écritures en partie double), `Wallets` (soldes disponibles et bloqués, dépôts, transferts) et `Limits` (plafonds par palier). Aucune ne dépend d'un agrégateur.
+
+## Installer
+
+```bash
+npm install @pont-bj/ledger
+```
+
+## Portefeuilles
+
+```ts
+import { Ledger, MemoryLedgerStore, Wallets } from "@pont-bj/ledger";
+
+const wallets = new Wallets(new Ledger(new MemoryLedgerStore()));
+
+await wallets.open("awa", "XOF");
+await wallets.open("koffi", "XOF");
+
+// Crédite un dépôt confirmé. La clé est paymentId : un paiement n'est crédité qu'une fois.
+await wallets.deposit({ userId: "awa", currency: "XOF", amount: 10000, provider: "sandbox", paymentId: "pay_1" });
+
+await wallets.transfer({ from: "awa", to: "koffi", currency: "XOF", amount: 2500, transferId: "t1" });
+
+console.log(await wallets.balance("awa", "XOF"));   // { available: 7500, held: 0, currency: "XOF" }
+console.log(await wallets.balance("koffi", "XOF")); // { available: 2500, held: 0, currency: "XOF" }
+```
+
+Un transfert supérieur au solde lève `InsufficientFundsError` (`Solde insuffisant : 7500 disponible, 99999 requis.`).
+
+Retrait en deux temps, pour ne jamais perdre d'argent en route :
+
+| Méthode | Effet |
+|---|---|
+| `hold` | `available` → `held` (fonds bloqués) |
+| `settle` | solde le retrait envoyé (frais compris) |
+| `release` | rend les fonds si le retrait échoue |
+
+<Callout type="warn">
+`MemoryLedgerStore` ne garde rien après un redémarrage. En production, utilisez le stockage PostgreSQL de `@pont-bj/store-prisma` ([Stockage](/guides/stockage)).
+</Callout>
+
+## Plafonds par palier
+
+```ts
+import { Limits, MemoryCustomerProfileStore } from "@pont-bj/ledger";
+
+const profils = new MemoryCustomerProfileStore();
+const limites = new Limits(
+  { tiers: { decouverte: { maxBalance: 100000, maxSingle: 25000, maxDailyOut: 50000, maxMonthlyOut: 200000 } } },
+  wallets,
+  profils,
+);
+
+await profils.setTier("awa", "decouverte");
+
+await limites.check({ userId: "awa", currency: "XOF", operation: "withdraw", amount: 30000 });
+// { allowed: false, code: "max_single", message: "Opération limitée à 25 000 XOF pour ce palier." }
+
+await limites.check({ userId: "awa", currency: "XOF", operation: "withdraw", amount: 10000 });
+// { allowed: true }
+```
+
+Appelez `check` **avant** de bloquer ou créditer des fonds. `profils.setFrozen("awa", true)` gèle un compte. Les valeurs de plafond sont des exemples : les montants exacts dépendent de votre agrément.
+
+## Écrire dans le registre directement
+
+Pour un cas qui n'est pas un portefeuille (escrow, cagnotte, commissions), postez vos propres écritures. Une écriture doit être équilibrée (total des débits = total des crédits) et porte une clé d'idempotence :
+
+```ts
+const ledger = new Ledger(new MemoryLedgerStore());
+// openAccount puis ledger.post({ idempotencyKey, currency, description, lines: [...] })
+```
+
+Signature complète : `PostInput` dans les types du paquet (`idempotencyKey`, `currency`, `description`, `lines`, `metadata`).
+
+## Aller plus loin
+
+- [Portefeuille et registre](/guides/portefeuille-et-registre) (le même moteur derrière l'API `/v1/wallets`)
+- [Tutoriel : portefeuille mobile](/tutoriels/portefeuille-mobile)

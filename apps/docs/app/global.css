@@ -3,27 +3,182 @@
 @import "fumadocs-ui/css/preset.css";
 @import "fumadocs-openapi/css/preset.css";
 
-/* Couleurs Pont : indigo de la landing et du dashboard (#4F46E5). */
+/*
+ * Direction artistique : sobre, aérée, proche de nextjs.org/docs.
+ * Fond uni, filets fins, texte noir/gris, un seul accent (indigo Pont) réservé aux liens et au focus.
+ */
 :root {
-  --color-fd-primary: hsl(243, 75%, 59%);
-  --color-fd-primary-foreground: hsl(0, 0%, 100%);
-  --color-fd-ring: hsl(243, 75%, 59%);
-  --color-fd-accent: hsla(243, 75%, 59%, 0.1);
-  --color-fd-accent-foreground: hsl(243, 75%, 40%);
+  --color-fd-background: #ffffff;
+  --color-fd-foreground: #0a0a0a;
+  --color-fd-muted: #fafafa;
+  --color-fd-muted-foreground: #666666;
+  --color-fd-card: #ffffff;
+  --color-fd-card-foreground: #0a0a0a;
+  --color-fd-popover: #ffffff;
+  --color-fd-border: #ebebeb;
+  --color-fd-secondary: #f5f5f5;
+  --color-fd-secondary-foreground: #0a0a0a;
+  --color-fd-primary: #4f46e5;
+  --color-fd-primary-foreground: #ffffff;
+  --color-fd-ring: #4f46e5;
+  --color-fd-accent: #f5f5f5;
+  --color-fd-accent-foreground: #0a0a0a;
 }
 
 .dark {
-  --color-fd-primary: hsl(243, 90%, 74%);
-  --color-fd-primary-foreground: hsl(243, 40%, 10%);
-  --color-fd-ring: hsl(243, 90%, 74%);
-  --color-fd-accent: hsla(243, 90%, 74%, 0.15);
-  --color-fd-accent-foreground: hsl(243, 90%, 85%);
+  --color-fd-background: #0a0a0a;
+  --color-fd-foreground: #ededed;
+  --color-fd-muted: #111111;
+  --color-fd-muted-foreground: #a1a1a1;
+  --color-fd-card: #0a0a0a;
+  --color-fd-card-foreground: #ededed;
+  --color-fd-popover: #111111;
+  --color-fd-border: #262626;
+  --color-fd-secondary: #171717;
+  --color-fd-secondary-foreground: #ededed;
+  --color-fd-primary: #818cf8;
+  --color-fd-primary-foreground: #0a0a0a;
+  --color-fd-ring: #818cf8;
+  --color-fd-accent: #171717;
+  --color-fd-accent-foreground: #ededed;
 }
 
 @theme {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
-h1, h2, h3 {
-  font-family: var(--font-outfit), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+body {
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "cv11", "ss01";
+}
+
+/* Titres : une seule famille, serrés, sans fantaisie. */
+h1, h2, h3, h4 {
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.022em;
+  font-weight: 600;
+}
+
+#nd-page h1 {
+  font-size: 2.25rem;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+#nd-page h2 {
+  margin-top: 3rem;
+  padding-top: 0;
+  font-size: 1.5rem;
+  border: 0;
+}
+
+#nd-page h3 {
+  margin-top: 2rem;
+  font-size: 1.125rem;
+}
+
+/* Colonne de lecture plus resserrée et corps plus lisible. */
+#nd-page article {
+  max-width: 46rem;
+}
+
+#nd-page article p,
+#nd-page article li {
+  line-height: 1.75;
+}
+
+/* Description sous le titre : sobre. */
+#nd-page article > p:first-of-type {
+  color: var(--color-fd-muted-foreground);
+}
+
+/* Barre latérale : même fond que la page, filet fin, pas de pastille colorée. */
+#nd-sidebar {
+  background: var(--color-fd-background);
+  border-inline-end: 1px solid var(--color-fd-border);
+}
+
+#nd-sidebar a[data-active="true"] {
+  background: transparent;
+  color: var(--color-fd-foreground);
+  font-weight: 600;
+}
+
+#nd-sidebar a[data-active="false"] {
+  color: var(--color-fd-muted-foreground);
+}
+
+#nd-sidebar a:hover {
+  background: transparent;
+  color: var(--color-fd-foreground);
+}
+
+/* Sommaire à droite : neutre. */
+#nd-toc a[data-active="true"] {
+  color: var(--color-fd-foreground);
+}
+
+/* Citations : filet à gauche, pas d'italique ni de guillemets. */
+#nd-page blockquote {
+  font-style: normal;
+  border-inline-start: 2px solid var(--color-fd-border);
+  padding-inline-start: 1rem;
+  color: var(--color-fd-muted-foreground);
+}
+
+#nd-page blockquote p::before,
+#nd-page blockquote p::after {
+  content: none;
+}
+
+/* Cartes plates : filet fin, survol discret. */
+#nd-page a.fd-card,
+#nd-page .fd-card {
+  background: transparent;
+  border-color: var(--color-fd-border);
+  border-radius: 0.75rem;
+  transition: border-color 0.15s;
+}
+
+#nd-page a.fd-card:hover {
+  background: transparent;
+  border-color: var(--color-fd-foreground);
+}
+
+/* Code en ligne et blocs : filets fins, petit rayon. */
+#nd-page :not(pre) > code {
+  border-radius: 0.375rem;
+  font-size: 0.85em;
+}
+
+#nd-page figure.shiki,
+#nd-page pre {
+  border-radius: 0.5rem;
+  border-color: var(--color-fd-border);
+}
+
+/* Tableaux : filets seulement. */
+#nd-page table {
+  font-size: 0.9rem;
+}
+
+/* Cartes : sélecteur data-card (Fumadocs), titre au gabarit du corps. */
+#nd-page a[data-card]:has(> h3) {
+  background: transparent;
+  border-color: var(--color-fd-border);
+  border-radius: 0.75rem;
+  padding: 1rem 1.125rem;
+  transition: border-color 0.15s;
+}
+
+#nd-page a[data-card]:has(> h3):hover {
+  background: transparent;
+  border-color: var(--color-fd-foreground);
+}
+
+#nd-page a[data-card]:has(> h3) h3 {
+  margin: 0 0 0.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }

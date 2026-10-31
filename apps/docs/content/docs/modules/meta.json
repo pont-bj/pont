@@ -1,0 +1,4 @@
+{
+  "title": "Modules",
+  "pages": ["index", "moteur-embarque", "registre-et-portefeuilles", "webhooks-et-signatures"]
+}

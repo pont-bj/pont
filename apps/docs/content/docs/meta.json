@@ -1,4 +1,16 @@
 {
   "title": "Documentation Pont",
-  "pages": ["index", "demarrer", "concepts", "guides", "tutoriels", "reference", "agents-ia", "cloud", "etat-des-tests"]
+  "pages": [
+    "index",
+    "pourquoi-pont",
+    "demarrer",
+    "modules",
+    "concepts",
+    "guides",
+    "tutoriels",
+    "reference",
+    "agents-ia",
+    "cloud",
+    "etat-des-tests"
+  ]
 }

@@ -1,0 +1,69 @@
+---
+title: "Pourquoi Pont"
+description: "Ce que Pont apporte face aux agrégateurs, aux plateformes de paiement et aux ledgers existants, et ce qu'il ne fait pas."
+---
+
+**Pont est le backend de votre fintech : vous branchez vos comptes d'agrégateurs, et vous obtenez une seule API pour encaisser, décaisser, tenir des soldes et recevoir des webhooks fiables.**
+
+Vous voulez intégrer un paiement, tenir des portefeuilles ou manipuler de l'argent sans tout reconstruire. Voici où Pont se place.
+
+## Le problème
+
+Construire une fintech en Afrique francophone, c'est assembler à la main :
+
+1. **Plusieurs agrégateurs**, chacun avec son API, ses webhooks et ses pannes.
+2. **Des statuts qui mentent** : un webhook reçu n'est pas un paiement confirmé.
+3. **Un registre comptable** correct (partie double, idempotence, plafonds).
+4. **Des webhooks sortants** fiables vers votre application.
+
+Chacune de ces briques existe ailleurs. Pont les réunit dans une seule API, que vous hébergez.
+
+## Où Pont se place
+
+<Callout type="info">
+Recherche du 1ᵉʳ novembre 2026, faite sur des pages publiques de projets et des comparatifs, dont plusieurs sont publiés par des fournisseurs. Les chiffres changent : vérifiez-les chez chaque acteur avant de décider.
+</Callout>
+
+| Catégorie | Exemples | Ce qu'ils font bien | Ce qui manque pour votre cas |
+|---|---|---|---|
+| **Agrégateurs de paiement** | FedaPay, PayDunya, Kkiapay, CinetPay | Encaisser localement, souvent en une API | Chacun est un fournisseur unique : pas de bascule entre eux, pas de registre, pas de portefeuilles |
+| **Plateformes pan-africaines** | Flutterwave, Paystack, Onafriq | Large couverture, cartes + mobile money | Service hébergé : vous leur confiez les fonds et le flux ; pas de registre de portefeuilles à vous |
+| **Orchestration mobile money** | pawaPay | Un point d'entrée vers de nombreux opérateurs | Couvre les paiements ; la comptabilité de vos utilisateurs reste à construire |
+| **Ledgers open source** | Formance, Blnk, TigerBeetle | Registre solide, souvent self-hosted | Aucun connecteur mobile money africain ; à raccorder vous-même |
+| **SDK mono-fournisseur** | Bibliothèques FedaPay, M-Pesa… | Simples pour un opérateur | Un SDK par fournisseur, pas d'unification |
+
+Dans nos recherches, nous n'avons trouvé **aucun projet** qui combine, en une seule couche que vous hébergez : plusieurs agrégateurs de l'espace francophone, un registre de portefeuilles et des webhooks vérifiés. Cela ne prouve pas qu'il n'existe pas ; cela dit seulement que nous ne l'avons pas trouvé.
+
+## Ce que Pont apporte
+
+- **Une API pour tous les agrégateurs.** Vous changez de fournisseur sans réécrire votre code.
+- **Vos clés restent chez vous (non-custodial).** Pont ne détient jamais de fonds ; vos clés d'agrégateur vivent dans votre installation. Voir [Non-custodial](/concepts/non-custodial).
+- **Vrai statut, pas supposé.** Un paiement ne devient `succeeded` qu'après vérification auprès de l'agrégateur ; un cas douteux est réconcilié, jamais rejoué chez un autre.
+- **Un registre prêt à l'emploi.** Portefeuilles, transferts, retraits, frais, plafonds par palier, gel de compte : [Portefeuille et registre](/guides/portefeuille-et-registre).
+- **Un sandbox sans compte.** Huit scénarios par numéro magique, pour tester les cas d'échec avant le réel.
+- **Des briques séparées.** Prenez seulement le moteur ou seulement le registre : [Modules](/modules).
+- **Pensé pour les agents IA.** Serveur MCP, `llms.txt`, détection de stack : [Agents IA](/agents-ia).
+
+## Ce que Pont ne fait pas
+
+Soyons directs :
+
+- **Pas d'agrément.** Pont est un logiciel, pas un établissement de paiement. Détenir l'argent d'autrui est réglementé ; cela relève de vous et de vos conseils juridiques.
+- **Pas de KYC automatisé** : vous attribuez les paliers à vos utilisateurs.
+- **Pas encore éprouvé en réel.** Les adaptateurs ont été testés contre leur documentation et le sandbox ; **aucun vrai agrégateur n'a encore été contacté**. Voir [État des tests](/etat-des-tests).
+- **Le portefeuille est en aperçu**, et exige PostgreSQL.
+- **Licence BUSL-1.1**, puis AGPL-3.0 au bout de quatre ans : le code est consultable, mais ce n'est pas de l'open source au sens OSI. Self-host gratuit à vie ; Pont Cloud est « bientôt ».
+
+## Par où commencer
+
+<Cards>
+  <Card title="Je veux encaisser un paiement" href="/tutoriels/paiement-de-factures">
+    Un back-end TypeScript complet pour des factures.
+  </Card>
+  <Card title="Je veux manipuler de l'argent" href="/tutoriels/portefeuille-mobile">
+    Comptes, dépôts, retraits, transferts, plafonds.
+  </Card>
+  <Card title="Je veux juste une brique" href="/modules">
+    Un paquet npm, sans serveur à cloner.
+  </Card>
+</Cards>
