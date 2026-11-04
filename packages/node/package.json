@@ -21,7 +21,7 @@
     "@pont-bj/adapter-paydunya": "workspace:*",
     "@pont-bj/adapter-kkiapay": "workspace:*",
     "@pont-bj/adapter-cinetpay": "workspace:*",
-    "zod": "3.25.76"
+    "zod": "4.6.7"
   },
   "license": "BUSL-1.1",
   "files": [
