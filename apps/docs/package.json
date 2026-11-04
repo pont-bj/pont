@@ -15,7 +15,7 @@
     "fumadocs-core": "16.17.2",
     "fumadocs-mdx": "15.4.7",
     "fumadocs-openapi": "12.4.2",
-    "fumadocs-ui": "16.17.2",
+    "fumadocs-ui": "16.17.9",
     "json-schema-typed": "^9.0.0",
     "mermaid": "12.2.0",
     "next": "16.4.3",
