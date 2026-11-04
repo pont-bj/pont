@@ -26,7 +26,7 @@
     "@pont-bj/core": "workspace:*",
     "@pont-bj/node": "workspace:*",
     "@pont-bj/sandbox": "workspace:*",
-    "zod": "3.25.76",
+    "zod": "4.6.7",
     "@pont-bj/engine": "workspace:*"
   },
   "license": "BUSL-1.1",

@@ -24,7 +24,7 @@
     "@pont-bj/sandbox": "workspace:*",
     "@pont-bj/store-convex": "workspace:*",
     "yaml": "2.8.1",
-    "zod": "3.25.76"
+    "zod": "4.6.7"
   },
   "license": "BUSL-1.1",
   "files": [

@@ -27,7 +27,7 @@
     "@pont-bj/store-prisma": "workspace:*",
     "convex": "1.48.0",
     "nodemailer": "10.1.0",
-    "zod": "3.25.76"
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@types/nodemailer": "^8.0.2",

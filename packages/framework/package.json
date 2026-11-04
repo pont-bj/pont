@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@pont-bj/core": "workspace:*",
-    "zod": "3.25.76"
+    "zod": "4.6.7"
   },
   "publishConfig": {
     "main": "./dist/index.js",
