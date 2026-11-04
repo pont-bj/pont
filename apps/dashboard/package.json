@@ -12,7 +12,7 @@
   "dependencies": {
     "@fontsource-variable/inter": "5.3.0",
     "@pont-bj/auth": "workspace:*",
-    "better-auth": "1.7.14",
+    "better-auth": "1.7.15",
     "country-flag-icons": "1.6.20",
     "next": "^15.5.28",
     "react": "^19.3.1",
